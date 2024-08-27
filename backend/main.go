@@ -4,6 +4,9 @@ import (
 	"log"
 	"os"
 
+	"github.com/GreenTeaProgrammers/difflog2/middleware"
+	"github.com/GreenTeaProgrammers/difflog2/models"
+	"github.com/GreenTeaProgrammers/difflog2/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
