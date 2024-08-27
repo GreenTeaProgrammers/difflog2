@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography, Container, Avatar } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { login } from "../../services/authService";
-import { LoginInput } from "../../types/user";
+import { login } from "../../../services/AuthService";
+import { LoginInput } from "../../../types/user";
 import {
   StyledTextField,
   AuthContainer,
