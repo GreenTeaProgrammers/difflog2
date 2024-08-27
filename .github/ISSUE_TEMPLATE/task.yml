@@ -1,0 +1,57 @@
+name: New task
+description: For new task assign
+title: "[Task]: "
+labels: ["task", "triage"]
+assignees:
+  - Hosi121, Shiluco
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill the form to assign new task!
+  - type: textarea
+    id: who-do
+    attributes:
+      label: Who do?
+      description: Who tackle to this issue?
+      placeholder: Describe the person who do this task.
+    validations:
+      required: true
+  - type: textarea
+    id: as-is
+    attributes:
+      label: As Is
+      description: What is the current situation?
+      placeholder: Describe the current situation
+    validations:
+      required: true
+  - type: textarea
+    id: to-be
+    attributes:
+      label: To Be
+      description: What is the desired outcome?
+      placeholder: Describe the desired outcome
+    validations:
+      required: true
+  - type: textarea
+    id: action
+    attributes:
+      label: Action
+      description: What actions need to be taken?
+      placeholder: Describe the actions to be taken
+    validations:
+      required: true
+  - type: textarea
+    id: memo
+    attributes:
+      label: Memo
+      description: Any additional notes or comments?
+      placeholder: Add any additional notes or comments
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: content Check
+      description: Did you check the content?
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
