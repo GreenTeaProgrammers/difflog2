@@ -1,4 +1,4 @@
-interface Capture {
+export interface Capture {
   id: string;
   locationId: string;
   imageUrl: string;

@@ -1,4 +1,4 @@
-interface DiffItem {
+export interface DiffItem {
   itemId: string;
   itemName: string;
   changeType: 'added' | 'deleted' | 'modified';
@@ -6,7 +6,7 @@ interface DiffItem {
   currentCount: number;
 }
 
-interface Diff {
+export interface Diff {
   id: string;
   locationId: string;
   date: Date;
