@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -12,21 +11,25 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
+import WelcomeScreen from "./components/diff/WelcomeScreen";
+import CameraUploadScreen from "./components/diff/CameraUploadScreen";
 
 const App: React.FC = () => {
 
   return (
     <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/welcome" element={<WelcomeScreen username={"test"} />}/>
+            <Route path="/camera" element={<CameraUploadScreen/>}/>
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </Provider>
   );
 };

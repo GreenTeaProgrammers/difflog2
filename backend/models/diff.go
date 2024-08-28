@@ -16,3 +16,9 @@ type Diff struct {
 	Date       time.Time  `json:"date" bson:"date"`
 	Changes    []DiffItem `json:"changes" bson:"changes"`
 }
+
+type DiffResponse struct {
+	Added    int `json:"added"`    // 追加された項目数
+	Deleted  int `json:"deleted"`  // 削除された項目数
+	Modified int `json:"modified"` // 変更された項目数
+}
