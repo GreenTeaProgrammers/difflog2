@@ -12,7 +12,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
-import DifflogHomeScreen from "./components/diff/DifflogHomeScreen";
+import WelcomeScreen from "./components/diff/WelcomeScreen";
 import CameraUploadScreen from "./components/diff/CameraUploadScreen";
 
 const App: React.FC = () => {
@@ -26,7 +26,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/diff" element={<DifflogHomeScreen />}/>
+          <Route path="/welcome" element={<WelcomeScreen username={"test"} />}/>
           <Route path="/camera" element={<CameraUploadScreen/>}/>
         </Routes>
       </Router>
