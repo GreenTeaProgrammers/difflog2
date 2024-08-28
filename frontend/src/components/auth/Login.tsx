@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography, Container, Avatar } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { login } from "../../../services/authService";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { login } from "../../../store/authSlice";
 import { LoginInput } from "../../../types/user";
 import {
   StyledTextField,
@@ -12,34 +13,27 @@ import {
 } from "./AuthStyle";
 
 const Login: React.FC = () => {
-  // フォームデータの状態管理
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authState = useAppSelector((state) => state.auth);
+
   const [formData, setFormData] = useState<LoginInput>({
     email: "",
     password: "",
   });
 
-  // エラーメッセージの状態管理
-  const [error, setError] = useState("");
-
-  const navigate = useNavigate();
-
-  // 入力フィールドの変更を処理する関数
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // フォーム送信を処理する関数
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-
     try {
-      const { username } = await login(formData);
-      navigate(`/user/${username}`); // ユーザーページへリダイレクト
+      await dispatch(login(formData)).unwrap(); // unwrap() を使って非同期処理の結果を扱う
+      navigate(`/user/${authState.user?.username}`);
     } catch (err) {
       console.error("Login error details:", err);
-      setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
     }
   };
 
@@ -52,13 +46,12 @@ const Login: React.FC = () => {
         <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
           ログイン
         </Typography>
-        {error && (
+        {authState.error && (
           <Typography color="error" sx={{ mb: 2 }}>
-            {error}
+            {authState.error}
           </Typography>
         )}
         <FormBox component="form" onSubmit={handleSubmit}>
-          {/* メールアドレス入力フィールド */}
           <StyledTextField
             required
             fullWidth
@@ -71,7 +64,6 @@ const Login: React.FC = () => {
             onChange={handleChange}
             variant="outlined"
           />
-          {/* パスワード入力フィールド */}
           <StyledTextField
             required
             fullWidth
@@ -84,16 +76,15 @@ const Login: React.FC = () => {
             onChange={handleChange}
             variant="outlined"
           />
-          {/* ログインボタン */}
           <SubmitButton
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
+            disabled={authState.status === 'loading'}
           >
             ログイン
           </SubmitButton>
-          {/* 登録ページへのリンク */}
           <Button
             fullWidth
             variant="text"

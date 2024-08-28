@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Typography, Container, Avatar, Button } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { register } from "../../../services/authService";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { register } from "../../../store/authSlice";
 import { RegisterInput } from "../../../types/user";
 import {
   StyledTextField,
@@ -12,31 +13,26 @@ import {
 } from "./AuthStyle";
 
 const Register: React.FC = () => {
-  // フォームデータの状態管理
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authState = useAppSelector((state) => state.auth);
+
   const [formData, setFormData] = useState<RegisterInput>({
     username: "",
     email: "",
     password: "",
   });
 
-  // パスワード確認用の状態管理
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  // エラーメッセージの状態管理
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const navigate = useNavigate();
-
-  // フォームバリデーション関数
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
 
-    // パスワードのバリデーション
     if (formData.password.length < 6) {
       newErrors.password = "パスワードは6文字以上である必要があります。";
     }
 
-    // パスワード確認
     if (formData.password !== confirmPassword) {
       newErrors.confirmPassword = "パスワードが一致しません。";
     }
@@ -45,20 +41,18 @@ const Register: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // 入力フィールドの変更を処理する関数
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // フォーム送信を処理する関数
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateForm()) {
       try {
-        await register(formData);
-        navigate("/login"); // 登録成功時にログインページに遷移
+        await dispatch(register(formData)).unwrap();
+        navigate("/login");
       } catch (err) {
         setErrors({ submit: "登録に失敗しました。もう一度お試しください。" });
       }
@@ -78,7 +72,6 @@ const Register: React.FC = () => {
           <Typography color="error">{errors.submit}</Typography>
         )}
         <FormBox component="form" onSubmit={handleSubmit}>
-          {/* ユーザー名入力フィールド */}
           <StyledTextField
             required
             fullWidth
@@ -91,7 +84,6 @@ const Register: React.FC = () => {
             onChange={handleChange}
             variant="outlined"
           />
-          {/* メールアドレス入力フィールド */}
           <StyledTextField
             required
             fullWidth
@@ -105,7 +97,6 @@ const Register: React.FC = () => {
             helperText={errors.email}
             variant="outlined"
           />
-          {/* パスワード入力フィールド */}
           <StyledTextField
             required
             fullWidth
@@ -120,7 +111,6 @@ const Register: React.FC = () => {
             helperText={errors.password}
             variant="outlined"
           />
-          {/* パスワード確認入力フィールド */}
           <StyledTextField
             required
             fullWidth
@@ -134,12 +124,12 @@ const Register: React.FC = () => {
             helperText={errors.confirmPassword}
             variant="outlined"
           />
-          {/* 登録ボタン */}
           <SubmitButton
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
+            disabled={authState.status === 'loading'}
           >
             登録
           </SubmitButton>
