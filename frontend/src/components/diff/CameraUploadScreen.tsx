@@ -1,34 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, DragEvent } from 'react';
 import { Box, Typography, Button, Input, Paper, CircularProgress } from '@mui/material';
 import { CloudUpload, CheckCircleOutline } from '@mui/icons-material';
 
-const CameraUploadScreen = ({ backgroundColor = 'black' }) => {
-  const [uploadedFile, setUploadedFile] = useState(null);
+interface CameraUploadScreenProps {
+  backgroundColor?: string;
+}
+
+const CameraUploadScreen: React.FC<CameraUploadScreenProps> = ({ backgroundColor = 'black' }) => {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       setUploadedFile(file);
     }
   };
 
-  const handleDragEnter = (event) => {
+  const handleDragEnter = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(true);
   };
 
-  const handleDragLeave = (event) => {
+  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
   };
 
-  const handleDragOver = (event) => {
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
 
-  const handleDrop = (event) => {
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
     const file = event.dataTransfer.files[0];
@@ -56,11 +60,11 @@ const CameraUploadScreen = ({ backgroundColor = 'black' }) => {
       color: 'white'
     }}>
       <Input
+        accept="image/*"
         type="file"
         onChange={handleFileChange}
         sx={{ display: 'none' }}
         id="file-input"
-        accept="image/*"
       />
       <label htmlFor="file-input" style={{ width: '100%', maxWidth: '500px' }}>
         <Paper
