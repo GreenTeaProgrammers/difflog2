@@ -31,6 +31,7 @@ func main() {
 
 	// ルートを設定
 	routes.AuthRoutes(r)
+	routes.CaptureRoutes(r)
 
 	// ポートを指定してサーバーを起動
 	slog.Info("Starting server...", slog.String("port", cfg.Port))
