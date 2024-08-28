@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Diff } from '../types/Diff';
+import { Diff } from '../types/diff';
 
 interface DiffState {
   diffs: Diff[];

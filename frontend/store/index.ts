@@ -1,14 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
-import authReducer from '../features/auth/authSlice';
-import locationReducer from '../features/location/locationSlice';
-import diffReducer from '../features/diff/diffSlice';
+import authReducer from './authSlice';
+import locationReducer from './locationSlice';
+import diffReducer from './diffSlice';
+import captureReducer from './captureSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     location: locationReducer,
     diff: diffReducer,
+    capture: captureReducer,
   },
 });
 
