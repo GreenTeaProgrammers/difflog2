@@ -1,17 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
-import authReducer from './authSlice';
-import locationReducer from './locationSlice';
-import diffReducer from './diffSlice';
-import captureReducer from './captureSlice';
 
 export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    location: locationReducer,
-    diff: diffReducer,
-    capture: captureReducer,
-  },
+  reducer: rootReducer,
 });
 
 // TypeScript用の型エクスポート
