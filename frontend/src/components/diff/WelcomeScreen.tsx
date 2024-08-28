@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, IconButton, Slider, Grid, Paper } from '@mui/material';
-import { Info, ZoomIn, ZoomOut } from '@mui/icons-material';
+import { Box, Typography, IconButton, Slider, Grid, Paper, Drawer } from '@mui/material';
+import { Info, ZoomIn, ZoomOut, Close } from '@mui/icons-material';
 import HorizontalWheel from './HorizontalWheel';
 
 interface WelcomeScreenProps {
@@ -10,16 +10,22 @@ interface WelcomeScreenProps {
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const [selectedLocation, setSelectedLocation] = useState('desk');
   const [zoomLevel, setZoomLevel] = useState(1); // 1: Year, 2: Month, 3: Day
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   const locations = ['books', 'kitchen', 'desk', 'store'];
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const handleLocationSelect = (location: string) => {
     setSelectedLocation(location);
+    console.log(`Selected location: ${location}`); // 選択されたロケーションをログ出力
   };
 
   const handleZoomChange = (event: Event, newValue: number | number[]) => {
     setZoomLevel(newValue as number);
+  };
+
+  const toggleInfoDrawer = () => {
+    setIsInfoOpen(!isInfoOpen);
   };
 
   const renderYearView = () => (
@@ -66,7 +72,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {[...Array(5)].map((_, index) => (
           <Paper key={index} elevation={3} sx={{ p: 2, bgcolor: 'grey.800', color: 'white' }}>
-            <Typography variant="body1">Item {index + 1}</Typography>
+            <Typography variant="body1">Item {index + 1} in {selectedLocation}</Typography>
             <Typography variant="body2" color="text.secondary">Details about the item...</Typography>
           </Paper>
         ))}
@@ -90,10 +96,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'black', color: 'white' }}>
       <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <IconButton color="inherit">
+        <IconButton color="inherit" onClick={toggleInfoDrawer}>
           <Info />
         </IconButton>
-        <Typography variant="h6">2024</Typography>
+        <Typography variant="h6">2024 - {selectedLocation}</Typography>
         <IconButton color="inherit" onClick={() => setZoomLevel(1)}>
           <ZoomOut />
         </IconButton>
@@ -119,6 +125,32 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
         />
         <ZoomIn />
       </Box>
+
+      <Drawer
+        anchor="left"
+        open={isInfoOpen}
+        onClose={toggleInfoDrawer}
+        PaperProps={{
+          sx: {
+            backgroundColor: 'black',
+            color: 'white',
+            width: 300,
+          },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6">Information</Typography>
+            <IconButton color="inherit" onClick={toggleInfoDrawer}>
+              <Close />
+            </IconButton>
+          </Box>
+          <Typography variant="body1">
+            This is the Difflog app. Use the slider at the bottom to zoom in and out between year, month, and day views.
+            Select different locations using the wheel at the bottom of the screen.
+          </Typography>
+        </Box>
+      </Drawer>
     </Box>
   );
 };
