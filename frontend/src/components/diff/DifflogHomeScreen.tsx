@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, IconButton, Slider, Tabs, Tab } from '@mui/material';
-import { Info, LocationOn, Camera, Home } from '@mui/icons-material';
+import { Box, Typography, IconButton, Slider, Tabs, Tab, Drawer } from '@mui/material';
+import { Info, LocationOn, Camera, Home, Close } from '@mui/icons-material';
 import { useParams } from 'react-router-dom';
 
 const monthNames = ["Jan.", "Feb.", "Mar.", "Apr.", "May.", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
@@ -9,7 +9,8 @@ const DifflogHomeScreen = () => {
   const { username } = useParams();
   const [zoomLevel, setZoomLevel] = useState(1);
   const [selectedLocation, setSelectedLocation] = useState('desk');
-  const [tabValue, setTabValue] = useState(2); // Default to 'Home' tab
+  const [tabValue, setTabValue] = useState(2);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleZoomChange = (_, newValue) => {
     setZoomLevel(newValue);
@@ -17,6 +18,10 @@ const DifflogHomeScreen = () => {
 
   const handleTabChange = (_, newValue) => {
     setTabValue(newValue);
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
   };
 
   const renderCalendarTiles = () => {
@@ -41,7 +46,7 @@ const DifflogHomeScreen = () => {
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'black', color: 'white' }}>
       <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <IconButton color="inherit">
+        <IconButton color="inherit" onClick={toggleSidebar}>
           <Info />
         </IconButton>
         <Typography variant="h6">2024</Typography>
@@ -100,8 +105,33 @@ const DifflogHomeScreen = () => {
         <Tab icon={<LocationOn />} label="Location" />
         <Tab icon={<Camera />} label="Camera" />
         <Tab icon={<Home />} label="Home" />
-        {/* Add more tabs as needed */}
       </Tabs>
+
+      <Drawer
+        anchor="left"
+        open={sidebarOpen}
+        onClose={toggleSidebar}
+        PaperProps={{
+          sx: {
+            backgroundColor: 'black',
+            color: 'white',
+            width: 300,
+          },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6">Information</Typography>
+            <IconButton color="inherit" onClick={toggleSidebar}>
+              <Close />
+            </IconButton>
+          </Box>
+          <Typography variant="body1">
+            {/* ここに解説文を追加してください */}
+            アプリの使い方や機能の説明をここに記載します。
+          </Typography>
+        </Box>
+      </Drawer>
     </Box>
   );
 };
