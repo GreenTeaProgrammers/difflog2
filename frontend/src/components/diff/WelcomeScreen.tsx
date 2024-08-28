@@ -17,7 +17,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
 
   const handleLocationSelect = (location: string) => {
     setSelectedLocation(location);
-    console.log(`Selected location: ${location}`); // 選択されたロケーションをログ出力
+    console.log(`Selected location: ${location}`);
   };
 
   const handleZoomChange = (event: Event, newValue: number | number[]) => {
@@ -100,30 +100,43 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           <Info />
         </IconButton>
         <Typography variant="h6">2024 - {selectedLocation}</Typography>
-        <IconButton color="inherit" onClick={() => setZoomLevel(1)}>
-          <ZoomOut />
-        </IconButton>
+        <Box sx={{ width: 40 }} /> {/* Placeholder for balance */}
       </Box>
 
-      <Box sx={{ flexGrow: 1, overflow: 'auto', px: 2 }}>
-        {renderContent()}
+      <Box sx={{ flexGrow: 1, display: 'flex' }}>
+        <Box sx={{ flexGrow: 1, overflow: 'auto', px: 2 }}>
+          {renderContent()}
+        </Box>
+        <Box sx={{ width: 60, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', py: 2 }}>
+          <ZoomIn />
+          <Slider
+            value={zoomLevel}
+            min={1}
+            max={3}
+            step={0.1}
+            onChange={handleZoomChange}
+            orientation="vertical"
+            sx={{ 
+              height: 200, 
+              color: 'orange',
+              '& .MuiSlider-thumb': {
+                width: 28,
+                height: 28,
+                '&:before': {
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.4)',
+                },
+                '&:hover, &.Mui-focusVisible, &.Mui-active': {
+                  boxShadow: '0 0 0 8px rgba(255, 165, 0, 0.16)',
+                },
+              },
+            }}
+          />
+          <ZoomOut />
+        </Box>
       </Box>
 
       <Box sx={{ p: 2 }}>
         <HorizontalWheel items={locations} onSelect={handleLocationSelect} />
-      </Box>
-
-      <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center' }}>
-        <ZoomOut />
-        <Slider
-          value={zoomLevel}
-          min={1}
-          max={3}
-          step={0.1}
-          onChange={handleZoomChange}
-          sx={{ mx: 2, color: 'orange' }}
-        />
-        <ZoomIn />
       </Box>
 
       <Drawer
@@ -146,7 +159,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
             </IconButton>
           </Box>
           <Typography variant="body1">
-            This is the Difflog app. Use the slider at the bottom to zoom in and out between year, month, and day views.
+            This is the Difflog app. Use the vertical slider on the right to zoom in and out between year, month, and day views.
             Select different locations using the wheel at the bottom of the screen.
           </Typography>
         </Box>
