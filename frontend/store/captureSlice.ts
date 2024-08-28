@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Capture } from '../types/capture';
+import { Capture } from '../types/capture'; // Update the file path to the correct location
 import api from '../services/api';
 
 interface CaptureState {

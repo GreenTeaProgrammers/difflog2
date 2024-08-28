@@ -1,13 +1,20 @@
-import api from "./api";
-import { LoginInput, RegisterInput, User } from "../types/user";
+import api from './api';
+import { LoginInput, RegisterInput, User } from '../types/user';
+import { AxiosError } from 'axios';
 
 export const register = async (input: RegisterInput): Promise<User> => {
   try {
-    const response = await api.post<User>("/register", input);
+    const response = await api.post<User>('/register', input);
     return response.data;
   } catch (error) {
-    console.error("Registration failed:", error);
-    throw error;
+    if (error instanceof AxiosError) {
+      const message = error.response?.data?.message || 'Registration failed due to server error.';
+      console.error('Registration failed:', message);
+      throw new Error(message);
+    } else {
+      console.error('Unexpected error:', error);
+      throw new Error('An unexpected error occurred during registration.');
+    }
   }
 };
 
@@ -16,26 +23,38 @@ export const login = async (
 ): Promise<{ token: string; username: string; message: string }> => {
   try {
     const response = await api.post<{ token: string; username: string; message: string }>(
-      "/login",
+      '/login',
       input
     );
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("username", response.data.username); // ユーザー名を保存
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('username', response.data.username);
     return response.data;
   } catch (error) {
-    console.error("Login failed:", error);
-    throw error;
+    if (error instanceof AxiosError) {
+      const message = error.response?.data?.message || 'Login failed due to server error.';
+      console.error('Login failed:', message);
+      throw new Error(message);
+    } else {
+      console.error('Unexpected error:', error);
+      throw new Error('An unexpected error occurred during login.');
+    }
   }
 };
 
 export const logout = async (): Promise<void> => {
   try {
-    await api.post("/logout");
-    localStorage.removeItem("token");
-    localStorage.removeItem("username"); // ログアウト時にユーザー名を削除
+    await api.post('/logout');
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
   } catch (error) {
-    console.error("Logout failed:", error);
-    throw error;
+    if (error instanceof AxiosError) {
+      const message = error.response?.data?.message || 'Logout failed due to server error.';
+      console.error('Logout failed:', message);
+      throw new Error(message);
+    } else {
+      console.error('Unexpected error:', error);
+      throw new Error('An unexpected error occurred during logout.');
+    }
   }
 };
 
@@ -44,9 +63,13 @@ export const getProfileByUsername = async (username: string): Promise<User | nul
     const response = await api.get<User>(`/profile/${username}`);
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch profile:", error);
-    return null;
+    if (error instanceof AxiosError) {
+      const message = error.response?.data?.message || 'Failed to fetch profile due to server error.';
+      console.error('Failed to fetch profile:', message);
+      return null;
+    } else {
+      console.error('Unexpected error:', error);
+      return null;
+    }
   }
 };
-
-

@@ -5,4 +5,3 @@ export interface Capture {
   date: Date;
   analyzed: boolean;
 }
-
