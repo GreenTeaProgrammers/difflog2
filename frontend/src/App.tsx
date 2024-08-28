@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -19,18 +18,18 @@ const App: React.FC = () => {
 
   return (
     <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/welcome" element={<WelcomeScreen username={"test"} />}/>
-          <Route path="/camera" element={<CameraUploadScreen/>}/>
-        </Routes>
-      </Router>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/welcome" element={<WelcomeScreen username={"test"} />}/>
+            <Route path="/camera" element={<CameraUploadScreen/>}/>
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </Provider>
   );
 };

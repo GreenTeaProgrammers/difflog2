@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, DragEvent } from 'react';
 import { Box, Typography, Button, Input, Paper, CircularProgress } from '@mui/material';
 import { CloudUpload, CheckCircleOutline } from '@mui/icons-material';
+import { addCapture } from '../../../services/captureService'; // 先ほど作成したAPI関数をインポート
 
 interface CameraUploadScreenProps {
   backgroundColor?: string;
@@ -41,11 +42,26 @@ const CameraUploadScreen: React.FC<CameraUploadScreenProps> = ({ backgroundColor
     }
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
+    if (!uploadedFile) return;
+    
     setIsAnalyzing(true);
-    console.log('Analyzing image:', uploadedFile);
-    // ここに画像解析のロジックを追加します
-    setTimeout(() => setIsAnalyzing(false), 2000); // 仮の遅延
+
+    try {
+      // APIにPOSTリクエストを送信
+      const capture = {
+        locationId: '1', // locationIdを必要に応じて変更してください
+        file: uploadedFile,
+      };
+      const response = await addCapture(capture);
+      console.log('Capture saved:', response);
+
+      // 必要に応じてレスポンスを処理
+    } catch (error) {
+      console.error('Error uploading capture:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   return (
