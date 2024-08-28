@@ -22,6 +22,7 @@ func main() {
 
 	// CORS ミドルウェアを適用
 	r.Use(middleware.CORSMiddleware())
+	r.Use(middleware.LoggingMiddleware())
 
 	models.ConnectDatabase()
 
