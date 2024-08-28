@@ -1,22 +1,23 @@
 package main
 
 import (
-	"log"
+	"log/slog"
 	"os"
 
+	"github.com/GreenTeaProgrammers/difflog2/config"
 	"github.com/GreenTeaProgrammers/difflog2/middleware"
 	"github.com/GreenTeaProgrammers/difflog2/models"
 	"github.com/GreenTeaProgrammers/difflog2/routes"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	// 環境変数をロード
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// 設定を読み込む
+	cfg := config.LoadConfig()
+
+	// ログを初期化
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{}))
+	slog.SetDefault(logger)
 
 	r := gin.Default()
 
@@ -24,18 +25,16 @@ func main() {
 	r.Use(middleware.CORSMiddleware())
 	r.Use(middleware.LoggingMiddleware())
 
-	models.ConnectDatabase()
-
 	// データベース接続を設定
+	models.ConnectDatabase()
 	models.SetDatabase(models.DB)
 
 	// ルートを設定
 	routes.AuthRoutes(r)
 
 	// ポートを指定してサーバーを起動
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8081"
+	slog.Info("Starting server...", slog.String("port", cfg.Port))
+	if err := r.Run(":" + cfg.Port); err != nil {
+		slog.Error("Failed to start server", slog.String("port", cfg.Port), slog.Any("error", err))
 	}
-	r.Run(":" + port)
 }
