@@ -1,7 +1,36 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../../store';
-import { Box, Typography, Paper, TextField, Button } from '@mui/material';
 import { updateDiffResponse } from '../../../store/diffSlice';
+import {
+  Box,
+  Typography,
+  Paper,
+  TextField,
+  Button,
+  ThemeProvider,
+  createTheme,
+  Container,
+  Grid,
+  InputAdornment,
+  IconButton
+} from '@mui/material';
+import { AddCircleOutline, RemoveCircleOutline, ChangeCircle, Add, Remove } from '@mui/icons-material';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#80cbc4',
+    },
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
+  },
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif',
+  },
+});
 
 const ResultPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -15,63 +44,152 @@ const ResultPage: React.FC = () => {
     dispatch(updateDiffResponse({ added, deleted, modified }));
   };
 
+  const handleIncrement = (setter: React.Dispatch<React.SetStateAction<number>>) => {
+    setter(prev => prev + 1);
+  };
+
+  const handleDecrement = (setter: React.Dispatch<React.SetStateAction<number>>) => {
+    setter(prev => Math.max(0, prev - 1));
+  };
+
   return (
-    <Box sx={{ 
-      height: '100vh', 
-      display: 'flex', 
-      flexDirection: 'column', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      p: 2, 
-      bgcolor: 'black', 
-      color: 'white'
-    }}>
-      <Paper sx={{ p: 4, bgcolor: 'rgba(255, 255, 255, 0.1)' }}>
-        <Typography variant="h4" sx={{ mb: 2 }}>
-          解析結果
-        </Typography>
-        {diffResponse ? (
-          <Box>
-            <TextField
-              label="追加された項目数"
-              type="number"
-              value={added}
-              onChange={(e) => setAdded(Number(e.target.value))}
-              sx={{ mb: 2, input: { color: 'white' }, label: { color: 'white' } }}
-              fullWidth
-            />
-            <TextField
-              label="削除された項目数"
-              type="number"
-              value={deleted}
-              onChange={(e) => setDeleted(Number(e.target.value))}
-              sx={{ mb: 2, input: { color: 'white' }, label: { color: 'white' } }}
-              fullWidth
-            />
-            <TextField
-              label="変更された項目数"
-              type="number"
-              value={modified}
-              onChange={(e) => setModified(Number(e.target.value))}
-              sx={{ mb: 2, input: { color: 'white' }, label: { color: 'white' } }}
-              fullWidth
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSave}
-              sx={{ mt: 2 }}
-            >
-              保存
-            </Button>
-          </Box>
-        ) : (
-          <Typography variant="body1">
-            解析結果がありません。再度お試しください。
-          </Typography>
-        )}
-      </Paper>
-    </Box>
+    <ThemeProvider theme={darkTheme}>
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          bgcolor: 'background.default',
+          color: 'text.primary',
+          py: 4,
+        }}
+      >
+        <Container maxWidth="sm">
+          <Paper
+            elevation={3}
+            sx={{
+              p: 4,
+              borderRadius: 2,
+              background: 'linear-gradient(145deg, #1e1e1e 0%, #2a2a2a 100%)',
+            }}
+          >
+            <Typography variant="h4" sx={{ mb: 4, fontWeight: 'bold', textAlign: 'center' }}>
+              解析結果
+            </Typography>
+            {diffResponse ? (
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    label="追加された項目数"
+                    type="text"
+                    value={added}
+                    InputProps={{
+                      readOnly: true,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AddCircleOutline color="primary" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={() => handleDecrement(setAdded)} size="small">
+                            <Remove />
+                          </IconButton>
+                          <IconButton onClick={() => handleIncrement(setAdded)} size="small">
+                            <Add />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="削除された項目数"
+                    type="text"
+                    value={deleted}
+                    InputProps={{
+                      readOnly: true,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <RemoveCircleOutline color="error" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={() => handleDecrement(setDeleted)} size="small">
+                            <Remove />
+                          </IconButton>
+                          <IconButton onClick={() => handleIncrement(setDeleted)} size="small">
+                            <Add />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="変更された項目数"
+                    type="text"
+                    value={modified}
+                    InputProps={{
+                      readOnly: true,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <ChangeCircle color="warning" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={() => handleDecrement(setModified)} size="small">
+                            <Remove />
+                          </IconButton>
+                          <IconButton onClick={() => handleIncrement(setModified)} size="small">
+                            <Add />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    onClick={handleSave}
+                    fullWidth
+                    size="large"
+                    sx={{
+                      mt: 2,
+                      py: 1.5,
+                      fontWeight: 'bold',
+                      bgcolor: 'orange',
+                      color: 'white',
+                      transition: 'all 0.3s',
+                      '&:hover': {
+                        bgcolor: 'darkorange',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)',
+                      },
+                    }}
+                  >
+                    保存
+                  </Button>
+                </Grid>
+              </Grid>
+            ) : (
+              <Typography variant="body1" sx={{ textAlign: 'center' }}>
+                解析結果がありません。再度お試しください。
+              </Typography>
+            )}
+          </Paper>
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 };
 
