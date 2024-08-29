@@ -1,9 +1,9 @@
 import { createTheme } from "@mui/material/styles";
 
-// カスタムカラーパレットの定義
+// Custom color palette definition
 const customColors = {
   primary: {
-    main: "#3f51b5", // インディゴ色（青みがかった色）
+    main: "#3f51b5",
     light: "#757de8",
     dark: "#002984",
     contrastText: "#ffffff",
@@ -16,13 +16,14 @@ const customColors = {
   },
 };
 
-// テーマの作成
-const theme = createTheme({
+// Light theme
+export const lightTheme = createTheme({
   palette: {
+    mode: 'light',
     primary: customColors.primary,
     secondary: customColors.secondary,
     background: {
-      default: "#f5f5f5", // 薄いグレー
+      default: "#f5f5f5",
       paper: "#ffffff",
     },
     text: {
@@ -52,4 +53,21 @@ const theme = createTheme({
   },
 });
 
-export default theme;
+// Dark theme
+export const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#80cbc4',
+    },
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
+  },
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif',
+  },
+});
+
+export default lightTheme;

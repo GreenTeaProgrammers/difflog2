@@ -8,29 +8,13 @@ import {
   TextField,
   Button,
   ThemeProvider,
-  createTheme,
   Container,
   Grid,
   InputAdornment,
   IconButton
 } from '@mui/material';
 import { AddCircleOutline, RemoveCircleOutline, ChangeCircle, Add, Remove } from '@mui/icons-material';
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#80cbc4',
-    },
-    background: {
-      default: '#121212',
-      paper: '#1e1e1e',
-    },
-  },
-  typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
-  },
-});
+import { darkTheme } from '../../theme'; // このパスは実際のファイル構造に合わせて調整してください
 
 const ResultPage: React.FC = () => {
   const dispatch = useAppDispatch();
