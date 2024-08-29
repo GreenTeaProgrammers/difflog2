@@ -12,7 +12,7 @@ import (
 
 	"log/slog"
 
-	"github.com/GreenTeaProgrammers/difflog2/models"
+	"github.com/GreenTeaProgrammers/difflog2/captureService/models"
 	"github.com/gin-gonic/gin"
 )
 
