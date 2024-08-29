@@ -4,10 +4,10 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/GreenTeaProgrammers/difflog2/config"
-	"github.com/GreenTeaProgrammers/difflog2/middleware"
-	"github.com/GreenTeaProgrammers/difflog2/models"
-	"github.com/GreenTeaProgrammers/difflog2/routes"
+	"github.com/GreenTeaProgrammers/difflog2/captureService/config"
+	"github.com/GreenTeaProgrammers/difflog2/captureService/middleware"
+	"github.com/GreenTeaProgrammers/difflog2/captureService/models"
+	"github.com/GreenTeaProgrammers/difflog2/captureService/routes"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,7 +30,6 @@ func main() {
 	models.SetDatabase(models.DB)
 
 	// ルートを設定
-	routes.AuthRoutes(r)
 	routes.CaptureRoutes(r)
 
 	// ポートを指定してサーバーを起動
@@ -39,4 +38,3 @@ func main() {
 		slog.Error("Failed to start server", slog.String("port", cfg.Port), slog.Any("error", err))
 	}
 }
-
