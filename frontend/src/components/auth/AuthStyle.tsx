@@ -7,7 +7,7 @@ export const AuthContainer = styled(Paper)(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   padding: theme.spacing(6),
-  backgroundColor: "rgba(255, 255, 255, 0.95)",
+  backgroundColor: "rgba(255, 255, 250, 0.95)",
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
   backdropFilter: "blur(10px)",
