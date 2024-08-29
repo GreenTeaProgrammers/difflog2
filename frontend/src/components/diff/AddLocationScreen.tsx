@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, IconButton } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import { Box, Typography, TextField, Button, IconButton, Container, Paper } from '@mui/material';
+import { ArrowBack, Add } from '@mui/icons-material';
+import { ThemeProvider } from '@mui/material/styles';
+import { darkTheme } from '../../theme'; // テーマファイルへの正しいパスを指定してください
 
 interface AddLocationScreenProps {
   onAddLocation: (newLocation: string) => void;
@@ -18,40 +20,64 @@ const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation, on
   };
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'black', color: 'white', p: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-        <IconButton color="inherit" onClick={onBack}>
-          <ArrowBack />
-        </IconButton>
-        <Typography variant="h6" sx={{ ml: 2 }}>Add New Location</Typography>
+    <ThemeProvider theme={darkTheme}>
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          bgcolor: 'background.default',
+        }}
+      >
+        <Container maxWidth="sm" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', my: 3 }}>
+            <IconButton color="primary" onClick={onBack} sx={{ mr: 2 }}>
+              <ArrowBack />
+            </IconButton>
+            <Typography variant="h5" fontWeight="bold">
+              Add New Location
+            </Typography>
+          </Box>
+
+          <Paper
+            elevation={3}
+            sx={{
+              p: 3,
+              mt: 2,
+              borderRadius: 2,
+              bgcolor: 'background.paper',
+              flexGrow: 1,
+            }}
+          >
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <TextField
+                value={newLocation}
+                onChange={(e) => setNewLocation(e.target.value)}
+                placeholder="Enter new location name"
+                variant="outlined"
+                fullWidth
+                InputProps={{
+                  startAdornment: <Add color="primary" sx={{ mr: 1 }} />,
+                }}
+              />
+              <Button
+                variant="contained"
+                onClick={handleAddLocation}
+                disabled={!newLocation.trim()}
+                sx={{
+                  py: 1.5,
+                  fontWeight: 'bold',
+                  textTransform: 'none',
+                  borderRadius: 2,
+                }}
+              >
+                Add Location
+              </Button>
+            </Box>
+          </Paper>
+        </Container>
       </Box>
-      
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <TextField
-          value={newLocation}
-          onChange={(e) => setNewLocation(e.target.value)}
-          placeholder="Enter new location name"
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            sx: { color: 'white', '& .MuiOutlinedInput-notchedOutline': { borderColor: 'grey.500' } }
-          }}
-        />
-        <Button
-          variant="contained"
-          onClick={handleAddLocation}
-          disabled={!newLocation.trim()}
-          sx={{
-            bgcolor: 'orange',
-            color: 'black',
-            '&:hover': { bgcolor: 'darkorange' },
-            '&.Mui-disabled': { bgcolor: 'grey.700', color: 'grey.500' }
-          }}
-        >
-          Add Location
-        </Button>
-      </Box>
-    </Box>
+    </ThemeProvider>
   );
 };
 

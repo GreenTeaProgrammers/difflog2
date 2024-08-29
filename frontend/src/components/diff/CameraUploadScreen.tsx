@@ -5,6 +5,7 @@ import { addCapture } from '../../../services/captureService';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setDiffResponse } from '../../../store/diffSlice';
+import { DiffResponse } from '../../../types/diff';
 
 interface CameraUploadScreenProps {
   backgroundColor?: string;
@@ -63,7 +64,7 @@ const CameraUploadScreen: React.FC<CameraUploadScreenProps> = ({ backgroundColor
       console.log('Capture saved:', response);
 
       // レスポンスからmlResponseを取り出す
-      const mlResponse = response.mlResponse;
+      const mlResponse: DiffResponse = response.mlResponse;
   
       // ReduxにDiffResponseを保存
       dispatch(setDiffResponse(mlResponse));

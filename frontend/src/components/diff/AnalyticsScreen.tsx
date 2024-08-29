@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Tabs, Tab } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const dummyData = [
   { date: '2024-01', value: 10 },
@@ -26,13 +26,13 @@ const AnalyticsScreen: React.FC = () => {
 
       <Box sx={{ flexGrow: 1, p: 2 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={dummyData}>
+          <AreaChart data={dummyData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="value" stroke="#8884d8" />
-          </LineChart>
+            <Area type="monotone" dataKey="value" stroke="#FF8C00" fill="#FF8C00" fillOpacity={0.5} />
+          </AreaChart>
         </ResponsiveContainer>
       </Box>
 
@@ -44,7 +44,7 @@ const AnalyticsScreen: React.FC = () => {
         sx={{
           bgcolor: 'black',
           '& .MuiTab-root': { color: 'white' },
-          '& .Mui-selected': { color: 'orange' },
+          '& .Mui-selected': { color: '#FF8C00' },
         }}
       >
         <Tab label="books" value="books" />
