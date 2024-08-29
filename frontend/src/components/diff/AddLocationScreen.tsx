@@ -2,21 +2,26 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, IconButton, Container, Paper } from '@mui/material';
 import { ArrowBack, Add } from '@mui/icons-material';
 import { ThemeProvider } from '@mui/material/styles';
-import { darkTheme } from '../../theme'; // テーマファイルへの正しいパスを指定してください
+import { darkTheme } from '../../theme';
+import { useNavigate } from 'react-router-dom'; // 追加
 
 interface AddLocationScreenProps {
   onAddLocation: (newLocation: string) => void;
-  onBack: () => void;
 }
 
-const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation, onBack }) => {
+const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation }) => {
   const [newLocation, setNewLocation] = useState('');
+  const navigate = useNavigate(); // 追加
 
   const handleAddLocation = () => {
     if (newLocation.trim()) {
       onAddLocation(newLocation.trim());
       setNewLocation('');
     }
+  };
+
+  const handleBack = () => {
+    navigate('/welcome'); // 追加
   };
 
   return (
@@ -31,7 +36,7 @@ const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation, on
       >
         <Container maxWidth="sm" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', my: 3 }}>
-            <IconButton color="primary" onClick={onBack} sx={{ mr: 2 }}>
+            <IconButton color="primary" onClick={handleBack} sx={{ mr: 2 }}>
               <ArrowBack />
             </IconButton>
             <Typography variant="h5" fontWeight="bold">
