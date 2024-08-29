@@ -30,7 +30,7 @@ func main() {
 	models.SetDatabase(models.DB)
 
 	// ルートを設定
-	routes.CaptureRoutes(r)
+	routes.RegisterLocationRoutes(r)
 
 	// ポートを指定してサーバーを起動
 	slog.Info("Starting server...", slog.String("port", cfg.Port))
