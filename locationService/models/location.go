@@ -7,9 +7,8 @@ import (
 )
 
 type Location struct {
-	ID             string         `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
-	Name           string         `json:"name" gorm:"not null"`
-	Description    string         `json:"description,omitempty"`
+	ID             uint           `json:"id" gorm:"primaryKey"`
+	Name           string         `json:"name" gorm:"unique;not null"`
 	LastCommitDate time.Time      `json:"last_commit_date" gorm:"not null"`
 	CreatedAt      time.Time      `json:"created_at"`
 	UpdatedAt      time.Time      `json:"updated_at"`
