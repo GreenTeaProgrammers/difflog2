@@ -13,3 +13,8 @@ export interface Diff {
   changes: DiffItem[];
 }
 
+export interface DiffResponse {
+  added: number;
+  deleted: number;
+  modified: number;
+}

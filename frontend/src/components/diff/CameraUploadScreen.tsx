@@ -1,7 +1,10 @@
 import React, { useState, ChangeEvent, DragEvent } from 'react';
 import { Box, Typography, Button, Input, Paper, CircularProgress } from '@mui/material';
 import { CloudUpload, CheckCircleOutline } from '@mui/icons-material';
-import { addCapture } from '../../../services/captureService'; // 先ほど作成したAPI関数をインポート
+import { addCapture } from '../../../services/captureService';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setDiffResponse } from '../../../store/diffSlice';
 
 interface CameraUploadScreenProps {
   backgroundColor?: string;
@@ -11,6 +14,9 @@ const CameraUploadScreen: React.FC<CameraUploadScreenProps> = ({ backgroundColor
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -41,24 +47,32 @@ const CameraUploadScreen: React.FC<CameraUploadScreenProps> = ({ backgroundColor
       setUploadedFile(file);
     }
   };
-
+  
   const handleAnalyze = async () => {
     if (!uploadedFile) return;
-    
+  
     setIsAnalyzing(true);
-
+    setError(null);
+  
     try {
-      // APIにPOSTリクエストを送信
       const capture = {
-        locationId: '1', // locationIdを必要に応じて変更してください
+        locationId: '1',
         file: uploadedFile,
       };
       const response = await addCapture(capture);
       console.log('Capture saved:', response);
 
-      // 必要に応じてレスポンスを処理
+      // レスポンスからmlResponseを取り出す
+      const mlResponse = response.mlResponse;
+  
+      // ReduxにDiffResponseを保存
+      dispatch(setDiffResponse(mlResponse));
+  
+      // 結果ページにナビゲート
+      navigate('/result');
     } catch (error) {
       console.error('Error uploading capture:', error);
+      setError('画像のアップロードに失敗しました。もう一度お試しください。');
     } finally {
       setIsAnalyzing(false);
     }
@@ -118,6 +132,11 @@ const CameraUploadScreen: React.FC<CameraUploadScreenProps> = ({ backgroundColor
           </Typography>
         </Paper>
       </label>
+      {error && (
+        <Typography color="error" sx={{ mt: 2 }}>
+          {error}
+        </Typography>
+      )}
       <Button
         variant="contained"
         onClick={handleAnalyze}
