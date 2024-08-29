@@ -5,11 +5,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { login } from "../../../store/authSlice";
 import { LoginInput } from "../../../types/user";
-import {
-  StyledTextField,
-  AuthContainer,
-  FormBox,
-  SubmitButton,
+import {StyledTextField,AuthContainer,FormBox,SubmitButton,
 } from "./AuthStyle";
 
 const Login: React.FC = () => {
@@ -30,7 +26,7 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await dispatch(login(formData)).unwrap(); // unwrap() を使って非同期処理の結果を扱う
+      await dispatch(login(formData)).unwrap();
       navigate(`/user/${authState.user?.username}`);
     } catch (err) {
       console.error("Login error details:", err);
@@ -43,7 +39,7 @@ const Login: React.FC = () => {
         <Avatar sx={{ m: 1, bgcolor: "primary.main", width: 56, height: 56 }}>
           <LockOutlinedIcon fontSize="large" />
         </Avatar>
-        <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
+        <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 700 , color: 'black' }}>
           ログイン
         </Typography>
         {authState.error && (
@@ -80,8 +76,17 @@ const Login: React.FC = () => {
             type="submit"
             fullWidth
             variant="contained"
-            color="primary"
             disabled={authState.status === 'loading'}
+            sx={{
+              backgroundColor: 'black',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'black',
+              },
+              '&:disabled': {
+                backgroundColor: 'grey',
+              }
+            }}
           >
             ログイン
           </SubmitButton>
@@ -89,7 +94,7 @@ const Login: React.FC = () => {
             fullWidth
             variant="text"
             onClick={() => navigate("/register")}
-            sx={{ mt: 2, textTransform: "none" }}
+            sx={{ mt: 2, textTransform: "none", color: 'black' }}
           >
             アカウントをお持ちでない方はこちら
           </Button>

@@ -5,11 +5,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { register } from "../../../store/authSlice";
 import { RegisterInput } from "../../../types/user";
-import {
-  StyledTextField,
-  AuthContainer,
-  FormBox,
-  SubmitButton,
+import {StyledTextField,AuthContainer,FormBox,SubmitButton,
 } from "./AuthStyle";
 
 const Register: React.FC = () => {
@@ -65,7 +61,7 @@ const Register: React.FC = () => {
         <Avatar sx={{ m: 1, bgcolor: "primary.main", width: 56, height: 56 }}>
           <LockOutlinedIcon fontSize="large" />
         </Avatar>
-        <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
+        <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 700, color: 'black'  }}>
           ユーザー登録
         </Typography>
         {errors.submit && (
@@ -137,7 +133,7 @@ const Register: React.FC = () => {
             fullWidth
             variant="text"
             onClick={() => navigate("/login")}
-            sx={{ mt: 2, textTransform: "none" }}
+            sx={{ mt: 2, textTransform: "none" , color: 'black' }}
           >
             すでにアカウントをお持ちの方はこちら
           </Button>
