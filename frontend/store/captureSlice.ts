@@ -44,6 +44,17 @@ const captureSlice = createSlice({
         capture.analyzed = true;
       }
     },
+    // updateDiffResponse アクションを追加
+    updateDiffResponse(state, action: PayloadAction<{ added: number; deleted: number; modified: number }>) {
+      if (state.selectedCapture) {
+        state.selectedCapture.diffResponse = {
+          ...state.selectedCapture.diffResponse,
+          added: action.payload.added,
+          deleted: action.payload.deleted,
+          modified: action.payload.modified,
+        };
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -64,5 +75,5 @@ const captureSlice = createSlice({
   },
 });
 
-export const { selectCapture, setDiffResponse } = captureSlice.actions;
+export const { selectCapture, setDiffResponse, updateDiffResponse } = captureSlice.actions;
 export default captureSlice.reducer;
