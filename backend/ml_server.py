@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from ultralytics import YOLO
-import logging
 import os
+import logging
 
 app = Flask(__name__)
 
@@ -12,6 +12,13 @@ logger = logging.getLogger(__name__)
 # YOLOv8モデルを読み込む
 model = YOLO('./yolomodel.pt')
 logger.info("YOLOv8 model loaded successfully")
+
+# このデモのための前の状態を仮に作成 (実際にはデータベースなどから取得)
+previous_object_counts = {
+    'mouse': 1,
+    'tv': 2,
+    'laptop': 1
+}
 
 @app.route('/diff', methods=['POST'])
 def calculate_diff():
@@ -40,25 +47,74 @@ def calculate_diff():
         logger.info("Model inference completed")
 
         # 検出されたオブジェクトの種類ごとの数をカウント
-        object_counts = {}
+        current_object_counts = {}
         for result in results:
             for box in result.boxes:
                 class_id = int(box.cls)
                 class_name = result.names[class_id]
-                if class_name in object_counts:
-                    object_counts[class_name] += 1
+                if class_name in current_object_counts:
+                    current_object_counts[class_name] += 1
                 else:
-                    object_counts[class_name] = 1
+                    current_object_counts[class_name] = 1
 
-        logger.info("Object counts calculated: %s", object_counts)
-        
+        logger.info("Object counts calculated: %s", current_object_counts)
+
+        # 変更点を検出
+        added, deleted, modified = 0, 0, 0
+        changes = []
+
+        for item, count in current_object_counts.items():
+            previous_count = previous_object_counts.get(item, 0)
+            if count > previous_count:
+                added += count - previous_count
+                changes.append({
+                    "itemId": item,
+                    "itemName": item,
+                    "changeType": "added",
+                    "previousCount": previous_count,
+                    "currentCount": count
+                })
+            elif count < previous_count:
+                deleted += previous_count - count
+                changes.append({
+                    "itemId": item,
+                    "itemName": item,
+                    "changeType": "deleted",
+                    "previousCount": previous_count,
+                    "currentCount": count
+                })
+            elif count == previous_count and count > 0:
+                modified += count
+                changes.append({
+                    "itemId": item,
+                    "itemName": item,
+                    "changeType": "modified",
+                    "previousCount": previous_count,
+                    "currentCount": count
+                })
+
+        for item, count in previous_object_counts.items():
+            if item not in current_object_counts:
+                deleted += count
+                changes.append({
+                    "itemId": item,
+                    "itemName": item,
+                    "changeType": "deleted",
+                    "previousCount": count,
+                    "currentCount": 0
+                })
+
         # 結果をレスポンスとして返す
         response = {
-            "object_counts": object_counts
+            "added": added,
+            "deleted": deleted,
+            "modified": modified,
+            "changes": changes
         }
-        
-        logger.info("Returning response")
+
+        logger.info("Returning response with changes: %s", response)
         return jsonify(response)
+
     except Exception as e:
         logger.exception("An error occurred during processing")
         return jsonify({"error": "An internal error occurred"}), 500
