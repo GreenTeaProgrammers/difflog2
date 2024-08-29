@@ -18,7 +18,8 @@ type Diff struct {
 }
 
 type DiffResponse struct {
-	Added    int `json:"added"`    // 追加された項目数
-	Deleted  int `json:"deleted"`  // 削除された項目数
-	Modified int `json:"modified"` // 変更された項目数
+	Added    int        `json:"added"`    // 追加された項目数
+	Deleted  int        `json:"deleted"`  // 削除された項目数
+	Modified int        `json:"modified"` // 変更された項目数
+	Changes  []DiffItem `json:"changes"`  // 種類ごとのオブジェクト変化情報
 }
