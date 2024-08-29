@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Capture } from '../types/capture'; // Update the file path to the correct location
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import api from '../services/api';
-import { DiffResponse } from '../types/diff'; // DiffResponseをインポート
+import { DiffResponse, Capture } from '../types/diff'; // DiffResponseをインポート
 
 interface CaptureState {
   captures: Capture[];
