@@ -163,6 +163,7 @@ func (ctrl CaptureController) DeleteCapture(c *gin.Context) {
 }
 
 // callMLServer はMLサーバーに画像データを送信し、差分を取得します
+// callMLServer はMLサーバーに画像データを送信し、差分を取得します
 func callMLServer(imageURL string) (*models.DiffResponse, error) {
 	mlServerURL := "http://127.0.0.1:5000/diff" // MLサーバーのエンドポイントURL
 	payload := map[string]string{"image_url": imageURL}

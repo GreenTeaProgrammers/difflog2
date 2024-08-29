@@ -17,4 +17,5 @@ export interface DiffResponse {
   added: number;
   deleted: number;
   modified: number;
+  changes: DiffItem[];
 }
