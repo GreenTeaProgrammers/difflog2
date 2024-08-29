@@ -13,4 +13,3 @@ const rootReducer = combineReducers({
 });
 
 export default rootReducer;
-export type AppDispatch = typeof store.dispatch;

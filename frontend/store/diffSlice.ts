@@ -30,8 +30,13 @@ const diffSlice = createSlice({
     setDiffResponse(state, action: PayloadAction<DiffResponse>) {
       state.diffResponse = action.payload; // DiffResponseを設定
     },
+    updateDiffResponse(state, action: PayloadAction<DiffResponse>) {
+      if (state.diffResponse) {
+        state.diffResponse = { ...state.diffResponse, ...action.payload };
+      }
+    },
   },
 });
 
-export const { setDiffs, selectDiff, addDiff, setDiffResponse } = diffSlice.actions;
+export const { setDiffs, selectDiff, addDiff, setDiffResponse , updateDiffResponse} = diffSlice.actions;
 export default diffSlice.reducer;
