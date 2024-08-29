@@ -11,7 +11,10 @@ import {
   Container,
   Grid,
   InputAdornment,
-  IconButton
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import { AddCircleOutline, RemoveCircleOutline, ChangeCircle, Add, Remove } from '@mui/icons-material';
 import { darkTheme } from '../../theme'; // このパスは実際のファイル構造に合わせて調整してください
@@ -62,109 +65,132 @@ const ResultPage: React.FC = () => {
               解析結果
             </Typography>
             {diffResponse ? (
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <TextField
-                    label="追加された項目数"
-                    type="text"
-                    value={added}
-                    InputProps={{
-                      readOnly: true,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <AddCircleOutline color="primary" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={() => handleDecrement(setAdded)} size="small">
-                            <Remove />
-                          </IconButton>
-                          <IconButton onClick={() => handleIncrement(setAdded)} size="small">
-                            <Add />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    fullWidth
-                  />
+              <>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="追加された項目数"
+                      type="text"
+                      value={added}
+                      InputProps={{
+                        readOnly: true,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <AddCircleOutline color="primary" />
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => handleDecrement(setAdded)} size="small">
+                              <Remove />
+                            </IconButton>
+                            <IconButton onClick={() => handleIncrement(setAdded)} size="small">
+                              <Add />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="削除された項目数"
+                      type="text"
+                      value={deleted}
+                      InputProps={{
+                        readOnly: true,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <RemoveCircleOutline color="error" />
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => handleDecrement(setDeleted)} size="small">
+                              <Remove />
+                            </IconButton>
+                            <IconButton onClick={() => handleIncrement(setDeleted)} size="small">
+                              <Add />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="変更された項目数"
+                      type="text"
+                      value={modified}
+                      InputProps={{
+                        readOnly: true,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <ChangeCircle color="warning" />
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => handleDecrement(setModified)} size="small">
+                              <Remove />
+                            </IconButton>
+                            <IconButton onClick={() => handleIncrement(setModified)} size="small">
+                              <Add />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      fullWidth
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="削除された項目数"
-                    type="text"
-                    value={deleted}
-                    InputProps={{
-                      readOnly: true,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <RemoveCircleOutline color="error" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={() => handleDecrement(setDeleted)} size="small">
-                            <Remove />
-                          </IconButton>
-                          <IconButton onClick={() => handleIncrement(setDeleted)} size="small">
-                            <Add />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="変更された項目数"
-                    type="text"
-                    value={modified}
-                    InputProps={{
-                      readOnly: true,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <ChangeCircle color="warning" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={() => handleDecrement(setModified)} size="small">
-                            <Remove />
-                          </IconButton>
-                          <IconButton onClick={() => handleIncrement(setModified)} size="small">
-                            <Add />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    onClick={handleSave}
-                    fullWidth
-                    size="large"
-                    sx={{
-                      mt: 2,
-                      py: 1.5,
-                      fontWeight: 'bold',
-                      bgcolor: 'orange',
-                      color: 'white',
-                      transition: 'all 0.3s',
-                      '&:hover': {
-                        bgcolor: 'darkorange',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)',
-                      },
-                    }}
-                  >
-                    保存
-                  </Button>
-                </Grid>
-              </Grid>
+
+                {diffResponse.changes && diffResponse.changes.length > 0 ? (
+                  <Box sx={{ mt: 4 }}>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                      詳細な変更リスト
+                    </Typography>
+                    <List>
+                      {diffResponse.changes.map((change, index) => (
+                        <ListItem key={index} sx={{ bgcolor: 'rgba(255, 255, 255, 0.05)', mb: 1, borderRadius: 1 }}>
+                          <ListItemText
+                            primary={`${change.itemName} - ${change.changeType}`}
+                            secondary={`前: ${change.previousCount}, 今: ${change.currentCount}`}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                ) : (
+                  <Typography variant="body1" sx={{ mt: 2, textAlign: 'center' }}>
+                    変更の詳細がありません。
+                  </Typography>
+                )}
+
+                <Button
+                  variant="contained"
+                  onClick={handleSave}
+                  fullWidth
+                  size="large"
+                  sx={{
+                    mt: 2,
+                    py: 1.5,
+                    fontWeight: 'bold',
+                    bgcolor: 'orange',
+                    color: 'white',
+                    transition: 'all 0.3s',
+                    '&:hover': {
+                      bgcolor: 'darkorange',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)',
+                    },
+                  }}
+                >
+                  保存
+                </Button>
+              </>
             ) : (
               <Typography variant="body1" sx={{ textAlign: 'center' }}>
                 解析結果がありません。再度お試しください。

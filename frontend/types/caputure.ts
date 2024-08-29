@@ -1,3 +1,5 @@
+import { DiffResponse } from './diff';
+
 export interface Capture {
   id: string;
   locationId: string;
