@@ -4,4 +4,5 @@ export interface Capture {
   imageUrl: string;
   date: Date;
   analyzed: boolean;
+  diffResponse?: DiffResponse; // 解析結果を含めるオプションのフィールド
 }
