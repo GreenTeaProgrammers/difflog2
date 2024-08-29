@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Capture } from '../types/capture'; // Update the file path to the correct location
 import api from '../services/api';
+import { DiffResponse } from '../types/diff'; // DiffResponseをインポート
 
 interface CaptureState {
   captures: Capture[];
@@ -23,7 +24,7 @@ export const fetchCaptures = createAsyncThunk('capture/fetchCaptures', async (lo
 });
 
 // 新しい撮影データの追加
-export const addCapture = createAsyncThunk('capture/addCapture', async (capture: Capture) => {
+export const addCapture = createAsyncThunk('capture/addCapture', async (capture: Omit<Capture, 'id'>) => {
   const response = await api.post('/captures', capture);
   return response.data as Capture;
 });
@@ -34,6 +35,14 @@ const captureSlice = createSlice({
   reducers: {
     selectCapture(state, action: PayloadAction<Capture>) {
       state.selectedCapture = action.payload;
+    },
+    setDiffResponse(state, action: PayloadAction<{ id: string; diffResponse: DiffResponse }>) {
+      const { id, diffResponse } = action.payload;
+      const capture = state.captures.find(capture => capture.id === id);
+      if (capture) {
+        capture.diffResponse = diffResponse;
+        capture.analyzed = true;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -55,5 +64,5 @@ const captureSlice = createSlice({
   },
 });
 
-export const { selectCapture } = captureSlice.actions;
+export const { selectCapture, setDiffResponse } = captureSlice.actions;
 export default captureSlice.reducer;
