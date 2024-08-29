@@ -38,7 +38,7 @@ const App: React.FC = () => {
             <Route path="/welcome" element={<WelcomeScreen username={"test"} />}/>
             <Route path="/camera" element={<CameraUploadScreen/>}/>
             <Route path="/analytics" element={<AnalyticsScreen/>}/>
-            <Route path="/location" element={<AddLocationScreen onAddLocation={handleAddLocation} onBack={handleBack} />} />
+            <Route path="/location" element={<AddLocationScreen onAddLocation={handleAddLocation} />} />
             <Route path="/result" element={<ResultPage/>}/>
           </Routes>
         </Router>
