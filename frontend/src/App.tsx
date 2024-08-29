@@ -15,6 +15,7 @@ import WelcomeScreen from "./components/diff/WelcomeScreen";
 import AnalyticsScreen from "./components/diff/AnalyticsScreen";
 import AddLocationScreen from "./components/diff/AddLocationScreen";
 import CameraUploadScreen from "./components/diff/CameraUploadScreen";
+import ResultPage from "./components/diff/ResultPage";
 
 const App: React.FC = () => {
   const handleAddLocation = () => {
@@ -38,6 +39,7 @@ const App: React.FC = () => {
             <Route path="/camera" element={<CameraUploadScreen/>}/>
             <Route path="/analytics" element={<AnalyticsScreen/>}/>
             <Route path="/location" element={<AddLocationScreen onAddLocation={handleAddLocation} onBack={handleBack} />} />
+            <Route path="/result" element={<ResultPage/>}/>
           </Routes>
         </Router>
       </ThemeProvider>
