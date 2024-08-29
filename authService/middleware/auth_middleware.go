@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/GreenTeaProgrammers/difflog2/auth"
+	"github.com/GreenTeaProgrammers/difflog2/authService/auth"
 	"github.com/gin-gonic/gin"
 )
 

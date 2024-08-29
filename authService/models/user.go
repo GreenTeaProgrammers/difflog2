@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/GreenTeaProgrammers/difflog2/auth"
+	"github.com/GreenTeaProgrammers/difflog2/authService/auth"
 )
 
 type User struct {
