@@ -1,16 +1,8 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useAppSelector } from '../../../store';  // Reduxストアの型をインポート
 import { Box, Typography, Paper } from '@mui/material';
 
-interface DiffResponse {
-  added: number;
-  deleted: number;
-  modified: number;
-}
-
 const ResultPage: React.FC = () => {
-  const location = useLocation();
-  const diffData: DiffResponse | undefined = location.state?.captureData;
+  const diffResponse = useAppSelector((state) => state.diff.diffResponse);
 
   return (
     <Box sx={{ 
@@ -27,16 +19,16 @@ const ResultPage: React.FC = () => {
         <Typography variant="h4" sx={{ mb: 2 }}>
           解析結果
         </Typography>
-        {diffData ? (
+        {diffResponse ? (
           <Box>
             <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>追加された項目数:</strong> {diffData.added}
+              <strong>追加された項目数:</strong> {diffResponse.added}
             </Typography>
             <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>削除された項目数:</strong> {diffData.deleted}
+              <strong>削除された項目数:</strong> {diffResponse.deleted}
             </Typography>
             <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>変更された項目数:</strong> {diffData.modified}
+              <strong>変更された項目数:</strong> {diffResponse.modified}
             </Typography>
           </Box>
         ) : (
