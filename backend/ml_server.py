@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify
-import torch
 from ultralytics import YOLO
 
 app = Flask(__name__)
 
 # YOLOv8モデルを読み込む
-model = YOLO('./yolomodel.pt')
+model = YOLO('path/to/your/model.mlmodel')
 
 @app.route('/diff', methods=['POST'])
 def calculate_diff():
@@ -17,18 +16,21 @@ def calculate_diff():
     # YOLOv8モデルで推論を行う
     results = model(image_path)
     
-    # 検出されたオブジェクトの数を取得
-    added = len(results[0].boxes)  # 検出されたボックス（オブジェクト）の数
+    # 検出されたオブジェクトの種類ごとの数をカウント
+    object_counts = {}
     
-    # 例として削除・変更の値を仮定
-    deleted = 0  # 差分ロジックを実装する必要があります
-    modified = 0  # 差分ロジックを実装する必要があります
-
+    for result in results:
+        for box in result.boxes:
+            class_id = int(box.cls)
+            class_name = result.names[class_id]
+            if class_name in object_counts:
+                object_counts[class_name] += 1
+            else:
+                object_counts[class_name] = 1
+    
     # 結果をレスポンスとして返す
     response = {
-        "added": added,
-        "deleted": deleted,
-        "modified": modified
+        "object_counts": object_counts
     }
     
     return jsonify(response)
