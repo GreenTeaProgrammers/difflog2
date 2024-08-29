@@ -1,8 +1,19 @@
-import { useAppSelector } from '../../../store';  // Reduxストアの型をインポート
-import { Box, Typography, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { useAppSelector, useAppDispatch } from '../../../store';
+import { Box, Typography, Paper, TextField, Button } from '@mui/material';
+import { updateDiffResponse } from '../../../store/diffSlice';
 
 const ResultPage: React.FC = () => {
+  const dispatch = useAppDispatch();
   const diffResponse = useAppSelector((state) => state.diff.diffResponse);
+
+  const [added, setAdded] = useState(diffResponse?.added || 0);
+  const [deleted, setDeleted] = useState(diffResponse?.deleted || 0);
+  const [modified, setModified] = useState(diffResponse?.modified || 0);
+
+  const handleSave = () => {
+    dispatch(updateDiffResponse({ added, deleted, modified }));
+  };
 
   return (
     <Box sx={{ 
@@ -21,15 +32,38 @@ const ResultPage: React.FC = () => {
         </Typography>
         {diffResponse ? (
           <Box>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>追加された項目数:</strong> {diffResponse.added}
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>削除された項目数:</strong> {diffResponse.deleted}
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>変更された項目数:</strong> {diffResponse.modified}
-            </Typography>
+            <TextField
+              label="追加された項目数"
+              type="number"
+              value={added}
+              onChange={(e) => setAdded(Number(e.target.value))}
+              sx={{ mb: 2, input: { color: 'white' }, label: { color: 'white' } }}
+              fullWidth
+            />
+            <TextField
+              label="削除された項目数"
+              type="number"
+              value={deleted}
+              onChange={(e) => setDeleted(Number(e.target.value))}
+              sx={{ mb: 2, input: { color: 'white' }, label: { color: 'white' } }}
+              fullWidth
+            />
+            <TextField
+              label="変更された項目数"
+              type="number"
+              value={modified}
+              onChange={(e) => setModified(Number(e.target.value))}
+              sx={{ mb: 2, input: { color: 'white' }, label: { color: 'white' } }}
+              fullWidth
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSave}
+              sx={{ mt: 2 }}
+            >
+              保存
+            </Button>
           </Box>
         ) : (
           <Typography variant="body1">
