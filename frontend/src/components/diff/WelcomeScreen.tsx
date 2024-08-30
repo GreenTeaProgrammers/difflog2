@@ -128,53 +128,38 @@ const renderMonthGridPreview = (month: string) => {
     setCurrentView('month');
   }
 
-const renderMonthView = (month: string) => {
-  const daysInMonth = new Date(2024, months.indexOf(month) + 1, 0).getDate(); // 月の日数を取得
-  const firstDayOfWeek = new Date(2024, months.indexOf(month), 1).getDay(); // 月の初日の曜日を取得
+const renderMonthView = (month: string) => (
+  <>
+    <Box display={"flex"}>
+      <IconButton onClick={() => setCurrentView("year")}>
+        <ArrowBack />
+      </IconButton>
+      <Typography variant="h3">{month}</Typography>
+    </Box>
 
-  return (
-    <>
-      <Box display={"flex"} alignItems="center">
-        <IconButton onClick={() => setCurrentView("year")}>
-          <ArrowBack />
-        </IconButton>
-        <Typography variant="h4" sx={{ ml: 2 }}>
-          {month}
-        </Typography>
-      </Box>
-
-      <Grid container spacing={1}>
-        {Array.from({ length: firstDayOfWeek }).map((_, index) => (
-          <Grid item xs={2} key={`empty-${index}`} />
-        ))}
-        {Array.from({ length: daysInMonth }).map((_, day) => (
-          <Grid
-            item
-            xs={2}
-            key={day}
-            onClick={() => setCurrentDayData(day + 1)}
+    <Grid container spacing={1}>
+      {[...Array(31)].map((_, day) => (
+        <Grid item xs={2} key={day} onClick={() => setCurrentDayData(day + 1)}>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 1,
+              bgcolor: "grey.900",
+              color: "white",
+              textAlign: "center",
+            }}
           >
-            <Paper
-              elevation={3}
-              sx={{
-                p: 1,
-                bgcolor: "grey.900",
-                color: "white",
-                textAlign: "center",
-              }}
-            >
-              <Typography variant="h6">{day + 1}</Typography>
-              <Box
-                sx={{ height: 50, bgcolor: "grey.800", borderRadius: 1, mt: 1 }}
-              />
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
-    </>
-  );
-};
-
+            <Typography variant="h6">{day + 1}</Typography>
+            <Box
+              sx={{ height: 50, bgcolor: "grey.800", borderRadius: 1, mt: 1 }}
+            />
+          </Paper>
+        </Grid>
+      ))}
+    </Grid>
+  </>
+);
+  
   const setCurrentDayData = (day: number) =>
   {
     console.log(`Selected day: ${day}`);
