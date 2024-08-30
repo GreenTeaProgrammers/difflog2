@@ -61,36 +61,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     navigate('/analytics');
   };
 
-
-  const yearCalenderView = (month: string) =>
-  {
-    let countDays = 31;
-    if (month === "Feb") {
-      countDays = 28;
-    }
-    if (["Apr","Jun","Aug","Sep","Nov"].includes(month)) {
-      countDays = 30;
-    }
-    return (
-      <>
-
-        {[...Array(countDays)].map((_, index) => (
-          <Box
-            key={index}
-            sx={{
-              width: "100%",
-              paddingBottom: "100%",
-              backgroundColor: "grey.800",
-              borderRadius: 1,
-            }}
-          />
-        ))}
-      </>
-    );
-
-  };
-
-  const renderYearView = () => (
+const renderYearView = () => {
+  return (
     <Grid container spacing={1}>
       {months.map((month) => (
         <Grid item xs={yearXsValue} key={month}>
@@ -98,7 +70,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
             elevation={3}
             sx={{ p: 1, bgcolor: "grey.900", color: "white" }}
           >
-            <Typography variant="subtitle2">{month}</Typography>
+            <Typography variant="subtitle2" align="center">
+              {month}
+            </Typography>
             <Box
               onClick={() => setCurrentMonthData(month)}
               sx={{
@@ -107,13 +81,45 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
                 gap: 0.5,
               }}
             >
-              {yearCalenderView(month)}
+              {renderMonthGridPreview(month)}
             </Box>
           </Paper>
         </Grid>
       ))}
     </Grid>
   );
+};
+
+const renderMonthGridPreview = (month: string) => {
+  const daysInMonth = new Date(2024, months.indexOf(month) + 1, 0).getDate(); // 月の日数を取得
+  const firstDayOfWeek = new Date(2024, months.indexOf(month), 1).getDay(); // 月の初日の曜日を取得
+
+  return (
+    <>
+      {Array.from({ length: firstDayOfWeek }).map((_, index) => (
+        <Box
+          key={`empty-${index}`}
+          sx={{
+            width: "100%",
+            paddingBottom: "100%",
+            borderRadius: 1,
+          }}
+        />
+      ))}
+      {Array.from({ length: daysInMonth }).map((_, index) => (
+        <Box
+          key={index}
+          sx={{
+            width: "100%",
+            paddingBottom: "100%",
+            backgroundColor: "grey.800",
+            borderRadius: 1,
+          }}
+        />
+      ))}
+    </>
+  );
+};
 
 
   const setCurrentMonthData = (month: string) =>
@@ -122,19 +128,32 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     setCurrentView('month');
   }
 
+const renderMonthView = (month: string) => {
+  const daysInMonth = new Date(2024, months.indexOf(month) + 1, 0).getDate(); // 月の日数を取得
+  const firstDayOfWeek = new Date(2024, months.indexOf(month), 1).getDay(); // 月の初日の曜日を取得
 
-  const renderMonthView = (month: string) => (
+  return (
     <>
-      <Box display={"flex"}>
+      <Box display={"flex"} alignItems="center">
         <IconButton onClick={() => setCurrentView("year")}>
           <ArrowBack />
         </IconButton>
-        <Typography variant="h3">{month}</Typography>
+        <Typography variant="h4" sx={{ ml: 2 }}>
+          {month}
+        </Typography>
       </Box>
 
       <Grid container spacing={1}>
-        {[...Array(31)].map((_, day) => (
-          <Grid item xs={2} key={day} onClick={() => setCurrentDayData(day+1)}>
+        {Array.from({ length: firstDayOfWeek }).map((_, index) => (
+          <Grid item xs={2} key={`empty-${index}`} />
+        ))}
+        {Array.from({ length: daysInMonth }).map((_, day) => (
+          <Grid
+            item
+            xs={2}
+            key={day}
+            onClick={() => setCurrentDayData(day + 1)}
+          >
             <Paper
               elevation={3}
               sx={{
@@ -154,6 +173,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
       </Grid>
     </>
   );
+};
 
   const setCurrentDayData = (day: number) =>
   {
