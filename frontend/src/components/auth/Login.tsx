@@ -73,6 +73,7 @@ const Login: React.FC = () => {
             variant="outlined"
           />
           <SubmitButton
+            onClick={() => navigate("/welcome")}
             type="submit"
             fullWidth
             variant="contained"

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton, Slider, Grid, Paper, Drawer } from '@mui/material';
-import { Info, ZoomIn, ZoomOut, Close } from '@mui/icons-material';
+import { Info, ZoomIn, ZoomOut, Close, CameraAlt, AddLocation, BarChart } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
 
 interface WelcomeScreenProps {
@@ -11,6 +12,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const [selectedLocation, setSelectedLocation] = useState('desk');
   const [zoomLevel, setZoomLevel] = useState(1); // 1: Year, 2: Month, 3: Day
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const navigate = useNavigate();
 
   const locations = ['books', 'kitchen', 'desk', 'store'];
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -26,6 +28,18 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
 
   const toggleInfoDrawer = () => {
     setIsInfoOpen(!isInfoOpen);
+  };
+
+  const navigateToCameraUpload = () => {
+    navigate('/camera');
+  };
+
+  const navigateToAddLocation = () => {
+    navigate('/location');
+  };
+
+  const navigateToAnalytics = () => {
+    navigate('/analytics');
   };
 
   const renderYearView = () => (
@@ -100,7 +114,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           <Info />
         </IconButton>
         <Typography variant="h6">2024 - {selectedLocation}</Typography>
-        <Box sx={{ width: 40 }} /> {/* Placeholder for balance */}
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <IconButton color="inherit" onClick={navigateToCameraUpload}>
+            <CameraAlt />
+          </IconButton>
+          <IconButton color="inherit" onClick={navigateToAddLocation}>
+            <AddLocation />
+          </IconButton>
+          <IconButton color="inherit" onClick={navigateToAnalytics}>
+            <BarChart />
+          </IconButton>
+        </Box>
       </Box>
 
       <Box sx={{ flexGrow: 1, display: 'flex' }}>
@@ -160,7 +184,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           </Box>
           <Typography variant="body1">
             This is the Difflog app. Use the vertical slider on the right to zoom in and out between year, month, and day views.
-            Select different locations using the wheel at the bottom of the screen.
+            Select different locations using the wheel at the bottom of the screen. Use the camera icon to upload photos,
+            the location icon to add new locations, and the chart icon to view analytics.
           </Typography>
         </Box>
       </Drawer>
