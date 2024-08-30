@@ -26,7 +26,7 @@ const AnalyticsScreen: React.FC = () =>
 
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'black', color: 'white' }}>
+      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
           <IconButton color="primary" onClick={handleBack} sx={{ mr: 2 }}>
             <ArrowBack />
