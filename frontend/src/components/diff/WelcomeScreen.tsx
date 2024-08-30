@@ -31,6 +31,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
   const [curentView, setCurrentView] = useState('year');
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(months[0]);
+  const [currentDay, setCurrentDay] = useState(0);
   const navigate = useNavigate();
 
   
@@ -116,7 +117,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
 
       <Grid container spacing={1}>
         {[...Array(31)].map((_, day) => (
-          <Grid item xs={2} key={day}>
+          <Grid item xs={2} key={day} onClick={() => setCurrentDayData(day+1)}>
             <Paper
               elevation={3}
               sx={{
@@ -137,14 +138,38 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     </>
   );
 
+  const setCurrentDayData = (day: number) =>
+  {
+    console.log(`Selected day: ${day}`);
+    setCurrentDay(day);
+    setCurrentView("day");
+  };
+
   const renderDayView = () => (
-    <Box sx={{ p: 2, bgcolor: 'grey.900', borderRadius: 2 }}>
-      <Typography variant="h4" sx={{ mb: 2 }}>August 30, 2024</Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{ p: 2, bgcolor: "grey.900", borderRadius: 2 }}>
+      <Box display={"flex"}>
+        <Box>
+          <IconButton onClick={() => setCurrentView("year")}>
+            <ArrowBack />
+          </IconButton>
+        </Box>
+        <Typography variant="h4" sx={{ mb: 2 }}>
+          {currentMonth} {currentDay}
+        </Typography>
+      </Box>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {[...Array(5)].map((_, index) => (
-          <Paper key={index} elevation={3} sx={{ p: 2, bgcolor: 'grey.800', color: 'white' }}>
-            <Typography variant="body1">Item {index + 1} in {selectedLocation}</Typography>
-            <Typography variant="body2" color="text.secondary">Details about the item...</Typography>
+          <Paper
+            key={index}
+            elevation={3}
+            sx={{ p: 2, bgcolor: "grey.800", color: "white" }}
+          >
+            <Typography variant="body1">
+              Item {index + 1} in {selectedLocation}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Details about the item...
+            </Typography>
           </Paper>
         ))}
       </Box>
