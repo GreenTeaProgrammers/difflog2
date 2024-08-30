@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import { AddCircleOutline, RemoveCircleOutline, ChangeCircle, Add, Remove } from '@mui/icons-material';
 import { darkTheme } from '../../theme'; // このパスは実際のファイル構造に合わせて調整してください
+import { commitService } from '../../../services/commitService'; // commitServiceのインポート
 
 const ResultPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -29,9 +30,26 @@ const ResultPage: React.FC = () => {
   const [deleted, setDeleted] = useState(diffResponse?.deleted || 0);
   const [modified, setModified] = useState(diffResponse?.modified || 0);
 
-  const handleSaveAndNavigate = () => {
+  const handleSaveAndNavigate = async () => {
     dispatch(updateDiffResponse({ added, deleted, modified }));
-    navigate("/welcome");
+
+    if (diffResponse) {
+      const commitData = {
+        locationID: "exampleLocationID", // 必要に応じてlocationIDを動的に設定してください
+        date: new Date().toISOString(), // 現在の日付
+        diff: {
+          changes: diffResponse.changes,
+        },
+      };
+
+      try {
+        await commitService.createCommit(commitData);
+        navigate("/welcome");
+      } catch (error) {
+        console.error("Failed to create commit:", error);
+        // 必要に応じてエラーハンドリングを追加
+      }
+    }
   };
 
   const handleIncrement = (setter: React.Dispatch<React.SetStateAction<number>>) => {

@@ -1,8 +1,9 @@
 import api from "./api";
+import { CommitData } from "../types/diff"; 
 
 export const commitService = {
   // Create a new commit
-  createCommit: async (commitData) => {
+  createCommit: async (commitData: CommitData): Promise<CommitData> => {
     try {
       const response = await api.post("/commits", commitData);
       return response.data;
@@ -13,7 +14,7 @@ export const commitService = {
   },
 
   // Get all commits
-  getCommits: async () => {
+  getCommits: async (): Promise<CommitData[]> => {
     try {
       const response = await api.get("/commits");
       return response.data;
@@ -24,7 +25,7 @@ export const commitService = {
   },
 
   // Get a specific commit by ID
-  getCommit: async (id) => {
+  getCommit: async (id: string): Promise<CommitData> => {
     try {
       const response = await api.get(`/commits/${id}`);
       return response.data;
@@ -35,7 +36,7 @@ export const commitService = {
   },
 
   // Update an existing commit
-  updateCommit: async (id, commitData) => {
+  updateCommit: async (id: string, commitData: CommitData): Promise<CommitData> => {
     try {
       const response = await api.put(`/commits/${id}`, commitData);
       return response.data;
@@ -46,7 +47,7 @@ export const commitService = {
   },
 
   // Delete a commit by ID
-  deleteCommit: async (id) => {
+  deleteCommit: async (id: string): Promise<void> => {
     try {
       const response = await api.delete(`/commits/${id}`);
       return response.data;
@@ -57,7 +58,7 @@ export const commitService = {
   },
 
   // Get commit count by locationID and date
-  getCommitCountByLocationAndDate: async (locationID, date) => {
+  getCommitCountByLocationAndDate: async (locationID: string, date: string): Promise<{ locationID: string, date: string, commit_count: number }> => {
     try {
       const response = await api.get("/commits/countByLocationAndDate", {
         params: {
