@@ -1,29 +1,19 @@
 import React, { useState } from 'react';
-import { Box, Typography, IconButton, Slider, Grid, Paper, Drawer } from '@mui/material';
+import { Box, Typography, IconButton, Slider, Grid, Paper, Drawer, Switch, ThemeProvider } from '@mui/material';
 import { Info, ZoomIn, ZoomOut, Close, CameraAlt, AddLocation, BarChart, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
+import { lightTheme, darkTheme } from '../../theme';
 
 interface WelcomeScreenProps {
   username: string;
 }
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
-{
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const locations = ["books", "kitchen", "desk", "store"];
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
   ];
 
   const [selectedLocation, setSelectedLocation] = useState('desk');
@@ -32,9 +22,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(months[0]);
   const [currentDay, setCurrentDay] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
-
-  
 
   const handleLocationSelect = (location: string) => {
     setSelectedLocation(location);
@@ -51,7 +40,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
 
   const yearXsValue = window.innerWidth > window.innerHeight ? 3 : 4;
 
-
   const navigateToCameraUpload = () => {
     navigate('/camera');
   };
@@ -62,6 +50,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
 
   const navigateToAnalytics = () => {
     navigate('/analytics');
+  };
+
+  const handleThemeToggle = () => {
+    setIsDarkMode(!isDarkMode);
   };
 
   const renderYearView = () => (
@@ -99,12 +91,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     </Grid>
   );
 
-  const setCurrentMonthData = (month: string) =>
-  { 
+  const setCurrentMonthData = (month: string) => { 
     setCurrentMonth(month);
     setCurrentView('month');
   }
-
 
   const renderMonthView = (month: string) => (
     <>
@@ -138,8 +128,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     </>
   );
 
-  const setCurrentDayData = (day: number) =>
-  {
+  const setCurrentDayData = (day: number) => {
     console.log(`Selected day: ${day}`);
     setCurrentDay(day);
     setCurrentView("day");
@@ -176,19 +165,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     </Box>
   );
 
-  // const renderContent = () => {
-  //   switch (Math.round(zoomLevel)) {
-  //     case 1:
-  //       return renderYearView();
-  //     case 2:
-  //       return renderMonthView();
-  //     case 3:
-  //       return renderDayView();
-  //     default:
-  //       return renderYearView();
-  //   }
-  // };
-
   const renderContent = () => {
     switch (curentView) {
       case "year":
@@ -203,62 +179,69 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
   };
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'black', color: 'white' }}>
-      <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <IconButton color="inherit" onClick={toggleInfoDrawer}>
-          <Info />
-        </IconButton>
-        <Typography variant="h6">2024 - {selectedLocation}</Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <IconButton color="inherit" onClick={navigateToCameraUpload}>
-            <CameraAlt />
+    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <IconButton color="inherit" onClick={toggleInfoDrawer}>
+            <Info />
           </IconButton>
-          <IconButton color="inherit" onClick={navigateToAddLocation}>
-            <AddLocation />
-          </IconButton>
-          <IconButton color="inherit" onClick={navigateToAnalytics}>
-            <BarChart />
-          </IconButton>
-        </Box>
-      </Box>
-
-      <Box sx={{ flexGrow: 1, display: 'flex' }}>
-        <Box sx={{ flexGrow: 1, overflow: 'auto', px: 2 }}>
-          {renderContent()}
-        </Box>
-      </Box>
-
-      <Box sx={{ p: 2 }}>
-        <HorizontalWheel items={locations} onSelect={handleLocationSelect} />
-      </Box>
-
-      <Drawer
-        anchor="left"
-        open={isInfoOpen}
-        onClose={toggleInfoDrawer}
-        PaperProps={{
-          sx: {
-            backgroundColor: 'black',
-            color: 'white',
-            width: 300,
-          },
-        }}
-      >
-        <Box sx={{ p: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6">Information</Typography>
-            <IconButton color="inherit" onClick={toggleInfoDrawer}>
-              <Close />
+          <Typography variant="h6">2024 - {selectedLocation}</Typography>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <IconButton color="inherit" onClick={navigateToCameraUpload}>
+              <CameraAlt />
             </IconButton>
+            <IconButton color="inherit" onClick={navigateToAddLocation}>
+              <AddLocation />
+            </IconButton>
+            <IconButton color="inherit" onClick={navigateToAnalytics}>
+              <BarChart />
+            </IconButton>
+            <Switch
+              checked={isDarkMode}
+              onChange={handleThemeToggle}
+              color="default"
+            />
           </Box>
-          <Typography variant="body1">
-            This is the Difflog app. Use the vertical slider on the right to zoom in and out between year, month, and day views.
-            Select different locations using the wheel at the bottom of the screen. Use the camera icon to upload photos,
-            the location icon to add new locations, and the chart icon to view analytics.
-          </Typography>
         </Box>
-      </Drawer>
-    </Box>
+
+        <Box sx={{ flexGrow: 1, display: 'flex' }}>
+          <Box sx={{ flexGrow: 1, overflow: 'auto', px: 2 }}>
+            {renderContent()}
+          </Box>
+        </Box>
+
+        <Box sx={{ p: 2 }}>
+          <HorizontalWheel items={locations} onSelect={handleLocationSelect} />
+        </Box>
+
+        <Drawer
+          anchor="left"
+          open={isInfoOpen}
+          onClose={toggleInfoDrawer}
+          PaperProps={{
+            sx: {
+              backgroundColor: 'background.paper',
+              color: 'text.primary',
+              width: 300,
+            },
+          }}
+        >
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6">Information</Typography>
+              <IconButton color="inherit" onClick={toggleInfoDrawer}>
+                <Close />
+              </IconButton>
+            </Box>
+            <Typography variant="body1">
+              This is the Difflog app. Use the vertical slider on the right to zoom in and out between year, month, and day views.
+              Select different locations using the wheel at the bottom of the screen. Use the camera icon to upload photos,
+              the location icon to add new locations, and the chart icon to view analytics. Toggle the switch in the top-right corner to change between light and dark themes.
+            </Typography>
+          </Box>
+        </Drawer>
+      </Box>
+    </ThemeProvider>
   );
 };
 
