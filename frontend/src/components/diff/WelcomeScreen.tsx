@@ -28,10 +28,13 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
     setIsInfoOpen(!isInfoOpen);
   };
 
+  const yearXsValue = window.innerWidth > window.innerHeight ? 3 : 4;
+
+
   const renderYearView = () => (
     <Grid container spacing={1}>
       {months.map((month) => (
-        <Grid item xs={3} key={month}>
+        <Grid item xs={yearXsValue} key={month}>
           <Paper elevation={3} sx={{ p: 1, bgcolor: 'grey.900', color: 'white' }}>
             <Typography variant="subtitle2">{month}</Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 0.5 }}>
@@ -113,7 +116,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
             value={zoomLevel}
             min={1}
             max={3}
-            step={0.1}
+            step={1}
             onChange={handleZoomChange}
             orientation="vertical"
             sx={{ 
