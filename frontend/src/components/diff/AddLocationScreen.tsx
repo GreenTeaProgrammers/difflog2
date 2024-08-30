@@ -3,25 +3,37 @@ import { Box, Typography, TextField, Button, IconButton, Container, Paper } from
 import { ArrowBack, Add } from '@mui/icons-material';
 import { ThemeProvider } from '@mui/material/styles';
 import { darkTheme } from '../../theme';
-import { useNavigate } from 'react-router-dom'; // 追加
+import { useNavigate } from 'react-router-dom';
+import { createLocation } from '../../../services/locationService'; // サービスのインポート
 
 interface AddLocationScreenProps {
-  onAddLocation: (newLocation: string) => void;
+  onAddLocation: (newLocation: any) => void; // 適切な型を指定する必要があります
 }
 
 const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation }) => {
   const [newLocation, setNewLocation] = useState('');
-  const navigate = useNavigate(); // 追加
+  const navigate = useNavigate();
 
-  const handleAddLocation = () => {
+  const handleAddLocation = async () => {
     if (newLocation.trim()) {
-      onAddLocation(newLocation.trim());
-      setNewLocation('');
+      try {
+        const location = {
+          name: newLocation.trim(),
+          lastCommitDate: null, // 初期値としてnullを設定
+        };
+  
+        const createdLocation = await createLocation(location);
+        onAddLocation(createdLocation);
+        setNewLocation('');
+        navigate('/welcome');
+      } catch (error) {
+        console.error('Error adding location:', error);
+      }
     }
   };
 
   const handleBack = () => {
-    navigate('/welcome'); // 追加
+    navigate('/welcome');
   };
 
   return (

@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/GreenTeaProgrammers/difflog2/locationService/models"
 	"github.com/gin-gonic/gin"
@@ -18,21 +19,21 @@ func NewLocationController(db *gorm.DB) *LocationController {
 	return &LocationController{DB: db}
 }
 
-func (ctrl *LocationController) CreateLocation(c *gin.Context) {
+func (cc *LocationController) CreateLocation(c *gin.Context) {
 	var location models.Location
 	if err := c.ShouldBindJSON(&location); err != nil {
-		slog.Error("Failed to bind JSON", slog.Any("error", err))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := ctrl.DB.Create(&location).Error; err != nil {
-		slog.Error("Failed to create location", slog.Any("error", err))
+	// last_commit_date に作成時の日時を代入
+	now := time.Now()
+	location.LastCommitDate = &now
+
+	if err := cc.DB.Create(&location).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	slog.Info("Location created successfully", slog.Int("location_id", int(location.ID)))
 	c.JSON(http.StatusOK, location)
 }
 
