@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, IconButton, Slider, Grid, Paper, Drawer, Switch, ThemeProvider } from '@mui/material';
-import { Info, ZoomIn, ZoomOut, Close, CameraAlt, AddLocation, BarChart, ArrowBack } from '@mui/icons-material';
+import { Box, Typography, IconButton,  Grid, Paper, Drawer, Switch, ThemeProvider } from '@mui/material';
+import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
 import { lightTheme, darkTheme } from '../../theme';
@@ -17,7 +17,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   ];
 
   const [selectedLocation, setSelectedLocation] = useState('desk');
-  const [zoomLevel, setZoomLevel] = useState(1); // 1: Year, 2: Month, 3: Day
   const [curentView, setCurrentView] = useState('year');
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(months[0]);
@@ -25,30 +24,35 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
 
-  const handleLocationSelect = (location: string) => {
+
+  const handleLocationSelect = (location: string) =>
+  {
+
     setSelectedLocation(location);
     console.log(`Selected location: ${location}`);
   };
-
-  const handleZoomChange = (event: Event, newValue: number | number[]) => {
-    setZoomLevel(newValue as number);
-  };
-
-  const toggleInfoDrawer = () => {
+  
+  const toggleInfoDrawer = () =>
+  {
     setIsInfoOpen(!isInfoOpen);
   };
 
   const yearXsValue = window.innerWidth > window.innerHeight ? 3 : 4;
 
-  const navigateToCameraUpload = () => {
+
+  const navigateToCameraUpload = () =>
+  {
+
     navigate('/camera');
   };
 
-  const navigateToAddLocation = () => {
+  const navigateToAddLocation = () =>
+  {
     navigate('/location');
   };
 
-  const navigateToAnalytics = () => {
+  const navigateToAnalytics = () =>
+  {
     navigate('/analytics');
   };
 
@@ -56,79 +60,135 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
     setIsDarkMode(!isDarkMode);
   };
 
-  const renderYearView = () => (
-    <Grid container spacing={1}>
-      {months.map((month) => (
-        <Grid item xs={yearXsValue} key={month}>
-          <Paper
-            elevation={3}
-            sx={{ p: 1, bgcolor: "grey.900", color: "white" }}
-          >
-            <Typography variant="subtitle2">{month}</Typography>
-            <Box
-              onClick={() => setCurrentMonthData(month)}
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(7, 1fr)",
-                gap: 0.5,
-              }}
-            >
-              {[...Array(31)].map((_, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    width: "100%",
-                    paddingBottom: "100%",
-                    backgroundColor: "grey.800",
-                    borderRadius: 1,
-                  }}
-                />
-              ))}
-            </Box>
-          </Paper>
-        </Grid>
-      ))}
-    </Grid>
-  );
-
-  const setCurrentMonthData = (month: string) => { 
-    setCurrentMonth(month);
-    setCurrentView('month');
-  }
-
-  const renderMonthView = (month: string) => (
-    <>
-      <Box display={"flex"}>
-        <IconButton onClick={() => setCurrentView("year")}>
-          <ArrowBack />
-        </IconButton>
-        <Typography variant="h3">{month}</Typography>
-      </Box>
-
+  const renderYearView = () =>
+  {
+    return (
       <Grid container spacing={1}>
-        {[...Array(31)].map((_, day) => (
-          <Grid item xs={2} key={day} onClick={() => setCurrentDayData(day+1)}>
+        {months.map((month) => (
+          <Grid item xs={yearXsValue} key={month}>
             <Paper
               elevation={3}
-              sx={{
-                p: 1,
-                bgcolor: "grey.900",
-                color: "white",
-                textAlign: "center",
-              }}
+              sx={{ p: 1, bgcolor: "grey.900", color: "white" }}
             >
-              <Typography variant="h6">{day + 1}</Typography>
+              <Typography variant="subtitle2" align="center">
+                {month}
+              </Typography>
               <Box
-                sx={{ height: 50, bgcolor: "grey.800", borderRadius: 1, mt: 1 }}
-              />
+                onClick={() => setCurrentMonthData(month)}
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(7, 1fr)",
+                  gap: 0.5,
+                }}
+              >
+                {renderMonthGridPreview(month)}
+              </Box>
             </Paper>
           </Grid>
         ))}
       </Grid>
-    </>
-  );
+    );
+  };
 
-  const setCurrentDayData = (day: number) => {
+  const renderMonthGridPreview = (month: string) =>
+  {
+    const daysInMonth = new Date(2024, months.indexOf(month) + 1, 0).getDate(); // 月の日数を取得
+    const firstDayOfWeek = new Date(2024, months.indexOf(month), 1).getDay(); // 月の初日の曜日を取得
+
+    return (
+      <>
+        {Array.from({ length: firstDayOfWeek }).map((_, index) => (
+          <Box
+            key={`empty-${index}`}
+            sx={{
+              width: "100%",
+              paddingBottom: "100%",
+              borderRadius: 1,
+            }}
+          />
+        ))}
+        {Array.from({ length: daysInMonth }).map((_, index) => (
+          <Box
+            key={index}
+            sx={{
+              width: "100%",
+              paddingBottom: "100%",
+              backgroundColor: "grey.800",
+              borderRadius: 1,
+            }}
+          />
+        ))}
+      </>
+    );
+  };
+
+
+  const setCurrentMonthData = (month: string) => { 
+
+    setCurrentMonth(month);
+    setCurrentView('month');
+  }
+
+
+  const renderMonthView = (month: string) =>
+  {
+    const daysInMonth = new Date(2024, months.indexOf(month) + 1, 0).getDate(); // 月の日数を取得
+    const firstDayOfWeek = new Date(2024, months.indexOf(month), 1).getDay(); // 月の初日の曜日を取得
+
+    return (
+      <>
+        <Box display={"flex"}>
+          <IconButton onClick={() => setCurrentView("year")}>
+            <ArrowBack />
+          </IconButton>
+          <Typography variant="h3">{month}</Typography>
+        </Box>
+        <Grid container spacing={1}>
+          {Array.from({ length: firstDayOfWeek }).map((_, index) => (
+            <Grid
+              item
+              xs={2}
+              key={index}
+            >
+              
+            </Grid>
+          ))}
+
+          {Array.from({ length: daysInMonth}).map((_, day) => (
+            <Grid
+              item
+              xs={2}
+              key={day}
+              onClick={() => setCurrentDayData(day + 1)}
+            >
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 1,
+                  bgcolor: "grey.900",
+                  color: "white",
+                  textAlign: "center",
+                }}
+              >
+                <Typography variant="h6">{day + 1}</Typography>
+                <Box
+                  sx={{
+                    height: 50,
+                    bgcolor: "grey.800",
+                    borderRadius: 1,
+                    mt: 1,
+                  }}
+                />
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </>
+    );
+  };
+  
+  const setCurrentDayData = (day: number) =>
+  {
     console.log(`Selected day: ${day}`);
     setCurrentDay(day);
     setCurrentView("day");
@@ -164,6 +224,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
       </Box>
     </Box>
   );
+
 
   const renderContent = () => {
     switch (curentView) {
