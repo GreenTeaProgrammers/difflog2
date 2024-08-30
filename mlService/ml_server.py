@@ -32,8 +32,9 @@ def calculate_diff():
             logger.error("No image_url found in the request")
             return jsonify({"error": "No image_url provided"}), 400
 
-        # フルパスに変換
-        image_path = os.path.join(os.getcwd(), image_url.strip('/'))
+        # 正しいパスになるように修正
+        base_path = os.path.join(os.getcwd(), '../captureService/uploads')
+        image_path = os.path.join(base_path, os.path.basename(image_url))
         logger.info("Full image path: %s", image_path)
 
         if not os.path.exists(image_path):

@@ -1,76 +1,69 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
+import { fetchLocations } from '../../../services/locationService'; // Ensure this matches your actual import path
 
-interface HorizontalWheelProps {
-  items: string[];
-  onSelect: (item: string) => void;
+interface Location {
+  id: string;
+  name: string;
 }
 
-const HorizontalWheel: React.FC<HorizontalWheelProps> = ({ items, onSelect }) => {
-  const [selectedIndex, setSelectedIndex] = useState(Math.floor(items.length / 2));
-  const wheelRef = useRef<HTMLDivElement>(null);
+const HorizontalWheel: React.FC = () => {
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
 
   useEffect(() => {
-    if (wheelRef.current) {
-      const wheelWidth = wheelRef.current.offsetWidth;
-      const itemWidth = wheelWidth / 5; // Display 5 items at a time
-      wheelRef.current.scrollLeft = (selectedIndex - 2) * itemWidth;
-    }
-  }, [selectedIndex]);
-
-  const handleScroll = () => {
-    if (wheelRef.current) {
-      const wheelWidth = wheelRef.current.offsetWidth;
-      const itemWidth = wheelWidth / 5;
-      const scrollPosition = wheelRef.current.scrollLeft;
-      const newIndex = Math.round(scrollPosition / itemWidth) + 2;
-      
-      if (newIndex !== selectedIndex && newIndex >= 0 && newIndex < items.length) {
-        setSelectedIndex(newIndex);
-        onSelect(items[newIndex]);
+    const loadLocations = async () => {
+      try {
+        const fetchedLocations = await fetchLocations();
+        setLocations(fetchedLocations);
+        setSelectedLocation(fetchedLocations[Math.floor(fetchedLocations.length / 2)]); // Default to the middle item
+      } catch (error) {
+        console.error('Failed to load locations', error);
       }
-    }
+    };
+
+    loadLocations();
+  }, []);
+
+  const handleSelectLocation = (location: Location) => {
+    setSelectedLocation(location);
   };
 
   return (
     <Box
-      ref={wheelRef}
       sx={{
         display: 'flex',
         overflowX: 'auto',
-        scrollSnapType: 'x mandatory',
-        '&::-webkit-scrollbar': { display: 'none' },
-        scrollbarWidth: 'none',
         mx: 'auto',
         maxWidth: '100%',
         bgcolor: 'rgba(0, 0, 0, 0.5)',
         borderRadius: 2,
         py: 2,
       }}
-      onScroll={handleScroll}
     >
-      {items.map((item, index) => (
+      {locations.map((location) => (
         <Box
-          key={item}
+          key={location.id}
           sx={{
             flex: '0 0 20%',
-            scrollSnapAlign: 'center',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            cursor: 'pointer',
             transition: 'all 0.3s',
-            opacity: index === selectedIndex ? 1 : 0.5,
-            transform: index === selectedIndex ? 'scale(1.2)' : 'scale(1)',
+            opacity: selectedLocation?.id === location.id ? 1 : 0.5,
+            transform: selectedLocation?.id === location.id ? 'scale(1.2)' : 'scale(1)',
           }}
+          onClick={() => handleSelectLocation(location)}
         >
           <Typography
             variant="body1"
             sx={{
               color: 'white',
-              fontWeight: index === selectedIndex ? 'bold' : 'normal',
+              fontWeight: selectedLocation?.id === location.id ? 'bold' : 'normal',
             }}
           >
-            {item}
+            {location.name}
           </Typography>
         </Box>
       ))}

@@ -27,7 +27,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       await dispatch(login(formData)).unwrap();
-      navigate(`/user/${authState.user?.username}`);
+      navigate(`/welcome`);
     } catch (err) {
       console.error("Login error details:", err);
     }
@@ -76,17 +76,8 @@ const Login: React.FC = () => {
             type="submit"
             fullWidth
             variant="contained"
+            color="primary"
             disabled={authState.status === 'loading'}
-            sx={{
-              backgroundColor: 'black',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: 'black',
-              },
-              '&:disabled': {
-                backgroundColor: 'grey',
-              }
-            }}
           >
             ログイン
           </SubmitButton>

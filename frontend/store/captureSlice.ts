@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Capture } from '../types/capture'; // Update the file path to the correct location
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import api from '../services/api';
-import { DiffResponse } from '../types/diff'; // DiffResponseをインポート
+import { DiffResponse, Capture } from '../types/diff'; // DiffResponseをインポート
 
 interface CaptureState {
   captures: Capture[];
@@ -44,6 +43,17 @@ const captureSlice = createSlice({
         capture.analyzed = true;
       }
     },
+    // updateDiffResponse アクションを追加
+    updateDiffResponse(state, action: PayloadAction<{ added: number; deleted: number; modified: number }>) {
+      if (state.selectedCapture) {
+        state.selectedCapture.diffResponse = {
+          ...state.selectedCapture.diffResponse,
+          added: action.payload.added,
+          deleted: action.payload.deleted,
+          modified: action.payload.modified,
+        };
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -64,5 +74,5 @@ const captureSlice = createSlice({
   },
 });
 
-export const { selectCapture, setDiffResponse } = captureSlice.actions;
+export const { selectCapture, setDiffResponse, updateDiffResponse } = captureSlice.actions;
 export default captureSlice.reducer;
