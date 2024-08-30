@@ -1,7 +1,7 @@
 services:
   user:
     build:
-      context: ./user
+      context: ./userService # ディレクトリ名
       dockerfile: ./Dockerfile
       target: builder # マルチステージビルドの場合、ビルド対象を指定
     command:
@@ -20,7 +20,7 @@ services:
       - db
   auth:
     build:
-      context: ./auth
+      context: ./authService
       dockerfile: ./Dockerfile
       target: builder # マルチステージビルドの場合、ビルド対象を指定
     command:
@@ -39,7 +39,7 @@ services:
       - db
   capture:
     build:
-      context: ./capture
+      context: ./captureService
       dockerfile: ./Dockerfile
       target: builder # マルチステージビルドの場合、ビルド対象を指定
     command:
@@ -58,7 +58,7 @@ services:
       - db
   location:
     build:
-      context: ./location
+      context: ./locationService
       dockerfile: ./Dockerfile
       target: builder # マルチステージビルドの場合、ビルド対象を指定
     command:
@@ -77,7 +77,7 @@ services:
       - db
   commit:
     build:
-      context: ./commit
+      context: ./commitService
       dockerfile: ./Dockerfile
       target: builder # マルチステージビルドの場合、ビルド対象を指定
     command:
