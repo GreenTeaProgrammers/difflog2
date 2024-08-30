@@ -12,7 +12,7 @@ RUN go mod download
 COPY . .
 
 # 5. アプリケーションをビルド
-RUN GOOS=linux go build -o main . 
+RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 # 6. 軽量なAlpine Linuxイメージをベースイメージとして指定
 FROM alpine:latest

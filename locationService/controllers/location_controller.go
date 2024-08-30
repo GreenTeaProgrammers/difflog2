@@ -114,3 +114,15 @@ func (ctrl *LocationController) DeleteLocation(c *gin.Context) {
 	slog.Info("Location deleted successfully", slog.Int("location_id", int(locationID)))
 	c.JSON(http.StatusOK, gin.H{"message": "Location deleted successfully"})
 }
+
+func (ctrl *LocationController) GetAllLocations(c *gin.Context) {
+	var locations []models.Location
+	if err := ctrl.DB.Find(&locations).Error; err != nil {
+		slog.Error("Failed to retrieve locations", slog.Any("error", err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	slog.Info("Locations retrieved successfully")
+	c.JSON(http.StatusOK, locations)
+}
