@@ -44,7 +44,7 @@ const ResultPage: React.FC = () => {
 
       try {
         await commitService.createCommit(commitData);
-        navigate("/welcome");
+        navigate("/welcome");  // 保存成功後に /welcome にナビゲート
       } catch (error) {
         console.error("Failed to create commit:", error);
         // 必要に応じてエラーハンドリングを追加
