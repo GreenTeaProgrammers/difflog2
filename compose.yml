@@ -7,7 +7,7 @@ services:
     command:
       - ./main
     container_name: user
-    env_file: './user/.env'
+    env_file: './userService/.env'
     ports:
       - "8080:8081"
     environment:
@@ -26,7 +26,7 @@ services:
     command:
       - ./main
     container_name: auth
-    env_file: './auth/.env'
+    env_file: './authService/.env'
     ports:
       - "8081:8081"
     environment:
@@ -45,7 +45,7 @@ services:
     command:
       - ./main
     container_name: capture
-    env_file: './capture/.env'
+    env_file: './captureService/.env'
     ports:
       - "8082:8081"
     environment:
@@ -64,7 +64,7 @@ services:
     command:
       - ./main
     container_name: location
-    env_file: './location/.env'
+    env_file: './locationService/.env'
     ports:
       - "8083:8081"
     environment:
@@ -83,7 +83,7 @@ services:
     command:
       - ./main
     container_name: commit
-    env_file: './commit/.env'
+    env_file: './commitService/.env'
     ports:
       - "8084:8081"
     environment:
@@ -96,7 +96,7 @@ services:
       - db
 
   frontend:
-    build: ./frontend/ShareTube
+    build: ./frontend
     container_name: frontend
     ports:
       - '3000:3000'
