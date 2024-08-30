@@ -226,32 +226,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
         <Box sx={{ flexGrow: 1, overflow: 'auto', px: 2 }}>
           {renderContent()}
         </Box>
-        <Box sx={{ width: 60, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', py: 2 }}>
-          <ZoomIn />
-          <Slider
-            value={zoomLevel}
-            min={1}
-            max={3}
-            step={1}
-            onChange={handleZoomChange}
-            orientation="vertical"
-            sx={{ 
-              height: 200, 
-              color: 'orange',
-              '& .MuiSlider-thumb': {
-                width: 28,
-                height: 28,
-                '&:before': {
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.4)',
-                },
-                '&:hover, &.Mui-focusVisible, &.Mui-active': {
-                  boxShadow: '0 0 0 8px rgba(255, 165, 0, 0.16)',
-                },
-              },
-            }}
-          />
-          <ZoomOut />
-        </Box>
       </Box>
 
       <Box sx={{ p: 2 }}>
