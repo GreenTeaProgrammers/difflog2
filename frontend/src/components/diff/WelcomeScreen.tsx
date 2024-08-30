@@ -145,16 +145,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
         </Box>
         <Grid container spacing={1}>
           {Array.from({ length: firstDayOfWeek }).map((_, index) => (
-            <Grid
-              item
-              xs={2}
-              key={index}
-            >
-              
-            </Grid>
+            <Grid item xs={2} key={index}></Grid>
           ))}
 
-          {Array.from({ length: daysInMonth}).map((_, day) => (
+          {Array.from({ length: daysInMonth }).map((_, day) => (
             <Grid
               item
               xs={2}
@@ -171,13 +165,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
                 }}
               >
                 <Typography variant="h6">{day + 1}</Typography>
-                <Box
-                  sx={{
-                    height: 50,
-                    bgcolor: "grey.800",
-                    borderRadius: 1,
-                    mt: 1,
-                  }}
+                <ColorBlock
+                  year={2024}
+                  month={months.indexOf(month) + 1}
+                  day={day + 1}
                 />
               </Paper>
             </Grid>
