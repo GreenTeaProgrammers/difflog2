@@ -27,7 +27,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       await dispatch(login(formData)).unwrap();
-      navigate(`/user/${authState.user?.username}`);
+      navigate(`/welcome`);
     } catch (err) {
       console.error("Login error details:", err);
     }
