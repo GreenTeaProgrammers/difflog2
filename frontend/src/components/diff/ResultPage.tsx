@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../../store';
 import { updateDiffResponse } from '../../../store/diffSlice';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -21,14 +22,16 @@ import { darkTheme } from '../../theme'; // このパスは実際のファイル
 
 const ResultPage: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const diffResponse = useAppSelector((state) => state.diff.diffResponse);
 
   const [added, setAdded] = useState(diffResponse?.added || 0);
   const [deleted, setDeleted] = useState(diffResponse?.deleted || 0);
   const [modified, setModified] = useState(diffResponse?.modified || 0);
 
-  const handleSave = () => {
+  const handleSaveAndNavigate = () => {
     dispatch(updateDiffResponse({ added, deleted, modified }));
+    navigate("/welcome");
   };
 
   const handleIncrement = (setter: React.Dispatch<React.SetStateAction<number>>) => {
@@ -171,7 +174,7 @@ const ResultPage: React.FC = () => {
 
                 <Button
                   variant="contained"
-                  onClick={handleSave}
+                  onClick={handleSaveAndNavigate}
                   fullWidth
                   size="large"
                   sx={{

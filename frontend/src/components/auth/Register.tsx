@@ -61,7 +61,7 @@ const Register: React.FC = () => {
         <Avatar sx={{ m: 1, bgcolor: "primary.main", width: 56, height: 56 }}>
           <LockOutlinedIcon fontSize="large" />
         </Avatar>
-        <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 700, color: 'black'  }}>
+        <Typography onClick={() => navigate("/welcome")} component="h1" variant="h4" sx={{ mb: 3, fontWeight: 700, color: 'black'  }}>
           ユーザー登録
         </Typography>
         {errors.submit && (

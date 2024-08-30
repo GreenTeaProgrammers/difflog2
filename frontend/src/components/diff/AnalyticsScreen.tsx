@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Typography, Tabs, Tab } from '@mui/material';
+import { Box, Typography, Tabs, Tab, IconButton } from '@mui/material';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ArrowBack } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const dummyData = [
   { date: '2024-01', value: 10 },
@@ -13,14 +15,22 @@ const dummyData = [
 
 const AnalyticsScreen: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState('desk');
+  const navigate = useNavigate();
 
   const handleLocationChange = (event: React.SyntheticEvent, newValue: string) => {
     setSelectedLocation(newValue);
   };
 
+  const handleBack = () => {
+    navigate('/welcome');
+  };
+
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'black', color: 'white' }}>
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
+        <IconButton color="primary" onClick={handleBack} sx={{ mr: 2 }}>
+          <ArrowBack />
+        </IconButton>
         <Typography variant="h6">Analytics</Typography>
       </Box>
 
