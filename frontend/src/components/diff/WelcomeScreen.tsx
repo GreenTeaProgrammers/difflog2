@@ -149,7 +149,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     <Box sx={{ p: 2, bgcolor: "grey.900", borderRadius: 2 }}>
       <Box display={"flex"}>
         <Box>
-          <IconButton onClick={() => setCurrentView("year")}>
+          <IconButton onClick={() => setCurrentView("month")}>
             <ArrowBack />
           </IconButton>
         </Box>
