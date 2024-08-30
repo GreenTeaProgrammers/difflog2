@@ -27,7 +27,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
   ];
 
   const [selectedLocation, setSelectedLocation] = useState('desk');
-  const [zoomLevel, setZoomLevel] = useState(1); // 1: Year, 2: Month, 3: Day
   const [curentView, setCurrentView] = useState('year');
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(months[0]);
@@ -41,9 +40,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     console.log(`Selected location: ${location}`);
   };
 
-  const handleZoomChange = (event: Event, newValue: number | number[]) => {
-    setZoomLevel(newValue as number);
-  };
+
 
   const toggleInfoDrawer = () => {
     setIsInfoOpen(!isInfoOpen);
@@ -64,6 +61,35 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     navigate('/analytics');
   };
 
+
+  const yearCalenderView = (month: string) =>
+  {
+    let countDays = 31;
+    if (month === "Feb") {
+      countDays = 28;
+    }
+    if (["Apr","Jun","Aug","Sep","Nov"].includes(month)) {
+      countDays = 30;
+    }
+    return (
+      <>
+
+        {[...Array(countDays)].map((_, index) => (
+          <Box
+            key={index}
+            sx={{
+              width: "100%",
+              paddingBottom: "100%",
+              backgroundColor: "grey.800",
+              borderRadius: 1,
+            }}
+          />
+        ))}
+      </>
+    );
+
+  };
+
   const renderYearView = () => (
     <Grid container spacing={1}>
       {months.map((month) => (
@@ -81,23 +107,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
                 gap: 0.5,
               }}
             >
-              {[...Array(31)].map((_, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    width: "100%",
-                    paddingBottom: "100%",
-                    backgroundColor: "grey.800",
-                    borderRadius: 1,
-                  }}
-                />
-              ))}
+              {yearCalenderView(month)}
             </Box>
           </Paper>
         </Grid>
       ))}
     </Grid>
   );
+
 
   const setCurrentMonthData = (month: string) =>
   { 
@@ -176,18 +193,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
     </Box>
   );
 
-  // const renderContent = () => {
-  //   switch (Math.round(zoomLevel)) {
-  //     case 1:
-  //       return renderYearView();
-  //     case 2:
-  //       return renderMonthView();
-  //     case 3:
-  //       return renderDayView();
-  //     default:
-  //       return renderYearView();
-  //   }
-  // };
 
   const renderContent = () => {
     switch (curentView) {
