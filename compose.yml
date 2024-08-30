@@ -1,15 +1,91 @@
 services:
-  backend:
+  user:
     build:
-      context: ./backend
+      context: ./user
       dockerfile: ./Dockerfile
       target: builder # マルチステージビルドの場合、ビルド対象を指定
     command:
       - ./main
-    container_name: backend
-    env_file: './backend/.env'
+    container_name: user
+    env_file: './user/.env'
     ports:
       - "8080:8081"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=example
+      - DB_NAME=difflog
+    depends_on:
+      - db
+  auth:
+    build:
+      context: ./auth
+      dockerfile: ./Dockerfile
+      target: builder # マルチステージビルドの場合、ビルド対象を指定
+    command:
+      - ./main
+    container_name: auth
+    env_file: './auth/.env'
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=example
+      - DB_NAME=difflog
+    depends_on:
+      - db
+  capture:
+    build:
+      context: ./capture
+      dockerfile: ./Dockerfile
+      target: builder # マルチステージビルドの場合、ビルド対象を指定
+    command:
+      - ./main
+    container_name: capture
+    env_file: './capture/.env'
+    ports:
+      - "8082:8081"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=example
+      - DB_NAME=difflog
+    depends_on:
+      - db
+  location:
+    build:
+      context: ./location
+      dockerfile: ./Dockerfile
+      target: builder # マルチステージビルドの場合、ビルド対象を指定
+    command:
+      - ./main
+    container_name: location
+    env_file: './location/.env'
+    ports:
+      - "8083:8081"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=example
+      - DB_NAME=difflog
+    depends_on:
+      - db
+  commit:
+    build:
+      context: ./commit
+      dockerfile: ./Dockerfile
+      target: builder # マルチステージビルドの場合、ビルド対象を指定
+    command:
+      - ./main
+    container_name: commit
+    env_file: './commit/.env'
+    ports:
+      - "8084:8081"
     environment:
       - DB_HOST=db
       - DB_PORT=3306
