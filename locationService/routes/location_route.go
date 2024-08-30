@@ -12,6 +12,7 @@ func RegisterLocationRoutes(router *gin.Engine) {
 	locationRoutes := router.Group("/locations")
 	{
 		locationRoutes.POST("", locationController.CreateLocation)
+		locationRoutes.GET("", locationController.GetAllLocations) // Updated route name
 		locationRoutes.GET("/:id", locationController.GetLocation)
 		locationRoutes.PUT("/:id", locationController.UpdateLocation)
 		locationRoutes.DELETE("/:id", locationController.DeleteLocation)
