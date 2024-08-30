@@ -35,16 +35,27 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
     <Grid container spacing={1}>
       {months.map((month) => (
         <Grid item xs={yearXsValue} key={month}>
-          <Paper elevation={3} sx={{ p: 1, bgcolor: 'grey.900', color: 'white' }}>
+          <Paper
+            elevation={3}
+            sx={{ p: 1, bgcolor: "grey.900", color: "white" }}
+          >
             <Typography variant="subtitle2">{month}</Typography>
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 0.5 }}>
+            <Box
+              
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(7, 1fr)",
+                gap: 0.5,
+              }}
+            >
               {[...Array(31)].map((_, index) => (
                 <Box
                   key={index}
+                  onClick={() => console.log(month+" "+(index+1))}
                   sx={{
-                    width: '100%',
-                    paddingBottom: '100%',
-                    backgroundColor: 'grey.800',
+                    width: "100%",
+                    paddingBottom: "100%",
+                    backgroundColor: "grey.800",
                     borderRadius: 1,
                   }}
                 />
