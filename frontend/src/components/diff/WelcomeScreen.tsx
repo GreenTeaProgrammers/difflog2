@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton, Slider, Grid, Paper, Drawer } from '@mui/material';
-import { Info, ZoomIn, ZoomOut, Close, CameraAlt, AddLocation, BarChart } from '@mui/icons-material';
+import { Info, ZoomIn, ZoomOut, Close, CameraAlt, AddLocation, BarChart, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
 
@@ -8,14 +8,32 @@ interface WelcomeScreenProps {
   username: string;
 }
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) =>
+{
+  const locations = ["books", "kitchen", "desk", "store"];
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
   const [selectedLocation, setSelectedLocation] = useState('desk');
   const [zoomLevel, setZoomLevel] = useState(1); // 1: Year, 2: Month, 3: Day
+  const [curentView, setCurrentView] = useState('year');
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(months[0]);
   const navigate = useNavigate();
 
-  const locations = ['books', 'kitchen', 'desk', 'store'];
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  
 
   const handleLocationSelect = (location: string) => {
     setSelectedLocation(location);
@@ -55,7 +73,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           >
             <Typography variant="subtitle2">{month}</Typography>
             <Box
-              
+              onClick={() => setCurrentMonthData(month)}
               sx={{
                 display: "grid",
                 gridTemplateColumns: "repeat(7, 1fr)",
@@ -65,7 +83,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
               {[...Array(31)].map((_, index) => (
                 <Box
                   key={index}
-                  onClick={() => console.log(month+" "+(index+1))}
                   sx={{
                     width: "100%",
                     paddingBottom: "100%",
@@ -81,17 +98,43 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
     </Grid>
   );
 
-  const renderMonthView = () => (
-    <Grid container spacing={1}>
-      {[...Array(31)].map((_, day) => (
-        <Grid item xs={2} key={day}>
-          <Paper elevation={3} sx={{ p: 1, bgcolor: 'grey.900', color: 'white', textAlign: 'center' }}>
-            <Typography variant="h6">{day + 1}</Typography>
-            <Box sx={{ height: 50, bgcolor: 'grey.800', borderRadius: 1, mt: 1 }} />
-          </Paper>
-        </Grid>
-      ))}
-    </Grid>
+  const setCurrentMonthData = (month: string) =>
+  { 
+    setCurrentMonth(month);
+    setCurrentView('month');
+  }
+
+
+  const renderMonthView = (month: string) => (
+    <>
+      <Box display={"flex"}>
+        <IconButton onClick={() => setCurrentView("year")}>
+          <ArrowBack />
+        </IconButton>
+        <Typography variant="h3">{month}</Typography>
+      </Box>
+
+      <Grid container spacing={1}>
+        {[...Array(31)].map((_, day) => (
+          <Grid item xs={2} key={day}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 1,
+                bgcolor: "grey.900",
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              <Typography variant="h6">{day + 1}</Typography>
+              <Box
+                sx={{ height: 50, bgcolor: "grey.800", borderRadius: 1, mt: 1 }}
+              />
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+    </>
   );
 
   const renderDayView = () => (
@@ -108,13 +151,26 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
     </Box>
   );
 
+  // const renderContent = () => {
+  //   switch (Math.round(zoomLevel)) {
+  //     case 1:
+  //       return renderYearView();
+  //     case 2:
+  //       return renderMonthView();
+  //     case 3:
+  //       return renderDayView();
+  //     default:
+  //       return renderYearView();
+  //   }
+  // };
+
   const renderContent = () => {
-    switch (Math.round(zoomLevel)) {
-      case 1:
+    switch (curentView) {
+      case "year":
         return renderYearView();
-      case 2:
-        return renderMonthView();
-      case 3:
+      case "month":
+        return renderMonthView(currentMonth);
+      case "day":
         return renderDayView();
       default:
         return renderYearView();
