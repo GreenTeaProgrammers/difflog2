@@ -73,21 +73,11 @@ const Login: React.FC = () => {
             variant="outlined"
           />
           <SubmitButton
-            onClick={() => navigate("/welcome")}
             type="submit"
             fullWidth
             variant="contained"
+            color="primary"
             disabled={authState.status === 'loading'}
-            sx={{
-              backgroundColor: 'black',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: 'black',
-              },
-              '&:disabled': {
-                backgroundColor: 'grey',
-              }
-            }}
           >
             ログイン
           </SubmitButton>
