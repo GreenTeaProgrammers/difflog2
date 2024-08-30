@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
 import { lightTheme, darkTheme } from '../../theme';
 
+import{useAppDispatch,useAppSelector} from '../../../store';
+import { toggleDarkMode } from '../../../store/userSettingSlice';
+
 interface WelcomeScreenProps {
   username: string;
 }
@@ -15,14 +18,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
   ];
-
+  const dispatch = useAppDispatch();
   const [selectedLocation, setSelectedLocation] = useState('desk');
   const [curentView, setCurrentView] = useState('year');
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(months[0]);
   const [currentDay, setCurrentDay] = useState(0);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
+  const isDarkMode = useAppSelector((state) => state.userSetting.isDarkMode);
 
 
   const handleLocationSelect = (location: string) =>
@@ -57,7 +60,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   };
 
   const handleThemeToggle = () => {
-    setIsDarkMode(!isDarkMode);
+    dispatch(toggleDarkMode());
   };
 
   const renderYearView = () =>

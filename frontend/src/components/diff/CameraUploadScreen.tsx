@@ -81,6 +81,7 @@ const CameraUploadScreen: React.FC<CameraUploadScreenProps> = ({ backgroundColor
   };
 
   return (
+    
     <Box sx={{ 
       height: '100vh', 
       display: 'flex', 
