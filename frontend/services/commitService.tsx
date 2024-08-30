@@ -1,5 +1,8 @@
-import api from "./api";
+import createApi from "./api";
 import { CommitData } from "../types/diff"; 
+
+// Create a new API instance with the baseURL set to port 8082
+const api = createApi("http://localhost:8082");
 
 export const commitService = {
   // Create a new commit
