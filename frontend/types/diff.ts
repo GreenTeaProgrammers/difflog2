@@ -28,3 +28,9 @@ export interface Capture {
   analyzed: boolean;
   diffResponse?: DiffResponse; // 解析結果を含めるオプションのフィールド
 }
+
+export interface CommitData {
+  locationID: string;
+  date: string;
+  diff: Diff;
+}
