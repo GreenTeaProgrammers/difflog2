@@ -4,6 +4,7 @@ import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack } from '@mui/
 import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
 import { lightTheme, darkTheme } from '../../theme';
+import  ColorBlock  from "./atoms/ColorBlock";
 
 import{useAppDispatch,useAppSelector} from '../../../store';
 import { toggleDarkMode } from '../../../store/userSettingSlice';
@@ -111,14 +112,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           />
         ))}
         {Array.from({ length: daysInMonth }).map((_, index) => (
-          <Box
-            key={index}
-            sx={{
-              width: "100%",
-              paddingBottom: "100%",
-              backgroundColor: "grey.800",
-              borderRadius: 1,
-            }}
+          <ColorBlock
+            year={2024}
+            month={months.indexOf(month) + 1}
+            day={index+1}
           />
         ))}
       </>
@@ -148,16 +145,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
         </Box>
         <Grid container spacing={1}>
           {Array.from({ length: firstDayOfWeek }).map((_, index) => (
-            <Grid
-              item
-              xs={2}
-              key={index}
-            >
-              
-            </Grid>
+            <Grid item xs={2} key={index}></Grid>
           ))}
 
-          {Array.from({ length: daysInMonth}).map((_, day) => (
+          {Array.from({ length: daysInMonth }).map((_, day) => (
             <Grid
               item
               xs={2}
@@ -174,13 +165,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
                 }}
               >
                 <Typography variant="h6">{day + 1}</Typography>
-                <Box
-                  sx={{
-                    height: 50,
-                    bgcolor: "grey.800",
-                    borderRadius: 1,
-                    mt: 1,
-                  }}
+                <ColorBlock
+                  year={2024}
+                  month={months.indexOf(month) + 1}
+                  day={day + 1}
                 />
               </Paper>
             </Grid>
@@ -212,6 +200,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           {currentMonth} {currentDay}
         </Typography>
       </Box>
+      
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {[...Array(5)].map((_, index) => (
           <Paper

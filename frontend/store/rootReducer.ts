@@ -12,6 +12,7 @@ const rootReducer = combineReducers({
   diff: diffReducer,
   capture: captureReducer,
   userSetting: userSettingReducer,
+
 });
 
 export default rootReducer;
