@@ -8,7 +8,7 @@ export const commitService = {
   // Create a new commit
   createCommit: async (commitData: CommitData): Promise<CommitData> => {
     try {
-      const response = await api.post("/commits", commitData);
+      const response = await api.post("/commits/", commitData);
       return response.data;
     } catch (error) {
       console.error("Failed to create commit:", error);
