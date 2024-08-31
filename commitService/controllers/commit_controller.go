@@ -97,3 +97,24 @@ func (cc *CommitController) GetCommitCountByDate(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"date": date, "commit_count": count})
 }
+
+func (cc *CommitController) GetCommitCountByLocationAndDate(c *gin.Context) {
+	var count int64
+	locationID := c.Query("locationID")
+	date := c.Query("date")
+
+	parsedDate, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format. Use YYYY-MM-DD."})
+		return
+	}
+
+	if err := cc.DB.Model(&models.Commit{}).
+		Where("location_id = ? AND DATE(date) = ?", locationID, parsedDate).
+		Count(&count).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"locationID": locationID, "date": date, "commit_count": count})
+}

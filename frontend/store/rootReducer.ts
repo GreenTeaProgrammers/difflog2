@@ -3,6 +3,7 @@ import authReducer from './authSlice';
 import locationReducer from './locationSlice';
 import diffReducer from './diffSlice';
 import captureReducer from './captureSlice';
+import userSettingReducer from './userSettingSlice';
 
 // すべてのスライスを1つのrootReducerに結合
 const rootReducer = combineReducers({
@@ -10,6 +11,8 @@ const rootReducer = combineReducers({
   location: locationReducer,
   diff: diffReducer,
   capture: captureReducer,
+  userSetting: userSettingReducer,
+
 });
 
 export default rootReducer;

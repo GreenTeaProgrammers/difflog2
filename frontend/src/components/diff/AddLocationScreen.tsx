@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, IconButton, Container, Paper } from '@mui/material';
 import { ArrowBack, Add } from '@mui/icons-material';
 import { ThemeProvider } from '@mui/material/styles';
-import { darkTheme } from '../../theme';
 import { useNavigate } from 'react-router-dom';
 import { createLocation } from '../../../services/locationService'; // サービスのインポート
+import { useAppSelector } from "../../../store";
+import { lightTheme, darkTheme } from "../../theme";
 
 interface AddLocationScreenProps {
   onAddLocation: (newLocation: any) => void; // 適切な型を指定する必要があります
@@ -13,6 +14,7 @@ interface AddLocationScreenProps {
 const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation }) => {
   const [newLocation, setNewLocation] = useState('');
   const navigate = useNavigate();
+  const isDarkMode = useAppSelector((state) => state.userSetting.isDarkMode);
 
   const handleAddLocation = async () => {
     if (newLocation.trim()) {
@@ -37,21 +39,24 @@ const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation }) 
   };
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <Box
         sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          bgcolor: 'background.default',
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          bgcolor: "background.default",
         }}
       >
-        <Container maxWidth="sm" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', my: 3 }}>
+        <Container
+          maxWidth="sm"
+          sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", my: 3 }}>
             <IconButton color="primary" onClick={handleBack} sx={{ mr: 2 }}>
               <ArrowBack />
             </IconButton>
-            <Typography variant="h5" fontWeight="bold">
+            <Typography variant="h5" fontWeight="bold" color="text.primary">
               Add New Location
             </Typography>
           </Box>
@@ -62,11 +67,11 @@ const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation }) 
               p: 3,
               mt: 2,
               borderRadius: 2,
-              bgcolor: 'background.paper',
+              bgcolor: "background.paper",
               flexGrow: 1,
             }}
           >
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
               <TextField
                 value={newLocation}
                 onChange={(e) => setNewLocation(e.target.value)}
@@ -83,8 +88,8 @@ const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation }) 
                 disabled={!newLocation.trim()}
                 sx={{
                   py: 1.5,
-                  fontWeight: 'bold',
-                  textTransform: 'none',
+                  fontWeight: "bold",
+                  textTransform: "none",
                   borderRadius: 2,
                 }}
               >

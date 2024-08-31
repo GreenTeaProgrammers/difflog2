@@ -1,6 +1,8 @@
-import api from './api';
+import createApi from './api';
 import { LoginInput, RegisterInput, User } from '../types/user';
 import { AxiosError } from 'axios';
+
+const api = createApi("http://localhost:8083");
 
 export const register = async (input: RegisterInput): Promise<User> => {
   try {
