@@ -4,7 +4,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
-import { useCommitData } from '../../../hooks/useCommitData';
+import { useCommitData } from '../../hooks/useCommitData';
 import { useAppSelector } from "../../../store";
 import { lightTheme, darkTheme } from "../../theme";
 

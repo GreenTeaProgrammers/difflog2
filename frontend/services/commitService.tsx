@@ -5,6 +5,7 @@ import { CommitData } from "../types/diff";
 const api = createApi("http://localhost:8082");
 
 export const commitService = {
+  
   // Create a new commit
   createCommit: async (commitData: CommitData): Promise<CommitData> => {
     try {
