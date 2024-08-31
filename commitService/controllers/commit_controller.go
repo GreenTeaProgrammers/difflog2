@@ -100,34 +100,29 @@ func (cc *CommitController) GetCommitCountByDate(c *gin.Context) {
 }
 
 func (cc *CommitController) GetCommitCountByLocationAndDate(c *gin.Context) {
-	// テスト用に、固定で 10 を返す
-	count := int64(10)
+	var count int64
 	locationID := c.Query("locationID")
 	date := c.Query("date")
 
 	// 日付パラメータをログ出力
 	fmt.Printf("Received date: %s\n", date)
 
-	// 日付のパースは実行しますが、結果は使用しません
-	// parsedDate, err := time.Parse("2006-01-02", date)
-	// if err != nil {
-	// 	fmt.Println("Date parsing failed:", err)
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format. Use YYYY-MM-DD."})
-	// 	return
-	// }
+	parsedDate, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		fmt.Println("Date parsing failed:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format. Use YYYY-MM-DD."})
+		return
+	}
 
-	// 固定値 10 を返すため、データベースクエリはコメントアウト
-	/*
-		query := cc.DB.Model(&models.Commit{}).Where("DATE(date) = ?", parsedDate)
-		if locationID != "all" {
-			query = query.Where("location_id = ?", locationID)
-		}
+	query := cc.DB.Model(&models.Commit{}).Where("DATE(date) = ?", parsedDate)
+	if locationID != "all" {
+		query = query.Where("location_id = ?", locationID)
+	}
 
-		if err := query.Count(&count).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-	*/
+	if err := query.Count(&count).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"locationID": locationID, "date": date, "commit_count": count})
 }
