@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useAppSelector } from "../../../../store";
-import useOpenness from "../../../hooks/useOpenness";
+import useOpacity from "../../../hooks/useOpacity";
 
 type ColorBlockProps = {
   year: number;
@@ -12,7 +12,7 @@ type ColorBlockProps = {
 
 
 const ColorBlock = ({ year, month, day }: ColorBlockProps) => {
-  const { insideOpenness, outsideOpenness } = useOpenness({ year, month, day });
+  const { insideOpacity, outsideOpacity } = useOpacity({ year, month, day });
   
   return (
     <Box
@@ -21,7 +21,7 @@ const ColorBlock = ({ year, month, day }: ColorBlockProps) => {
         height: "100%",
         padding: "50%",
         borderRadius: 1,
-        backgroundColor: `rgba(89, 141, 198, ${outsideOpenness})`,
+        backgroundColor: `rgba(89, 141, 198, ${outsideOpacity})`,
         position: "relative",
       }}
     >
@@ -30,7 +30,7 @@ const ColorBlock = ({ year, month, day }: ColorBlockProps) => {
           width: "65%",
           height: "65%",
           borderRadius: 1,
-          backgroundColor: `rgba(215, 203, 96, ${insideOpenness})`,
+          backgroundColor: `rgba(215, 203, 96, ${insideOpacity})`,
           position: "absolute",
           top: "50%",
           left: "50%",
