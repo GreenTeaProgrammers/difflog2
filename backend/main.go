@@ -4,10 +4,10 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/GreenTeaProgrammers/difflog2/authService/config"
-	"github.com/GreenTeaProgrammers/difflog2/authService/middleware"
-	"github.com/GreenTeaProgrammers/difflog2/authService/models"
-	"github.com/GreenTeaProgrammers/difflog2/authService/routes"
+	"github.com/GreenTeaProgrammers/difflog2/config"
+	"github.com/GreenTeaProgrammers/difflog2/middleware"
+	"github.com/GreenTeaProgrammers/difflog2/models"
+	"github.com/GreenTeaProgrammers/difflog2/routes"
 	"github.com/gin-gonic/gin"
 )
 

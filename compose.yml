@@ -1,13 +1,13 @@
 services:
-  user:
+  backend:
     build:
       context: ./backend # ディレクトリ名
       dockerfile: ./Dockerfile
       target: builder # マルチステージビルドの場合、ビルド対象を指定
     command:
       - ./main
-    container_name: user
-    env_file: './userService/.env'
+    container_name: difflog_backend
+    env_file: './backend/.env'
     ports:
       - "8080:8081"
     environment:

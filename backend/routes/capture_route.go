@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/GreenTeaProgrammers/difflog2/captureService/controllers"
+	"github.com/GreenTeaProgrammers/difflog2/controllers"
 	"github.com/gin-gonic/gin"
 )
 
