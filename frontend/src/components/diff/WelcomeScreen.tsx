@@ -27,8 +27,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const [currentDay, setCurrentDay] = useState(0);
   const navigate = useNavigate();
   const isDarkMode = useAppSelector((state) => state.userSetting.isDarkMode);
-
-
   const handleLocationSelect = (location: string) =>
   {
 
