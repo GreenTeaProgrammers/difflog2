@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/GreenTeaProgrammers/difflog2/locationService/models"
+	"github.com/GreenTeaProgrammers/difflog2/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
