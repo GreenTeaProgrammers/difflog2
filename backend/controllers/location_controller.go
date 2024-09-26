@@ -19,95 +19,91 @@ func NewLocationController(db *gorm.DB) *LocationController {
 	return &LocationController{DB: db}
 }
 
-func (cc *LocationController) CreateLocation(c *gin.Context) {
+// 共通のエラーレスポンス関数
+func respondWithError(c *gin.Context, code int, message string, err error) {
+	slog.Error(message, slog.Any("error", err))
+	c.JSON(code, gin.H{"error": message})
+}
+
+// 共通のIDパース関数
+func parseUintParam(c *gin.Context, param string) (uint, error) {
+	idStr := c.Param(param)
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		respondWithError(c, http.StatusBadRequest, "Invalid "+param+" ID", err)
+		return 0, err
+	}
+	return uint(id), nil
+}
+
+func (ctrl *LocationController) CreateLocation(c *gin.Context) {
 	var location models.Location
 	if err := c.ShouldBindJSON(&location); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		respondWithError(c, http.StatusBadRequest, "Invalid input", err)
 		return
 	}
 
 	// last_commit_date に作成時の日時を代入
-	now := time.Now()
-	location.LastCommitDate = &now
+	location.LastCommitDate = time.Now()
 
-	if err := cc.DB.Create(&location).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	if err := ctrl.DB.Create(&location).Error; err != nil {
+		respondWithError(c, http.StatusInternalServerError, "Failed to create location", err)
 		return
 	}
 	c.JSON(http.StatusOK, location)
 }
 
 func (ctrl *LocationController) GetLocation(c *gin.Context) {
-	id := c.Param("id")
-	var location models.Location
-
-	// Convert id from string to uint
-	locationID, err := strconv.ParseUint(id, 10, 32)
+	locationID, err := parseUintParam(c, "id")
 	if err != nil {
-		slog.Error("Failed to parse location ID", slog.String("id", id), slog.Any("error", err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid location ID"})
 		return
 	}
 
-	if err := ctrl.DB.First(&location, uint(locationID)).Error; err != nil {
-		slog.Error("Location not found", slog.Int("location_id", int(locationID)), slog.Any("error", err))
-		c.JSON(http.StatusNotFound, gin.H{"error": "Location not found"})
+	var location models.Location
+	if err := ctrl.DB.First(&location, locationID).Error; err != nil {
+		respondWithError(c, http.StatusNotFound, "Location not found", err)
 		return
 	}
 
-	slog.Info("Location retrieved successfully", slog.Int("location_id", int(location.ID)))
+	slog.Info("Location retrieved successfully", slog.Int("location_id", int(locationID)))
 	c.JSON(http.StatusOK, location)
 }
 
 func (ctrl *LocationController) UpdateLocation(c *gin.Context) {
-	id := c.Param("id")
-
-	// Convert id from string to uint
-	locationID, err := strconv.ParseUint(id, 10, 32)
+	locationID, err := parseUintParam(c, "id")
 	if err != nil {
-		slog.Error("Failed to parse location ID", slog.String("id", id), slog.Any("error", err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid location ID"})
 		return
 	}
 
 	var location models.Location
-	if err := ctrl.DB.First(&location, uint(locationID)).Error; err != nil {
-		slog.Error("Location not found", slog.Int("location_id", int(locationID)), slog.Any("error", err))
-		c.JSON(http.StatusNotFound, gin.H{"error": "Location not found"})
+	if err := ctrl.DB.First(&location, locationID).Error; err != nil {
+		respondWithError(c, http.StatusNotFound, "Location not found", err)
 		return
 	}
 
 	if err := c.ShouldBindJSON(&location); err != nil {
-		slog.Error("Failed to bind JSON", slog.Any("error", err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		respondWithError(c, http.StatusBadRequest, "Invalid input", err)
 		return
 	}
 
-	location.ID = uint(locationID) // Ensure the ID remains consistent
+	location.ID = strconv.Itoa(int(locationID)) // Convert locationID to string before assigning
 	if err := ctrl.DB.Save(&location).Error; err != nil {
-		slog.Error("Failed to update location", slog.Int("location_id", int(location.ID)), slog.Any("error", err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		respondWithError(c, http.StatusInternalServerError, "Failed to update location", err)
 		return
 	}
 
-	slog.Info("Location updated successfully", slog.Int("location_id", int(location.ID)))
+	slog.Info("Location updated successfully", slog.Int("location_id", int(locationID)))
 	c.JSON(http.StatusOK, location)
 }
 
 func (ctrl *LocationController) DeleteLocation(c *gin.Context) {
-	id := c.Param("id")
-
-	// Convert id from string to uint
-	locationID, err := strconv.ParseUint(id, 10, 32)
+	locationID, err := parseUintParam(c, "id")
 	if err != nil {
-		slog.Error("Failed to parse location ID", slog.String("id", id), slog.Any("error", err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid location ID"})
 		return
 	}
 
-	if err := ctrl.DB.Delete(&models.Location{}, uint(locationID)).Error; err != nil {
-		slog.Error("Failed to delete location", slog.Int("location_id", int(locationID)), slog.Any("error", err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	if err := ctrl.DB.Delete(&models.Location{}, locationID).Error; err != nil {
+		respondWithError(c, http.StatusInternalServerError, "Failed to delete location", err)
 		return
 	}
 
@@ -118,8 +114,7 @@ func (ctrl *LocationController) DeleteLocation(c *gin.Context) {
 func (ctrl *LocationController) GetAllLocations(c *gin.Context) {
 	var locations []models.Location
 	if err := ctrl.DB.Find(&locations).Error; err != nil {
-		slog.Error("Failed to retrieve locations", slog.Any("error", err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		respondWithError(c, http.StatusInternalServerError, "Failed to retrieve locations", err)
 		return
 	}
 
