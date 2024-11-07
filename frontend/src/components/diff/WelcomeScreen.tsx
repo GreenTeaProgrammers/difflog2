@@ -327,14 +327,16 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
             </Typography>
           </Box>
 
-          <Box>
-          <Box onClick={navigateToLoginpage} sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          
+          <Box onClick={navigateToLoginpage}  bgcolor={'grey'} sx={{width: 180,
+          height: 30,display: 'flex', px: 3, justifyContent: 'space-between',py:3  , alignItems: 'center'}}>
             <ManageAccounts/>
-          </Box>
-
-          <Typography>
-            Login Info
-          </Typography>
+            
+            <Box>
+            <Typography>
+              Login Info
+            </Typography>
+            </Box>
           </Box>
           
         </Drawer>
