@@ -166,7 +166,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
                   textAlign: "center",
                 }}
               >
-                <Typography variant="h6">{day + 1}</Typography>
+                
                 <ColorBlock
                   year={2024}
                   month={months.indexOf(month) + 1}
