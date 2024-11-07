@@ -9,6 +9,40 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+labels_group = {
+    'animal': [
+        'bird',
+        'cat',
+        'dog',
+        'horse',
+        'sheep',
+        'cow',
+        'elephant',
+        'bear',
+        'zebra',
+        'giraffe',
+    ],
+    'food': [
+        'banana',
+        'apple',
+        'sandwich',
+        'orange',
+        'broccoli',
+        'carrot',
+        'hot_dog',
+        'pizza',
+        'donut',
+        'cake',
+    ],
+    'home_appliance': [
+        'microwave',
+        'oven',
+        'toaster',
+        'sink',
+        'refrigerator',
+    ],
+}
+
 class Model:
     detection_image = None
     general_model = 'yolomodel' # 汎用的なモデルの名前
@@ -47,25 +81,23 @@ def detect():
         for model_name, results in results_dict.items():
             for result in results:
                 
-                if model_name == model.general_model:
-                    for box in result.boxes:
-                        class_id = int(box.cls)
-                        class_name = result.names[class_id]
-                        if class_name in object_counts:
-                            object_counts[class_name] += 1
-                        else:
-                            object_counts[class_name] = 1
-                            
-                elif model_name in model.expert_models:
+                if model_name in model.expert_models:
                     object_counts[model_name] = 0
-                    for box in result.boxes:
-                        class_id = int(box.cls)
-                        class_name = result.names[class_id]
-                        if class_name in object_counts:
-                            object_counts[class_name] += 1
-                        else:
-                            object_counts[class_name] = 1
+                    
+                for box in result.boxes:
+                    class_id = int(box.cls)
+                    class_name = result.names[class_id]
+                    for group_name, group_labels in labels_group.items():
+                        if class_name in group_labels:
+                            class_name = group_name
+                            break
                         
+                    if class_name in object_counts:
+                        object_counts[class_name] += 1
+                    else:
+                        object_counts[class_name] = 1
+        
+        
         logger.info("Object counts calculated: %s", object_counts)
         
         return jsonify(object_counts)
