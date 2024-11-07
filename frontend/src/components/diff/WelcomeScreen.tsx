@@ -248,12 +248,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           </IconButton>
           <Typography variant="h6">2024 - {selectedLocation}</Typography>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <IconButton color="inherit" onClick={navigateToCameraUpload}>
-              <CameraAlt />
-            </IconButton>
-            <IconButton color="inherit" onClick={navigateToAddLocation}>
-              <AddLocation />
-            </IconButton>
             <IconButton color="inherit" onClick={navigateToAnalytics}>
               <BarChart />
             </IconButton>
