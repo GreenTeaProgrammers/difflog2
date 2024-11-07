@@ -269,26 +269,32 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           <HorizontalWheel items={locations} onSelect={handleLocationSelect} />
         </Box>
 
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <IconButton color="inherit" onClick={navigateToAddLocation}>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', bgcolor: 'background.default', alignItems: 'center' }}>
+          <Box  sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <IconButton color="inherit" onClick={navigateToAddLocation}>
               <NearMe />
-              <Typography>
-                Location
-              </Typography>
-          </IconButton>
-          <IconButton color="inherit" onClick={navigateToCameraUpload}>
-              <CameraAlt />
-              <Typography>
-                Camera
-              </Typography>
-          </IconButton>
-          <IconButton color="inherit" onClick={() => setCurrentView("year")}>
-              < Home />
-              <Typography>
-              Home
-              </Typography>
             </IconButton>
-            
+            <Typography>
+              Location
+            </Typography>
+          </Box>
+          <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <IconButton color="inherit" onClick={navigateToCameraUpload}>
+            <CameraAlt />
+          </IconButton>
+          <Typography>
+            Camera
+          </Typography>
+          </Box>
+          
+          <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <IconButton color="inherit" onClick={() => setCurrentView("year")}>
+            < Home />
+          </IconButton>
+          <Typography>
+            Home
+          </Typography>
+          </Box> 
         </Box>
 
         <Drawer
