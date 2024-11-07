@@ -65,30 +65,34 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const renderYearView = () =>
   {
     return (
-      <Grid container spacing={1}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {months.map((month) => (
-          <Grid item xs={yearXsValue} key={month}>
-            <Paper
-              elevation={3}
-              sx={{ p: 1, bgcolor: "grey.900", color: "white" }}
-            >
-              <Typography variant="subtitle2" align="center">
-                {month}
-              </Typography>
-              <Box
-                onClick={() => setCurrentMonthData(month)}
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(7, 1fr)",
-                  gap: 0.5,
-                }}
-              >
-                {renderMonthGridPreview(month)}
-              </Box>
-            </Paper>
-          </Grid>
+          <Box
+        key={month}
+        sx={{
+          flexBasis: `calc(${100 / 3}% - 8px)`,
+          p: 1,
+          bgcolor: "grey.900",
+          color: "white",
+          height: '20vh',
+        }}
+          >
+        <Typography variant="subtitle2" align="center">
+          {month}
+        </Typography>
+        <Box
+          onClick={() => setCurrentMonthData(month)}
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(7, 1fr)",
+            gap: 0.5,
+          }}
+        >
+          {renderMonthGridPreview(month)}
+        </Box>
+          </Box>
         ))}
-      </Grid>
+      </Box>
     );
   };
 
