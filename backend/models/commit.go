@@ -10,7 +10,7 @@ type Commit struct {
 	ID         uint           `gorm:"primaryKey"`
 	LocationID string         `gorm:"type:varchar(100);not null"`
 	Date       time.Time      `gorm:"autoCreateTime"`
-	Diff       Diff           `gorm:"foreignKey:CommitID;constraint:OnDelete:CASCADE;"`
+	Diff       *Diff          `gorm:"foreignKey:CommitID"`
 	CreatedAt  time.Time      `gorm:"autoCreateTime"`
 	UpdatedAt  time.Time      `gorm:"autoUpdateTime"`
 	DeletedAt  gorm.DeletedAt `gorm:"index"`

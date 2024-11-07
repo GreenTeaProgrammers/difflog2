@@ -36,8 +36,7 @@ func ConnectDatabase() {
 	}
 
 	// Create tables
-	if err := DB.AutoMigrate(&User{}); err != nil {
-		// 5xx系のサーバーエラー: データベースマイグレーションに失敗した場合
+	if err := DB.AutoMigrate(&User{}, &Commit{}, &Capture{}, &Location{}, &Diff{}, &DiffItem{}); err != nil {
 		slog.Error("Could not migrate database", "error", err)
 		os.Exit(1)
 	}
