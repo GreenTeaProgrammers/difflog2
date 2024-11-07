@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton,  Grid, Paper, Drawer, Switch, ThemeProvider } from '@mui/material';
-import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack } from '@mui/icons-material';
+import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack, NearMe, Home } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
 import { lightTheme, darkTheme } from '../../theme';
@@ -248,12 +248,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           </IconButton>
           <Typography variant="h6">2024 - {selectedLocation}</Typography>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <IconButton color="inherit" onClick={navigateToCameraUpload}>
-              <CameraAlt />
-            </IconButton>
-            <IconButton color="inherit" onClick={navigateToAddLocation}>
-              <AddLocation />
-            </IconButton>
             <IconButton color="inherit" onClick={navigateToAnalytics}>
               <BarChart />
             </IconButton>
@@ -273,6 +267,34 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
 
         <Box sx={{ p: 2 }}>
           <HorizontalWheel items={locations} onSelect={handleLocationSelect} />
+        </Box>
+
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', bgcolor: 'background.default', alignItems: 'center' }}>
+          <Box  sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <IconButton color="inherit" onClick={navigateToAddLocation}>
+              <NearMe />
+            </IconButton>
+            <Typography>
+              Location
+            </Typography>
+          </Box>
+          <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <IconButton color="inherit" onClick={navigateToCameraUpload}>
+            <CameraAlt />
+          </IconButton>
+          <Typography>
+            Camera
+          </Typography>
+          </Box>
+          
+          <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <IconButton color="inherit" onClick={() => setCurrentView("year")}>
+            < Home />
+          </IconButton>
+          <Typography>
+            Home
+          </Typography>
+          </Box> 
         </Box>
 
         <Drawer
