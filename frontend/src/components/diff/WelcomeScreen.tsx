@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton,  Grid, Paper, Drawer, Switch, ThemeProvider } from '@mui/material';
-import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack } from '@mui/icons-material';
+import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack, NearMe, Home } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
 import { lightTheme, darkTheme } from '../../theme';
@@ -273,6 +273,28 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
 
         <Box sx={{ p: 2 }}>
           <HorizontalWheel items={locations} onSelect={handleLocationSelect} />
+        </Box>
+
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <IconButton color="inherit" onClick={navigateToAddLocation}>
+              <NearMe />
+              <Typography>
+                Location
+              </Typography>
+          </IconButton>
+          <IconButton color="inherit" onClick={navigateToCameraUpload}>
+              <CameraAlt />
+              <Typography>
+                Camera
+              </Typography>
+          </IconButton>
+          <IconButton color="inherit" onClick={() => setCurrentView("year")}>
+              < Home />
+              <Typography>
+              Home
+              </Typography>
+            </IconButton>
+            
         </Box>
 
         <Drawer
