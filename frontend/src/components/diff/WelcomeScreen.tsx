@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton,  Grid, Paper, Drawer, Switch, ThemeProvider } from '@mui/material';
-import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack, NearMe, Home } from '@mui/icons-material';
+import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack, NearMe, Home, ManageAccounts } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from './HorizontalWheel';
 import { lightTheme, darkTheme } from '../../theme';
@@ -56,6 +56,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const navigateToAnalytics = () =>
   {
     navigate('/analytics');
+  };
+
+  const navigateToLoginpage = () => {
+    navigate('/login');
   };
 
   const handleThemeToggle = () => {
@@ -322,6 +326,19 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
               the location icon to add new locations, and the chart icon to view analytics. Toggle the switch in the top-right corner to change between light and dark themes.
             </Typography>
           </Box>
+
+          
+          <Box onClick={navigateToLoginpage}  bgcolor={'grey'} sx={{width: 180,
+          height: 30,display: 'flex', px: 3, justifyContent: 'space-between',py:3  , alignItems: 'center'}}>
+            <ManageAccounts/>
+            
+            <Box>
+            <Typography>
+              Login Info
+            </Typography>
+            </Box>
+          </Box>
+          
         </Drawer>
       </Box>
     </ThemeProvider>
