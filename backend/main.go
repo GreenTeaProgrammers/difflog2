@@ -28,6 +28,7 @@ func main() {
 	// データベース接続を設定
 	models.ConnectDatabase()
 	models.SetDatabase(models.DB)
+	// Seeding(models.DB)
 
 	// ルートを設定
 	routes.AuthRoutes(r)
