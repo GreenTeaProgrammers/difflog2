@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Box, Typography, IconButton,  Grid, Paper, Drawer, Switch, ThemeProvider } from '@mui/material';
 import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack, NearMe, Home, ManageAccounts } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import HorizontalWheel from './HorizontalWheel';
-import { lightTheme, darkTheme } from '../../theme';
-import  ColorBlock  from "./atoms/ColorBlock";
+import HorizontalWheel from '../HorizontalWheel';
+import { lightTheme, darkTheme } from '../../../theme';
+import  ColorBlock  from "../atoms/ColorBlock";
 
-import{useAppDispatch,useAppSelector} from '../../../store';
-import { toggleDarkMode } from '../../../store/userSettingSlice';
+import{useAppDispatch,useAppSelector} from '../../../../store';
+import { toggleDarkMode } from '../../../../store/userSettingSlice';
 
 interface WelcomeScreenProps {
   username: string;
