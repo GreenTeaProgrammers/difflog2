@@ -204,7 +204,7 @@ func (cc *CommitController) GetCommitsByLocationAndDate(c *gin.Context) {
         return
     }
 
-    if err := cc.DB.Preload("Diff.Changes").Where("location_id = ? AND DATE(date) = ?", locationID, parsedDate.Format("2006-01-02")).Find(&commits).Error; err != nil {
+    if err := cc.DB.Preload("Diff.Changes").Where("location_id = ? AND DATE(date) = ?", locationID, parsedDate.Format("2006-01-02")).Order("created_at ASC").Find(&commits).Error; err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
