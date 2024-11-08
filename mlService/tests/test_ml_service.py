@@ -1,4 +1,3 @@
-import pytest
 import os
 
 def test_detect_valid_image(client):
