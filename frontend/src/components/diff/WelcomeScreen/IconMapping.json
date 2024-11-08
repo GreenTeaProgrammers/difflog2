@@ -1,0 +1,104 @@
+{
+    "remote": {
+      "importPath": "SettingsRemote"
+    },
+    "mouse": {
+      "importPath": "Mouse"
+    },
+    "clock": {
+      "importPath": "AccessTime"
+    },
+    "bed": {
+      "importPath": "Hotel"
+    },
+    "bench": {
+      "importPath": "EventSeat"
+    },
+    "backpack": {
+      "importPath": "Backpack"
+    },
+    "umbrella": {
+      "importPath": "Umbrella"
+    },
+    "handbag": {
+      "importPath": "LocalMall"
+    },
+    "suitcase": {
+      "importPath": "Luggage"
+    },
+    "skis": {
+      "importPath": "DownhillSkiing"
+    },
+    "snowboard": {
+      "importPath": "Snowboarding"
+    },
+    "sports_ball": {
+      "importPath": "SportsBaseball"
+    },
+    "baseball_bat": {
+      "importPath": "SportsCricket"
+    },
+    "skateboard": {
+      "importPath": "Skateboarding"
+    },
+    "surfboard": {
+      "importPath": "Surfing"
+    },
+    "tennis_racket": {
+      "importPath": "SportsTennis"
+    },
+    "wine_glass": {
+      "importPath": "WineBar"
+    },
+    "cup": {
+      "importPath": "LocalCafe"
+    },
+    "fork": {
+      "importPath": "Flatware"
+    },
+    "knife": {
+      "importPath": "Flatware"
+    },
+    "spoon": {
+      "importPath": "Flatware"
+    },
+    "chair": {
+      "importPath": "ChairAlt"
+    },
+    "couch": {
+      "importPath": "Weekend"
+    },
+    "potted_plant": {
+      "importPath": "Grass"
+    },
+    "dining_table": {
+      "importPath": "TableRestaurant"
+    },
+    "toilet": {
+      "importPath": "Wc"
+    },
+    "tv": {
+      "importPath": "Tv"
+    },
+    "laptop": {
+      "importPath": "Laptop"
+    },
+    "keyboard": {
+      "importPath": "Keyboard"
+    },
+    "cell_phone": {
+      "importPath": "Phone"
+    },
+    "book": {
+      "importPath": "MenuBook"
+    },
+    "vase": {
+      "importPath": "FilterVintage"
+    },
+    "scissors": {
+      "importPath": "ContentCut"
+    },
+    "teddy_bear": {
+      "importPath": "Pets"
+    }
+  }
