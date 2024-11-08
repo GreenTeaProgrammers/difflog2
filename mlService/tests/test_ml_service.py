@@ -12,7 +12,7 @@ def test_detect_valid_image(client):
                            content_type='application/octet-stream')
     
     assert response.status_code == 200
-    assert response.json() == {"book":3,"cell phone":1,"keyboard":2,"laptop":1,"mouse":1,"remote":1}
+    assert response.json == {"book":3,"cell phone":1,"keyboard":2,"laptop":1,"mouse":1,"remote":1}
 
 def test_detect_invalid_data(client):
     """無効なデータを送信して /detect エンドポイントをテスト"""
