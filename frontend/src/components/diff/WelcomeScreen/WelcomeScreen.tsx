@@ -208,14 +208,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
       </Box>
       
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {[...Array(5)].map((_, index) => (
-          <Paper
+        {[...Array(5)].map((_, index) => (//arrayの要素数を、検知した物体の種類数に指定したい
+          <Paper //selectedLocationは選択されているロケーションの情報を持っている。物体の名称(ラベル名)とアイコンを表示したい(アイコン名はjsonファイルを参照)。検出した物体の、前回との差分情報を取得したい(resultpageを参照？)
             key={index}
             elevation={3}
             sx={{ p: 2, bgcolor: "grey.800", color: "white" }}
           >
             <Typography variant="body1">
-              Item {index + 1} in {selectedLocation}
+              Item {index + 1} in {selectedLocation} 
             </Typography>
             <Typography
               variant="body2"
