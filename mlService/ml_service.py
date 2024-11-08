@@ -58,8 +58,15 @@ class Model:
         
     def decode_image(self, image_data):
         """バイナリデータをデコードして画像として読み込む"""
-        np_arr = np.frombuffer(image_data, np.uint8)
-        return cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+        try:
+            np_arr = np.frombuffer(image_data, np.uint8)
+            img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+            if img is None:
+                raise ValueError("Image decoding failed")
+            return img
+        except Exception as e:
+            logger.error(f"Image decoding error: {e}")
+            raise ValueError("Invalid image data")
         
     def detect(self):
         results_dict = {}
@@ -106,6 +113,9 @@ def detect():
         logger.info("Object counts calculated: %s", object_counts)
         
         return make_response(jsonify(object_counts), 200)
+    except ValueError as e:
+        logger.error(e)
+        return make_response(jsonify({'error': str(e)}), 400)
     except Exception as e:
         logger.error(e)
         return make_response(jsonify({'error': str(e)}), 500)

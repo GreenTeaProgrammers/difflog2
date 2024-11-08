@@ -19,7 +19,7 @@ def test_detect_invalid_data(client):
                            data=b'invalid data',
                            content_type='application/octet-stream')
     
-    assert response.status_code == 500
+    assert response.status_code == 400
 
 def test_detect_missing_image(client):
     """画像データが欠落している場合の /detect エンドポイントをテスト"""
@@ -27,7 +27,7 @@ def test_detect_missing_image(client):
                            data=b'',
                            content_type='application/octet-stream')
     
-    assert response.status_code == 500
+    assert response.status_code == 400
     
 def test_detect_grouped_labels(client):
     """labels_groupに含まれているものが検出された時にグループ名がclass_nameになっているかをテスト"""
