@@ -86,7 +86,7 @@ func (ctrl *LocationController) UpdateLocation(c *gin.Context) {
 		return
 	}
 
-	location.ID = strconv.Itoa(int(locationID)) // Convert locationID to string before assigning
+	location.ID = int(locationID)
 	if err := ctrl.DB.Save(&location).Error; err != nil {
 		respondWithError(c, http.StatusInternalServerError, "Failed to update location", err)
 		return
