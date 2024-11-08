@@ -12,14 +12,15 @@ const [selectedLocation, setSelectedLocation] = useState('desk');
             sx={{ p: 2, bgcolor: "grey.800", color: "white" }}
           >
             <Typography variant="body1">
-                {commit.label}
+                {commit.data.label}
             </Typography>
             <Typography variant="body2">
-                commit.count 
+                commit.data.count
             </Typography>
             <Box>
-                {commit.count - commit.count}
+                {commit.data.count - commit.data.count}
             </Box>
-          </Paper> // ここでは今回のコミット(commit.count)と前回のコミットでの物体数の差分を見たい
+
+          </Paper> // ここでは今回のコミット(commit.count)と前回`のコミットでの物体数の差分を見たい
         ))}
       </Box>
