@@ -214,8 +214,8 @@ func (cc *CommitController) GetCommitsByLocationAndDate(c *gin.Context) {
         for _, change := range commit.Diff.Changes {
             response = append(response, CommitResponse{
 				ID:           commit.ID,
-                ItemName:     change.ItemName,
-                CurrentCount: change.CurrentCount,
+                label:     change.ItemName,
+                count: change.CurrentCount,
             })
         }
     }
