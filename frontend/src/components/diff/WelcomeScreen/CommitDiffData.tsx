@@ -1,26 +1,36 @@
-import { Box, Paper, Typography } from "@mui/material";
-import React, { useState } from 'react';
-
-const [selectedLocation, setSelectedLocation] = useState('desk');
+import { Box, Card, Paper, Typography } from "@mui/material";
+import { Commit } from "./WelcomeScreen";
 
 
-<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {commits.map((commit) => (//arrayの要素数を、検知した物体の種類数に指定したい
-          <Paper //selectedLocationは選択されているロケーションの情報を持っている。物体の名称(ラベル名)とアイコンを表示したい(アイコン名はjsonファイルを参照)。検出した物体の、前回との差分情報を取得したい(resultpageを参照？)
-            key={commit}
-            elevation={3}
-            sx={{ p: 2, bgcolor: "grey.800", color: "white" }}
-          >
-            <Typography variant="body1">
-                {commit.data.label}
-            </Typography>
-            <Typography variant="body2">
-                commit.data.count
-            </Typography>
-            <Box>
-                {commit.data.count - commit.data.count}
-            </Box>
 
-          </Paper> // ここでは今回のコミット(commit.count)と前回`のコミットでの物体数の差分を見たい
-        ))}
-      </Box>
+interface CommitDiffDisplayProps {
+  commits: Commit[];
+}
+const CommitDiffDisplay = ({ commits }: CommitDiffDisplayProps) => {
+
+  const calculateDiff = (currentCount: number, index: number, itemindex: number) => {
+    if (index === 0) return currentCount;
+    const previousCount = commits[index - 1].items[itemindex].count;
+    return currentCount - previousCount;
+  };
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      {commits.map((commit, index) => (
+        <Paper key={index} sx={{ padding: 2 }}>
+          <Card sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {commit.items.map((item, itemindex) => (
+              <Box key={itemindex} sx={{ display: "flex", gap: 2 }}>
+                <Typography variant="body1">{item.label}</Typography>
+                <Typography variant="body1">
+                  {calculateDiff(item.count, index, itemindex)}
+                </Typography>
+              </Box>
+            ))}
+          </Card>
+        </Paper>
+      ))}
+    </Box>
+  );
+  };
+
+export default CommitDiffDisplay;

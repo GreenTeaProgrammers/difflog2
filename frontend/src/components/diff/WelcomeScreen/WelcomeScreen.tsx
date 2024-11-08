@@ -9,9 +9,29 @@ import  ColorBlock  from "../atoms/ColorBlock";
 import{useAppDispatch,useAppSelector} from '../../../../store';
 import { toggleDarkMode } from '../../../../store/userSettingSlice';
 
+import CommitDiffDisplay from './CommitDiffData';
+
 interface WelcomeScreenProps {
   username: string;
 }
+
+export type Commit = {
+  ID: number;
+  items: {
+    label: string;
+    count: number;
+  }[];
+};
+
+const mockCommits: Commit = 
+  {
+    ID: 1,
+    items: [
+      { label: "feature", count: 5 },
+      { label: "bug", count: 2 },
+      { label: "documentation", count: 1 }
+    ]
+  };
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const locations = ["books", "kitchen", "desk", "store"];
@@ -207,7 +227,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
         </Typography>
       </Box>
       
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <Typography variant="h6" color="black">
+          aaaaaaaaaaaa
+        </Typography>
+        <CommitDiffDisplay commits={[mockCommits]} />
+      </Box>
+      {/*
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {[...Array(5)].map((_, index) => (//arrayの要素数を、検知した物体の種類数に指定したい
           <Paper //selectedLocationは選択されているロケーションの情報を持っている。物体の名称(ラベル名)とアイコンを表示したい(アイコン名はjsonファイルを参照)。検出した物体の、前回との差分情報を取得したい(resultpageを参照？)
             key={index}
@@ -226,6 +253,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           </Paper>
         ))}
       </Box>
+      */}
+      
     </Box>
   );
 
