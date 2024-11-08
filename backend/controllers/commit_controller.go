@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -188,4 +189,36 @@ func (cc *CommitController) GetCommitCountByLocationAndDate(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"locationID": locationID, "date": date, "commit_count": count})
+}
+
+
+func (cc *CommitController) GetCommitsByLocationAndDate(c *gin.Context) {
+    var commits []models.Commit
+    locationID := c.Query("locationID")
+    date := c.Query("date")
+    slog.Info("GetCommitsByLocationAndDate", "locationID", locationID, "date", date)
+
+    parsedDate, err := time.Parse("2006-01-02", date)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format. Use YYYY-MM-DD."})
+        return
+    }
+
+    if err := cc.DB.Preload("Diff.Changes").Where("location_id = ? AND DATE(date) = ?", locationID, parsedDate.Format("2006-01-02")).Order("created_at ASC").Find(&commits).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    var response []CommitResponse
+    for _, commit := range commits {
+        for _, change := range commit.Diff.Changes {
+            response = append(response, CommitResponse{
+                ItemName:     change.ItemName,
+                CurrentCount: change.CurrentCount,
+            })
+        }
+    }
+
+    slog.Info("GetCommitsByLocationAndDate", "locationID", locationID, "date", date, "commit_count", len(response))
+    c.JSON(http.StatusOK, response)
 }

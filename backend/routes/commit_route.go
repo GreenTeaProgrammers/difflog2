@@ -19,5 +19,6 @@ func CommitRoutes(router *gin.Engine) {
 		commitGroup.DELETE("/:id", commitController.DeleteCommit)
 		commitGroup.GET("/count_by_date", commitController.GetCommitCountByDate)                     // 同日付のコミット数を返却
 		commitGroup.GET("/countByLocationAndDate", commitController.GetCommitCountByLocationAndDate) // 追加: LocationIDと日付によるコミット数を返却
+		commitGroup.GET("/commits-by-location-and-date", commitController.GetCommitsByLocationAndDate) // 追加: LocationIDと日付によるコミットを返却
 	}
 }
