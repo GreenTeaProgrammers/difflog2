@@ -1,7 +1,7 @@
 import createApi from './api';
 import { Capture } from '../types/capture';
 
-const api = createApi("http://localhost:8081");
+const api = createApi();
 
 export const fetchCaptures = async (locationId: string): Promise<Capture[]> => {
   const response = await api.get<Capture[]>(`/locations/${locationId}/captures`);
