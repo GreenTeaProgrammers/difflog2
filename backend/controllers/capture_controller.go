@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -75,10 +76,9 @@ func (ctrl CaptureController) CreateCapture(c *gin.Context) {
 		return
 	}
 
-	// 画像のURLを使用してMLサーバーに送信
-	mlResponse, err := callMLServer(capture.ImageURL)
+	mlResponse, err := callMLServer(file)
 	if err != nil {
-		slog.Error("Failed to get diff from ML server", slog.Any("error", err), slog.String("imageURL", capture.ImageURL))
+		slog.Error("Failed to get diff from ML server", slog.Any("error", err), slog.String("filepath", filepath))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get diff from ML server"})
 		return
 	}
@@ -163,32 +163,49 @@ func (ctrl CaptureController) DeleteCapture(c *gin.Context) {
 }
 
 // callMLServer はMLサーバーに画像データを送信し、差分を取得します
-func callMLServer(imageURL string) (*models.DiffResponse, error) {
-	mlServerURL := "http://127.0.0.1:5000/diff" // MLサーバーのエンドポイントURL
-	payload := map[string]string{"image_url": imageURL}
-	jsonPayload, err := json.Marshal(payload)
-	if err != nil {
-		slog.Error("Failed to marshal JSON for ML server request", slog.Any("error", err), slog.String("imageURL", imageURL))
-		return nil, err
-	}
+func callMLServer(file *multipart.FileHeader) (*models.DiffResponse, error) {
+    mlServerURL := os.Getenv("ML_SERVER_URL") + "/detect"
+    if mlServerURL == "" {
+        slog.Error("ML_SERVER_URL environment variable is not set")
+        return nil, fmt.Errorf("ML_SERVER_URL environment variable is not set")
+    }
 
-	resp, err := http.Post(mlServerURL, "application/json", bytes.NewBuffer(jsonPayload))
-	if err != nil {
-		slog.Error("Failed to send POST request to ML server", slog.Any("error", err), slog.String("mlServerURL", mlServerURL))
-		return nil, err
-	}
-	defer resp.Body.Close()
+    // ファイルを開く
+    src, err := file.Open()
+    if err != nil {
+        slog.Error("Failed to open image file", slog.Any("error", err), slog.String("filename", file.Filename))
+        return nil, err
+    }
+    defer src.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		slog.Error("ML server returned non-OK status", slog.String("status", resp.Status), slog.String("mlServerURL", mlServerURL))
-		return nil, fmt.Errorf("ML server returned status: %d", resp.StatusCode)
-	}
+    // 画像ファイルのバイナリデータを取得
+    fileBuffer := make([]byte, file.Size)
+    _, err = src.Read(fileBuffer)
+    if err != nil {
+        slog.Error("Failed to read image file", slog.Any("error", err), slog.String("filename", file.Filename))
+        return nil, err
+    }
 
-	var diffResponse models.DiffResponse
-	if err := json.NewDecoder(resp.Body).Decode(&diffResponse); err != nil {
-		slog.Error("Failed to decode JSON response from ML server", slog.Any("error", err))
-		return nil, err
-	}
+    // バイナリデータを送信
+    resp, err := http.Post(mlServerURL, "application/octet-stream", bytes.NewBuffer(fileBuffer))
+	slog.Info("POST request sent to ML server", slog.String("mlServerURL", mlServerURL))
+	slog.Info("return response", slog.Any("resp", resp))
+    if err != nil {
+        slog.Error("Failed to send POST request to ML server", slog.Any("error", err), slog.String("mlServerURL", mlServerURL))
+        return nil, err
+    }
+    defer resp.Body.Close()
 
-	return &diffResponse, nil
+    if resp.StatusCode != http.StatusOK {
+        slog.Error("ML server returned non-OK status", slog.String("status", resp.Status), slog.String("mlServerURL", mlServerURL))
+        return nil, fmt.Errorf("ML server returned status: %d", resp.StatusCode)
+    }
+
+    var diffResponse models.DiffResponse
+    if err := json.NewDecoder(resp.Body).Decode(&diffResponse); err != nil {
+        slog.Error("Failed to decode JSON response from ML server", slog.Any("error", err))
+        return nil, err
+    }
+
+    return &diffResponse, nil
 }
