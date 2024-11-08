@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from ultralytics import YOLO
 import logging
 
@@ -100,10 +100,10 @@ def detect():
         
         logger.info("Object counts calculated: %s", object_counts)
         
-        return jsonify(object_counts)
+        return make_response(jsonify(object_counts), 200)
     except Exception as e:
         logger.error(e)
-        return jsonify({'error': str(e)})
+        return make_response(jsonify({'error': str(e)}), 500)
     
 
 if __name__ == '__main__':
