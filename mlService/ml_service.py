@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, make_response
 from ultralytics import YOLO
 import logging
+import cv2
+import numpy as np
 
 app = Flask(__name__)
 
@@ -50,10 +52,14 @@ class Model:
         'book',
     ] 
     
-    def __init__(self, image):
-        self.detection_image = image
+    def __init__(self, image_data):
+        self.detection_image = self.decode_image(image_data)
         logger.info('Model initialized')
         
+    def decode_image(self, image_data):
+        """バイナリデータをデコードして画像として読み込む"""
+        np_arr = np.frombuffer(image_data, np.uint8)
+        return cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
         
     def detect(self):
         results_dict = {}
@@ -70,11 +76,10 @@ class Model:
 @app.route('/detect', methods=['POST'])
 def detect():
     try:
-        data = request.get_json()
-        logger.info("Received data: %s", data)
-        image = data['image']
+        image_data = request.data
+        logger.info("Received data of length: %d", len(image_data))
         
-        model = Model(image)
+        model = Model(image_data)
         results_dict = model.detect()
         
         object_counts = {}
