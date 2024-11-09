@@ -228,9 +228,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
       </Box>
       
       <Box sx={{ display: "flex", gap: 2 }}>
-        <Typography variant="h6" color="black">
+        {/*<Typography variant="h6" color="black">
           aaaaaaaaaaaa
-        </Typography>
+        </Typography>*/}
         <CommitDiffDisplay commits={[mockCommits]} />
       </Box>
       {/*
