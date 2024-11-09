@@ -16,18 +16,21 @@ const CommitDiffDisplay = ({ commits }: CommitDiffDisplayProps) => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       {commits.map((commit, index) => (
-        <Paper key={index} sx={{ padding: 2 }}>
-          <Card sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Card key={index} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {commit.items.map((item, itemindex) => (
               <Box key={itemindex} sx={{ display: "flex", gap: 2 }}>
-                <Typography variant="body1">{item.label}</Typography>
-                <Typography variant="body1">
-                  {calculateDiff(item.count, index, itemindex)}
+                <Box>
+                  <Typography variant="body1">{item.label}</Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body1">
+                    {calculateDiff(item.count, index, itemindex)}
                 </Typography>
+                </Box>
+                
               </Box>
             ))}
           </Card>
-        </Paper>
       ))}
     </Box>
   );

@@ -33,7 +33,8 @@ const labelToIconMapping = {
     "vase": "FilterVintage",
     "scissors": "ContentCut",
     "teddy_bear": "Toys",
-    "animal": "Pet",
+    "animal": "Pets",
     "food": "DinnerDining",
     "home_appliance": "Kitchen"
 }
+export const labelToIconMapping: { [key: string]: string };
