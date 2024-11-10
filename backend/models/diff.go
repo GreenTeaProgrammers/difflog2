@@ -6,7 +6,6 @@ type DiffItem struct {
 	ID            uint   `json:"id" gorm:"primaryKey"`
 	DiffID        string `json:"diff_id" gorm:"not null;index"`
 	Diff          *Diff  `gorm:"foreignKey:DiffID;constraint:OnDelete:CASCADE"`
-	ItemID        string `json:"item_id"`
 	ItemName      string `json:"item_name"`
 	ChangeType    string `json:"change_type"`
 	PreviousCount int    `json:"previous_count"`

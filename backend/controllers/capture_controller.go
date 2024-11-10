@@ -26,72 +26,72 @@ type CaptureRequest struct {
 
 // CreateCapture は新しい撮影データを作成し、画像をサーバーに保存します
 func (ctrl CaptureController) CreateCapture(c *gin.Context) {
-	var captureRequest CaptureRequest
-	if err := c.ShouldBind(&captureRequest); err != nil {
-		slog.Error("Failed to bind capture request: Invalid input", slog.Any("error", err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
+    var captureRequest CaptureRequest
+    if err := c.ShouldBind(&captureRequest); err != nil {
+        slog.Error("Failed to bind capture request: Invalid input", slog.Any("error", err))
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+        return
+    }
 
-	// ファイルを受け取る
-	file, err := c.FormFile("image")
-	if err != nil {
-		slog.Error("Failed to receive file: FormFile error", slog.Any("error", err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to receive file"})
-		return
-	}
+    // ファイルを受け取る
+    file, err := c.FormFile("image")
+    if err != nil {
+        slog.Error("Failed to receive file: FormFile error", slog.Any("error", err))
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to receive file"})
+        return
+    }
 
-	// 画像を保存するディレクトリを指定
-	saveDir := "uploads"
-	if _, err := os.Stat(saveDir); os.IsNotExist(err) {
-		if err := os.Mkdir(saveDir, os.ModePerm); err != nil {
-			slog.Error("Failed to create upload directory", slog.Any("error", err), slog.String("directory", saveDir))
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
-			return
-		}
-	}
+    // 画像を保存するディレクトリを指定
+    saveDir := "uploads"
+    if _, err := os.Stat(saveDir); os.IsNotExist(err) {
+        if err := os.Mkdir(saveDir, os.ModePerm); err != nil {
+            slog.Error("Failed to create upload directory", slog.Any("error", err), slog.String("directory", saveDir))
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
+            return
+        }
+    }
 
-	// ファイル名とパスを決定
-	filename := fmt.Sprintf("%d-%s", time.Now().Unix(), file.Filename)
-	filepath := filepath.Join(saveDir, filename)
+    // ファイル名とパスを決定
+    filename := fmt.Sprintf("%d-%s", time.Now().Unix(), file.Filename)
+    filepath := filepath.Join(saveDir, filename)
 
-	// ファイルを保存
-	if err := c.SaveUploadedFile(file, filepath); err != nil {
-		slog.Error("Failed to save file", slog.Any("error", err), slog.String("filepath", filepath))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
-		return
-	}
+    // ファイルを保存
+    if err := c.SaveUploadedFile(file, filepath); err != nil {
+        slog.Error("Failed to save file", slog.Any("error", err), slog.String("filepath", filepath))
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+        return
+    }
 
-	// 撮影データを保存する
-	capture := models.Capture{
-		LocationID: captureRequest.LocationID,
-		ImageURL:   "/" + filepath, // 相対パスとして保存
-		FilePath:   filepath,       // 実際のファイルパスを保存
-		Date:       time.Now(),     // 現在の日時を設定
-		Analyzed:   false,          // 初期状態は未解析
-	}
-	if err := models.DB.Create(&capture).Error; err != nil {
-		slog.Error("Failed to save capture to database", slog.Any("error", err), slog.Any("capture", capture))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save capture"})
-		return
-	}
+    // 撮影データを保存する
+    capture := models.Capture{
+        LocationID: captureRequest.LocationID,
+        ImageURL:   "/" + filepath, // 相対パスとして保存
+        FilePath:   filepath,       // 実際のファイルパスを保存
+        Date:       time.Now(),     // 現在の日時を設定
+        Analyzed:   false,          // 初期状態は未解析
+    }
+    if err := models.DB.Create(&capture).Error; err != nil {
+        slog.Error("Failed to save capture to database", slog.Any("error", err), slog.Any("capture", capture))
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save capture"})
+        return
+    }
 
-	mlResponse, err := callMLServer(file)
-	if err != nil {
-		slog.Error("Failed to get diff from ML server", slog.Any("error", err), slog.String("filepath", filepath))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get diff from ML server"})
-		return
-	}
+    mlResponse, err := callMLServer(file)
+    if err != nil {
+        slog.Error("Failed to get diff from ML server", slog.Any("error", err), slog.String("filepath", filepath))
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get diff from ML server"})
+        return
+    }
 
-	// MLサーバーからのレスポンスをログに記録
-	slog.Info("Diff calculated successfully", slog.Any("diff", mlResponse))
+    // MLサーバーからのレスポンスをログに記録
+    slog.Info("Diff calculated successfully", slog.Any("diff", mlResponse))
 
-	// フロントエンドにCaptureデータとMLサーバーからの結果を返却
-	response := gin.H{
-		"capture":    capture,
-		"mlResponse": mlResponse,
-	}
-	c.JSON(http.StatusOK, response)
+
+    response := gin.H{
+        "capture":    capture,
+        "mlResponse": mlResponse,
+    }
+    c.JSON(http.StatusOK, response)
 }
 
 // GetCapture は指定されたIDの撮影データを取得します
@@ -163,7 +163,7 @@ func (ctrl CaptureController) DeleteCapture(c *gin.Context) {
 }
 
 // callMLServer はMLサーバーに画像データを送信し、差分を取得します
-func callMLServer(file *multipart.FileHeader) (*models.DiffResponse, error) {
+func callMLServer(file *multipart.FileHeader) (*MLResponse, error) {
     mlServerURL := os.Getenv("ML_SERVER_URL") + "/detect"
     if mlServerURL == "" {
         slog.Error("ML_SERVER_URL environment variable is not set")
@@ -193,7 +193,7 @@ func callMLServer(file *multipart.FileHeader) (*models.DiffResponse, error) {
     if err != nil {
         slog.Error("Failed to send POST request to ML server", slog.Any("error", err), slog.String("mlServerURL", mlServerURL))
         return nil, err
-    }
+   	 }
     defer resp.Body.Close()
 
     if resp.StatusCode != http.StatusOK {
@@ -201,7 +201,7 @@ func callMLServer(file *multipart.FileHeader) (*models.DiffResponse, error) {
         return nil, fmt.Errorf("ML server returned status: %d", resp.StatusCode)
     }
 
-    var diffResponse models.DiffResponse
+    var diffResponse MLResponse
     if err := json.NewDecoder(resp.Body).Decode(&diffResponse); err != nil {
         slog.Error("Failed to decode JSON response from ML server", slog.Any("error", err))
         return nil, err
