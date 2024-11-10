@@ -16,7 +16,7 @@ const CommitDiffDisplay = ({ commits }: CommitDiffDisplayProps) => {
   return (
     
 
-      <Box sx={{ width: 360, height: 60,display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box sx={{ width: 360, height: 200,display: "flex", flexDirection: "column", gap: 2 }}>
         <Typography variant="h6">
     Commit No.1
   </Typography>
