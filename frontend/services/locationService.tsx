@@ -1,7 +1,7 @@
 import createApi from './api';
 import { Location } from '../types/location';
 
-const api = createApi("http://localhost:8085");
+const api = createApi();
 
 export const fetchLocations = async (): Promise<Location[]> => {
   const response = await api.get<Location[]>('/locations');

@@ -1,7 +1,7 @@
 import createApi from './api';
 import { Diff } from '../types/diff';
 
-const api = createApi("http://localhost:8084");
+const api = createApi();
 
 export const fetchDiffs = async (locationId: string): Promise<Diff[]> => {
   const response = await api.get<Diff[]>(`/locations/${locationId}/diffs`);

@@ -11,7 +11,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
-import WelcomeScreen from "./components/diff/WelcomeScreen";
+import WelcomeScreen from "./components/diff/WelcomeScreen/WelcomeScreen";
 import AnalyticsScreen from "./components/diff/AnalyticsScreen";
 import AddLocationScreen from "./components/diff/AddLocationScreen";
 import CameraUploadScreen from "./components/diff/CameraUploadScreen";
