@@ -363,7 +363,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
             
             <Box>
             <Typography>
-              Login Info
+              Logout
             </Typography>
             </Box>
           </Box>
