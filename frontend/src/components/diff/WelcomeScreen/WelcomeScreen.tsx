@@ -2,16 +2,36 @@ import React, { useState } from 'react';
 import { Box, Typography, IconButton,  Grid, Paper, Drawer, Switch, ThemeProvider } from '@mui/material';
 import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack, NearMe, Home, ManageAccounts } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import HorizontalWheel from './HorizontalWheel';
-import { lightTheme, darkTheme } from '../../theme';
-import  ColorBlock  from "./atoms/ColorBlock";
+import HorizontalWheel from '../HorizontalWheel';
+import { lightTheme, darkTheme } from '../../../theme';
+import  ColorBlock  from "../atoms/ColorBlock";
 
-import{useAppDispatch,useAppSelector} from '../../../store';
-import { toggleDarkMode } from '../../../store/userSettingSlice';
+import{useAppDispatch,useAppSelector} from '../../../../store';
+import { toggleDarkMode } from '../../../../store/userSettingSlice';
+
+import CommitDiffDisplay from './CommitDiffData';
 
 interface WelcomeScreenProps {
   username: string;
 }
+
+export type Commit = {
+  ID: number;
+  items: {
+    label: string;
+    count: number;
+  }[];
+};
+
+const mockCommits: Commit = 
+  {
+    ID: 1,
+    items: [
+      { label: "feature", count: 5 },
+      { label: "bug", count: 2 },
+      { label: "documentation", count: 1 }
+    ]
+  };
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const locations = ["books", "kitchen", "desk", "store"];
@@ -207,15 +227,22 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
         </Typography>
       </Box>
       
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {[...Array(5)].map((_, index) => (
-          <Paper
+      <Box sx={{ display: "flex", gap: 2 }}>
+        {/*<Typography variant="h6" color="black">
+          aaaaaaaaaaaa
+        </Typography>*/}
+        <CommitDiffDisplay commits={[mockCommits]} />
+      </Box>
+      {/*
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {[...Array(5)].map((_, index) => (//arrayの要素数を、検知した物体の種類数に指定したい
+          <Paper //selectedLocationは選択されているロケーションの情報を持っている。物体の名称(ラベル名)とアイコンを表示したい(アイコン名はjsonファイルを参照)。検出した物体の、前回との差分情報を取得したい(resultpageを参照？)
             key={index}
             elevation={3}
             sx={{ p: 2, bgcolor: "grey.800", color: "white" }}
           >
             <Typography variant="body1">
-              Item {index + 1} in {selectedLocation}
+              Item {index + 1} in {selectedLocation} 
             </Typography>
             <Typography
               variant="body2"
@@ -226,6 +253,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           </Paper>
         ))}
       </Box>
+      */}
+      
     </Box>
   );
 
@@ -334,7 +363,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
             
             <Box>
             <Typography>
-              Login Info
+              Logout
             </Typography>
             </Box>
           </Box>

@@ -177,8 +177,8 @@ const ResultPage: React.FC = () => {
                       {diffResponse.changes.map((change, index) => (
                         <ListItem key={index} sx={{ bgcolor: 'rgba(255, 255, 255, 0.05)', mb: 1, borderRadius: 1 }}>
                           <ListItemText
-                            primary={`${change.itemName} - ${change.changeType}`}
-                            secondary={`前: ${change.previousCount}, 今: ${change.currentCount}`}
+                            primary={`${change.itemName} - ${change.changeType}`}//${change.itemName}が物体のラベルでありそう
+                            secondary={`前: ${change.previousCount}, 今: ${change.currentCount}`}//${change.currentCount}と${change.previousCount}が、差分情報を持ってそう
                           />
                         </ListItem>
                       ))}
