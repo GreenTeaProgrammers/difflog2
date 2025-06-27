@@ -49,7 +49,7 @@ type DetectionResult struct {
 // DetectionController handles the detection requests
 type DetectionController struct {
 	model   *onnx.Model
-	backend onnx.Backend
+	backend *gorgonnx.Graph
 }
 
 // NewDetectionController creates a new DetectionController and loads the model
@@ -69,6 +69,12 @@ func NewDetectionController() (*DetectionController, error) {
 	err = model.UnmarshalBinary(b)
 	if err != nil {
 		slog.Error("cannot decode model", slog.Any("error", err))
+		return nil, err
+	}
+
+	// Set the graph to the backend
+	if err := backend.SetGraph(model.Graph()); err != nil {
+		slog.Error("cannot set graph to backend", slog.Any("error", err))
 		return nil, err
 	}
 

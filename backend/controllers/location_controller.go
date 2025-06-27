@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/GreenTeaProgrammers/difflog2/models"
+	"github.com/GreenTeaProgrammers/difflog2/backend/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -86,7 +86,7 @@ func (ctrl *LocationController) UpdateLocation(c *gin.Context) {
 		return
 	}
 
-	location.ID = int(locationID)
+	location.ID = locationID
 	if err := ctrl.DB.Save(&location).Error; err != nil {
 		respondWithError(c, http.StatusInternalServerError, "Failed to update location", err)
 		return

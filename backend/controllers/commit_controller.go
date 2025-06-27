@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/GreenTeaProgrammers/difflog2/models"
+	"github.com/GreenTeaProgrammers/difflog2/backend/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

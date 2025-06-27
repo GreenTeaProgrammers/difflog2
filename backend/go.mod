@@ -1,4 +1,4 @@
-module github.com/GreenTeaProgrammers/difflog2
+module github.com/GreenTeaProgrammers/difflog2/backend
 
 go 1.22.5
 
@@ -15,6 +15,8 @@ require (
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.11
 )
+
+replace github.com/GreenTeaProgrammers/difflog2/backend => ./
 
 require (
 	github.com/awalterschulze/gographviz v0.0.0-20190522210029-fa59802746ab // indirect
