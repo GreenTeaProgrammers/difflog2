@@ -1,30 +1,40 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Lock } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/app/actions/auth";
-
-const initialState = {
-  message: "",
-};
-
-function LoginButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "ログイン中..." : "ログイン"}
-    </Button>
-  );
-}
 
 export function LoginForm() {
   const router = useRouter();
-  const [state, formAction] = useFormState(login, initialState);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    setIsLoading(false);
+
+    if (result?.ok) {
+      router.push("/welcome");
+    } else {
+      setError(result?.error || "ログインに失敗しました。");
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -38,13 +48,13 @@ export function LoginForm() {
           </h1>
         </div>
 
-        {state?.message && (
+        {error && (
           <div className="p-3 text-center text-red-500 bg-red-100 rounded-md">
-            {state.message}
+            {error}
           </div>
         )}
 
-        <form action={formAction} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">メールアドレス</Label>
             <Input
@@ -53,6 +63,8 @@ export function LoginForm() {
               type="email"
               placeholder="email@example.com"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="space-y-2">
@@ -62,9 +74,13 @@ export function LoginForm() {
               name="password"
               type="password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <LoginButton />
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "ログイン中..." : "ログイン"}
+          </Button>
           <Button
             type="button"
             variant="link"

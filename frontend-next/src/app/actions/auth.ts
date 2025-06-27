@@ -5,42 +5,57 @@ import { redirect } from 'next/navigation'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
+// This function is not a Server Action, so it can be called from anywhere.
+export async function verifyCredentials(email: unknown, password: unknown) {
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    throw new Error('Invalid credentials');
+  }
+
+  const response = await fetch(`${API_URL}/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Login failed');
+  }
+
+  // Assuming the API returns user data along with the token
+  return { id: data.id, username: data.username, email: data.email, token: data.token };
+}
+
+
 export async function login(prevState: any, formData: FormData) {
   const email = formData.get('email')
   const password = formData.get('password')
 
   try {
-    const response = await fetch(`${API_URL}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    })
+    const user = await verifyCredentials(email, password);
 
-    const data = await response.json()
-
-    if (!response.ok) {
-      return { message: data.message || 'Login failed' }
-    }
-
-    (await cookies()).set('token', data.token, {
+    (await cookies()).set('token', user.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
     });
 
-    (await cookies()).set('username', data.username, {
+    (await cookies()).set('username', user.username, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 24 * 7, // 1 week
         path: '/',
     })
 
-
   } catch (error) {
     console.error(error)
+    if (error instanceof Error) {
+        return { message: error.message };
+    }
     return { message: 'An unexpected error occurred.' }
   }
   redirect('/welcome')
