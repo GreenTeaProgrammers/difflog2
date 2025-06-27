@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/GreenTeaProgrammers/difflog2/backend/config"
+	"github.com/GreenTeaProgrammers/difflog2/backend/controllers"
 	"github.com/GreenTeaProgrammers/difflog2/backend/middleware"
 	"github.com/GreenTeaProgrammers/difflog2/backend/models"
 	"github.com/GreenTeaProgrammers/difflog2/backend/routes"
@@ -31,17 +32,21 @@ func main() {
 	// Seeding(models.DB)
 
 	// コントローラーを初期化
-	// detectionController, err := controllers.NewDetectionController()
-	// if err != nil {
-	// 	log.Fatalf("failed to create detection controller: %v", err)
-	// }
+	detectionController, err := controllers.NewDetectionController()
+	if err != nil {
+		slog.Error("failed to create detection controller", slog.Any("error", err))
+		// エラーが発生した場合は、後の処理を続行せずに終了するか、
+		// エラーハンドリング戦略に応じて適切に対応する必要があります。
+		// ここでは、ログを出力して終了します。
+		os.Exit(1)
+	}
 
 	// ルートを設定
 	routes.AuthRoutes(r)
 	routes.CaptureRoutes(r)
 	routes.CommitRoutes(r)
 	routes.RegisterLocationRoutes(r)
-	// routes.RegisterDetectionRoutes(r, detectionController)
+	routes.RegisterDetectionRoutes(r, detectionController)
 
 	// ポートを指定してサーバーを起動
 	slog.Info("Starting server...", slog.String("port", cfg.Port))

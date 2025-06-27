@@ -17,13 +17,22 @@ This document tracks the process of simplifying the backend architecture by merg
     - A new API endpoint (`/detect`) was created to handle image detection requests.
     - The basic structure for loading the ONNX model and running inference is in place.
 3.  **Cleanup**: The now-redundant `mlService` directory has been removed.
+4.  **Project Repair**:
+    - The project was found in a non-buildable state.
+    - Missing `models` package was restored.
+    - Numerous build errors were fixed across multiple controllers and configuration files.
 
 ## Current Status & Next Steps
 
-The backend is now a single monolithic service, and the detection functionality has been fully implemented.
+The backend is now a single, stable, and buildable monolithic service. However, the final step of the ML integration remains incomplete.
 
-- **Image Preprocessing**: The logic to resize, normalize, and convert the input image to the required NCHW tensor format has been implemented in `backend/controllers/detection_controller.go`.
-- **Output Postprocessing**: The logic to parse the model's output tensor into bounding boxes, class labels, and confidence scores, including Non-Maximum Suppression (NMS), has been implemented.
-- **Performance Refactoring**: The detection controller has been refactored to load the ONNX model only once at application startup, instead of on every API request. This significantly improves the performance and reduces the latency of the `/detect` endpoint.
+- **Current Status**:
+    - The project has been restored to a stable, buildable state.
+    - Core APIs (Auth, Capture, Commit, Location) are functional.
+    - The ONNX-based detection functionality (`/detect` API) has been **temporarily disabled** due to unresolved build errors related to the `onnx-go` library's API.
 
-The `/detect` endpoint is now fully functional and optimized.
+- **Next Steps**:
+    - **Re-implement Detection API**: The primary task is to fix and re-enable the `/detect` endpoint. This requires:
+        1.  Thoroughly investigating the `onnx-go` v0.5.0 API to find the correct way to run inference.
+        2.  If the current library version is problematic, consider upgrading `onnx-go` or replacing it with an alternative Go-based ONNX runtime.
+        3.  Once the detection logic is fixed, re-enable the controller and routes in `main.go`.
