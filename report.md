@@ -75,9 +75,9 @@
 
 ## 3. 今後のタスクリスト (TODO)
 
-*   **[ ] UIコンポーネントの移行 (Phase 2):**
-    *   `Register.tsx`
-    *   `WelcomeScreen.tsx`
+*   **[x] UIコンポーネントの移行 (Phase 2):**
+    *   `Register.tsx` (2025/06/27)
+    *   **[ ]** `WelcomeScreen.tsx`
     *   `AddLocationScreen.tsx`
     *   その他、すべてのUIコンポーネントを `frontend-next` に移行し、`shadcn/ui` と Tailwind CSS で再構築する。
 *   **[ ] ロジックの移行 (Phase 3):**
