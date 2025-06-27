@@ -20,9 +20,9 @@ This document tracks the process of simplifying the backend architecture by merg
 
 ## Current Status & Next Steps
 
-The backend is now a single monolithic service. However, the detection functionality is incomplete. The following critical pieces need to be implemented in `backend/controllers/detection_controller.go`:
+The backend is now a single monolithic service, and the detection functionality has been fully implemented.
 
-- **Image Preprocessing**: Implement the logic to transform the input image into the tensor format required by the YOLO model (resizing, normalization, etc.).
-- **Output Postprocessing**: Implement the logic to parse the model's output tensor into meaningful data (e.g., bounding boxes, class labels, and confidence scores).
+- **Image Preprocessing**: The logic to resize, normalize, and convert the input image to the required NCHW tensor format has been implemented in `backend/controllers/detection_controller.go`.
+- **Output Postprocessing**: The logic to parse the model's output tensor into bounding boxes, class labels, and confidence scores, including Non-Maximum Suppression (NMS), has been implemented.
 
-These remaining tasks are essential to make the `/detect` endpoint fully functional.
+The `/detect` endpoint is now fully functional.
