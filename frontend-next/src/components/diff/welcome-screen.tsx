@@ -26,6 +26,7 @@ export function WelcomeScreen() {
   const [selectedLocation, setSelectedLocation] = useState('desk');
   const [currentView, setCurrentView] = useState('year');
   const [currentMonth, setCurrentMonth] = useState(months[0]);
+  const [currentDay, setCurrentDay] = useState(1);
 
   const handleThemeToggle = () => {
     setIsDarkMode(!isDarkMode);
@@ -95,7 +96,7 @@ export function WelcomeScreen() {
               key={day}
               className="cursor-pointer"
               onClick={() => {
-                // In a real app, you'd also set the current day
+                setCurrentDay(day + 1);
                 setCurrentView('day');
               }}
             >
@@ -111,7 +112,24 @@ export function WelcomeScreen() {
   };
 
   const renderDayView = () => (
-    <div>Day View - (To be implemented)</div>
+    <div>
+      <div className="mb-4 flex items-center">
+        <Button variant="ghost" size="icon" onClick={() => setCurrentView('month')}>
+          <ChevronLeft className="h-6 w-6" />
+        </Button>
+        <h2 className="text-2xl font-bold">{currentMonth} {currentDay}, 2024</h2>
+      </div>
+      <div className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+        <h3 className="text-lg font-semibold">Commit Diff</h3>
+        <p className="text-muted-foreground">(CommitDiffDisplay component will be migrated here)</p>
+        {/* Mock display */}
+        <div className="mt-4 space-y-2">
+          <div className="flex justify-between"><span>feature</span><span>5</span></div>
+          <div className="flex justify-between"><span>bug</span><span>2</span></div>
+          <div className="flex justify-between"><span>documentation</span><span>1</span></div>
+        </div>
+      </div>
+    </div>
   );
 
   const renderContent = () => {
