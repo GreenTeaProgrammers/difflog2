@@ -11,15 +11,84 @@ import { Info, BarChart, Camera, Home, LogOut, Menu, Send, X } from 'lucide-reac
 const user = { username: 'Guest' };
 const locations = ["books", "kitchen", "desk", "store"];
 
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+const ColorBlock = ({ year, month, day }: { year: number, month: number, day: number }) => {
+  // Mock color based on date. In real app, fetch data.
+  const hash = (year + month + day) % 4;
+  const colors = ['bg-gray-200 dark:bg-gray-700', 'bg-green-200 dark:bg-green-800', 'bg-green-400 dark:bg-green-600', 'bg-green-600 dark:bg-green-400'];
+  return <div className={`aspect-square w-full rounded-sm ${colors[hash]}`} />;
+};
+
 export function WelcomeScreen() {
   const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState('desk');
+  const [currentView, setCurrentView] = useState('year');
+  const [currentMonth, setCurrentMonth] = useState(months[0]);
 
   const handleThemeToggle = () => {
     setIsDarkMode(!isDarkMode);
     // In a real app, you'd also toggle a class on the body
     document.documentElement.classList.toggle('dark');
+  };
+
+  const renderMonthGridPreview = (month: string) => {
+    const monthIndex = months.indexOf(month);
+    const daysInMonth = new Date(2024, monthIndex + 1, 0).getDate();
+    const firstDayOfWeek = new Date(2024, monthIndex, 1).getDay();
+
+    return (
+      <>
+        {Array.from({ length: firstDayOfWeek }).map((_, index) => (
+          <div key={`empty-${index}`} />
+        ))}
+        {Array.from({ length: daysInMonth }).map((_, day) => (
+          <ColorBlock key={day} year={2024} month={monthIndex + 1} day={day + 1} />
+        ))}
+      </>
+    );
+  };
+
+  const renderYearView = () => (
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      {months.map((month) => (
+        <div
+          key={month}
+          className="cursor-pointer rounded-lg border bg-card p-2 text-card-foreground shadow-sm"
+          onClick={() => {
+            setCurrentMonth(month);
+            setCurrentView('month');
+          }}
+        >
+          <h3 className="mb-2 text-center font-semibold">{month}</h3>
+          <div className="grid grid-cols-7 gap-1">
+            {renderMonthGridPreview(month)}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+  
+  const renderMonthView = (month: string) => (
+    <div>Month View for {month} - (To be implemented)</div>
+  );
+
+  const renderDayView = () => (
+    <div>Day View - (To be implemented)</div>
+  );
+
+  const renderContent = () => {
+    switch (currentView) {
+      case 'year':
+        return renderYearView();
+      case 'month':
+        return renderMonthView(currentMonth);
+      case 'day':
+        return renderDayView();
+      default:
+        return renderYearView();
+    }
   };
 
   return (
@@ -56,10 +125,7 @@ export function WelcomeScreen() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-4">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold">Year View</h2>
-          <p className="text-muted-foreground">(Content will be migrated here)</p>
-        </div>
+        {renderContent()}
       </main>
       
       {/* Location Selector */}
