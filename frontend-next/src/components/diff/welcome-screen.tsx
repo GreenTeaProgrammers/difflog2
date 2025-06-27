@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Switch } from "@/components/ui/switch";
 import { Info, BarChart, Camera, Home, LogOut, Menu, Send, X, ChevronLeft } from 'lucide-react';
 import { logout } from '@/app/actions/auth';
-import { cookies } from 'next/headers';
+import { useUserSettingsStore } from '@/store/user-settings';
 
 
 // Mock data for now
@@ -24,17 +24,19 @@ const ColorBlock = ({ year, month, day }: { year: number, month: number, day: nu
 
 export function WelcomeScreen({username}: {username: string | undefined}) {
   const router = useRouter();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { isDarkMode, toggleDarkMode } = useUserSettingsStore();
   const [selectedLocation, setSelectedLocation] = useState('desk');
   const [currentView, setCurrentView] = useState('year');
   const [currentMonth, setCurrentMonth] = useState(months[0]);
   const [currentDay, setCurrentDay] = useState(1);
 
-  const handleThemeToggle = () => {
-    setIsDarkMode(!isDarkMode);
-    // In a real app, you'd also toggle a class on the body
-    document.documentElement.classList.toggle('dark');
-  };
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   const renderMonthGridPreview = (month: string) => {
     const monthIndex = months.indexOf(month);
@@ -177,7 +179,7 @@ export function WelcomeScreen({username}: {username: string | undefined}) {
           <Button variant="ghost" size="icon" onClick={() => router.push('/analytics')}>
             <BarChart />
           </Button>
-          <Switch checked={isDarkMode} onCheckedChange={handleThemeToggle} />
+          <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
         </div>
       </header>
 
