@@ -75,14 +75,14 @@
 
 ## 3. 今後のタスクリスト (TODO)
 
-*   **[x] UIコンポーネントの移行 (Phase 2):**
-    *   `Register.tsx` (2025/06/27)
-    *   `WelcomeScreen.tsx` (基本的なUIと画面遷移を移行) (2025/06/27)
-    *   `AddLocationScreen.tsx` (2025/06/27)
-    *   `AnalyticsScreen.tsx` (2025/06/27)
-    *   `CameraUploadScreen.tsx` (2025/06/27)
-    *   `ResultPage.tsx` (2025/06/27)
-    *   **[ ]** その他、すべてのUIコンポーネントを `frontend-next` に移行し、`shadcn/ui` と Tailwind CSS で再構築する。
+*   **[完了] UIコンポーネントの移行 (Phase 2):** (2025/06/27)
+    *   `Register.tsx`
+    *   `WelcomeScreen.tsx`
+    *   `AddLocationScreen.tsx`
+    *   `AnalyticsScreen.tsx`
+    *   `CameraUploadScreen.tsx`
+    *   `ResultPage.tsx`
+    *   その他UIコンポーネントの移行を完了。
 *   **[ ] ロジックの移行 (Phase 3):**
     *   `react-router-dom` から Next.js の App Router へルーティングを移行する。
     *   Redux Toolkit を使った状態管理ロジックを見直し、Next.jsの環境に適した状態管理（SWR, Zustand, Context APIなど）に移行する。
