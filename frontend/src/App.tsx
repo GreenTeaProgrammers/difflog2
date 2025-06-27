@@ -16,14 +16,12 @@ import AnalyticsScreen from "./components/diff/AnalyticsScreen";
 import AddLocationScreen from "./components/diff/AddLocationScreen";
 import CameraUploadScreen from "./components/diff/CameraUploadScreen";
 import ResultPage from "./components/diff/ResultPage";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const App: React.FC = () => {
-  const handleAddLocation = () => {
-    // handle add location logic here
-  };
-
-  const handleBack = () => {
-    // handle back logic here
+  const handleAddLocation = (location: { name: string }) => {
+    console.log("Added new location:", location.name);
+    // In a real app, you might want to update a list of locations here
   };
 
   return (
@@ -32,14 +30,16 @@ const App: React.FC = () => {
         <CssBaseline />
         <Router>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/welcome" element={<WelcomeScreen username={"test"} />}/>
-            <Route path="/camera" element={<CameraUploadScreen/>}/>
-            <Route path="/analytics" element={<AnalyticsScreen/>}/>
-            <Route path="/location" element={<AddLocationScreen onAddLocation={handleAddLocation} />} />
-            <Route path="/result" element={<ResultPage/>}/>
+            <Route path="/register" element={<Register />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/welcome" element={<WelcomeScreen />} />
+              <Route path="/camera" element={<CameraUploadScreen />} />
+              <Route path="/analytics" element={<AnalyticsScreen />} />
+              <Route path="/location" element={<AddLocationScreen onAddLocation={handleAddLocation} />} />
+              <Route path="/result" element={<ResultPage />} />
+              <Route path="/" element={<Navigate to="/welcome" />} />
+            </Route>
           </Routes>
         </Router>
       </ThemeProvider>
