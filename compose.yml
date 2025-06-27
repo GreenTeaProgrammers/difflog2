@@ -18,6 +18,19 @@ services:
       - DB_NAME=difflog
     depends_on:
       - db
+  frontend:
+    build:
+      context: ./frontend-next
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: difflog_frontend
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend-next:/app
+      - /app/node_modules
+      - /app/.next
   db:
     image: mysql:8.0
     container_name: db
