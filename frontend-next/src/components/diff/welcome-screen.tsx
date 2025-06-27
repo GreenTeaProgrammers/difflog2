@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Info, BarChart, Camera, Home, LogOut, Menu, Send, X, ChevronLeft } from 'lucide-react';
+import { logout } from '@/app/actions/auth';
+import { cookies } from 'next/headers';
+
 
 // Mock data for now
-const user = { username: 'Guest' };
 const locations = ["books", "kitchen", "desk", "store"];
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -20,7 +22,7 @@ const ColorBlock = ({ year, month, day }: { year: number, month: number, day: nu
   return <div className={`aspect-square w-full rounded-sm ${colors[hash]}`} />;
 };
 
-export function WelcomeScreen() {
+export function WelcomeScreen({username}: {username: string | undefined}) {
   const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState('desk');
@@ -162,13 +164,15 @@ export function WelcomeScreen() {
             <div className="py-4">
               <p>This is the Difflog app. Refactored with Next.js and shadcn/ui.</p>
             </div>
-            <Button variant="outline" className="w-full" onClick={() => router.push('/login')}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
+            <form action={logout}>
+              <Button type="submit" variant="outline" className="w-full">
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
+            </form>
           </SheetContent>
         </Sheet>
-        <h1 className="text-lg font-semibold">{user.username} | 2024 - {selectedLocation}</h1>
+        <h1 className="text-lg font-semibold">{username || 'Guest'} | 2024 - {selectedLocation}</h1>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={() => router.push('/analytics')}>
             <BarChart />

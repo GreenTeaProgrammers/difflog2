@@ -1,55 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Lock } from 'lucide-react';
+import { register } from '@/app/actions/auth';
+import { useEffect, useState } from 'react';
+
+const initialState = {
+  message: '',
+};
+
+function RegisterButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? '登録中...' : '登録'}
+    </Button>
+  );
+}
 
 export function RegisterForm() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-  });
+  const [state, formAction] = useFormState(register, initialState);
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
-  const validateForm = (): boolean => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (formData.password.length < 6) {
-      newErrors.password = 'パスワードは6文字以上である必要があります。';
+  useEffect(() => {
+    if (password.length > 0 && password.length < 6) {
+        setPasswordError('パスワードは6文字以上である必要があります。');
+    } else if (password !== confirmPassword && confirmPassword.length > 0) {
+        setPasswordError('パスワードが一致しません。');
+    } else {
+        setPasswordError('');
     }
+  }, [password, confirmPassword]);
 
-    if (formData.password !== confirmPassword) {
-      newErrors.confirmPassword = 'パスワードが一致しません。';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
-    setIsLoading(true);
-    // TODO: API call to register user
-    console.log('Registration data:', formData);
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-    setIsLoading(false);
-    router.push('/login'); // Redirect to login after successful registration
-  };
 
   return (
     <div className="w-full max-w-md space-y-6 rounded-xl border bg-white p-8 shadow-lg">
@@ -59,7 +48,12 @@ export function RegisterForm() {
         </div>
         <h1 className="text-2xl font-bold">ユーザー登録</h1>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {state?.message && (
+          <div className="p-3 text-center text-red-500 bg-red-100 rounded-md">
+            {state.message}
+          </div>
+        )}
+      <form action={formAction} className="space-y-4">
         <div className="space-y-1">
           <Label htmlFor="username">ユーザー名</Label>
           <Input
@@ -68,8 +62,6 @@ export function RegisterForm() {
             placeholder="your_username"
             required
             autoComplete="username"
-            value={formData.username}
-            onChange={handleChange}
           />
         </div>
         <div className="space-y-1">
@@ -81,8 +73,6 @@ export function RegisterForm() {
             placeholder="m@example.com"
             required
             autoComplete="email"
-            value={formData.email}
-            onChange={handleChange}
           />
         </div>
         <div className="space-y-1">
@@ -93,10 +83,9 @@ export function RegisterForm() {
             type="password"
             required
             autoComplete="new-password"
-            value={formData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
-          {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
         </div>
         <div className="space-y-1">
           <Label htmlFor="confirmPassword">パスワード（確認）</Label>
@@ -108,11 +97,9 @@ export function RegisterForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          {errors.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword}</p>}
+          {passwordError && <p className="text-xs text-red-500">{passwordError}</p>}
         </div>
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? '登録中...' : '登録'}
-        </Button>
+        <RegisterButton />
       </form>
       <Button variant="link" className="w-full" onClick={() => router.push('/login')}>
         すでにアカウントをお持ちの方はこちら

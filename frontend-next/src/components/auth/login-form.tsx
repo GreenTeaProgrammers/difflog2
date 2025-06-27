@@ -1,47 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useFormState, useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { login } from "@/app/actions/auth";
 
-// Mock LoginInput type, will be replaced with actual type from types/user.ts later
-type LoginInput = {
-  email: string;
-  password: string;
+const initialState = {
+  message: "",
 };
+
+function LoginButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? "ログイン中..." : "ログイン"}
+    </Button>
+  );
+}
 
 export function LoginForm() {
   const router = useRouter();
-  const [formData, setFormData] = useState<LoginInput>({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    console.log("Login form submitted with:", formData);
-    // Mock API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    // In a real scenario, you would dispatch a login action here.
-    // For now, we'll just simulate a successful login and redirect.
-    // Example of error handling:
-    // setError("Invalid email or password.");
-    setLoading(false);
-    router.push("/welcome"); // Redirect to a welcome page
-  };
+  const [state, formAction] = useFormState(login, initialState);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -55,13 +38,13 @@ export function LoginForm() {
           </h1>
         </div>
 
-        {error && (
+        {state?.message && (
           <div className="p-3 text-center text-red-500 bg-red-100 rounded-md">
-            {error}
+            {state.message}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form action={formAction} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">メールアドレス</Label>
             <Input
@@ -70,8 +53,6 @@ export function LoginForm() {
               type="email"
               placeholder="email@example.com"
               required
-              value={formData.email}
-              onChange={handleChange}
             />
           </div>
           <div className="space-y-2">
@@ -81,13 +62,9 @@ export function LoginForm() {
               name="password"
               type="password"
               required
-              value={formData.password}
-              onChange={handleChange}
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "ログイン中..." : "ログイン"}
-          </Button>
+          <LoginButton />
           <Button
             type="button"
             variant="link"
