@@ -81,6 +81,7 @@
     *   `AddLocationScreen.tsx` (2025/06/27)
     *   `AnalyticsScreen.tsx` (2025/06/27)
     *   `CameraUploadScreen.tsx` (2025/06/27)
+    *   `ResultPage.tsx` (2025/06/27)
     *   **[ ]** その他、すべてのUIコンポーネントを `frontend-next` に移行し、`shadcn/ui` と Tailwind CSS で再構築する。
 *   **[ ] ロジックの移行 (Phase 3):**
     *   `react-router-dom` から Next.js の App Router へルーティングを移行する。
