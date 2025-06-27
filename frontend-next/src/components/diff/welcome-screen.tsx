@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
-import { Info, BarChart, Camera, Home, LogOut, Menu, Send, X } from 'lucide-react';
+import { Info, BarChart, Camera, Home, LogOut, Menu, Send, X, ChevronLeft } from 'lucide-react';
 
 // Mock data for now
 const user = { username: 'Guest' };
@@ -70,9 +70,45 @@ export function WelcomeScreen() {
     </div>
   );
   
-  const renderMonthView = (month: string) => (
-    <div>Month View for {month} - (To be implemented)</div>
-  );
+  const renderMonthView = (month: string) => {
+    const monthIndex = months.indexOf(month);
+    const daysInMonth = new Date(2024, monthIndex + 1, 0).getDate();
+    const firstDayOfWeek = new Date(2024, monthIndex, 1).getDay();
+
+    return (
+      <div>
+        <div className="mb-4 flex items-center">
+          <Button variant="ghost" size="icon" onClick={() => setCurrentView('year')}>
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+          <h2 className="text-2xl font-bold">{month} 2024</h2>
+        </div>
+        <div className="grid grid-cols-7 gap-2">
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div key={day} className="text-center font-semibold text-muted-foreground">{day}</div>
+          ))}
+          {Array.from({ length: firstDayOfWeek }).map((_, index) => (
+            <div key={`empty-${index}`} />
+          ))}
+          {Array.from({ length: daysInMonth }).map((_, day) => (
+            <div
+              key={day}
+              className="cursor-pointer"
+              onClick={() => {
+                // In a real app, you'd also set the current day
+                setCurrentView('day');
+              }}
+            >
+              <div className="flex flex-col items-center justify-center rounded-lg border p-2 text-center">
+                <span>{day + 1}</span>
+                <ColorBlock year={2024} month={monthIndex + 1} day={day + 1} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   const renderDayView = () => (
     <div>Day View - (To be implemented)</div>
