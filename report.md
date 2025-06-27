@@ -83,10 +83,10 @@
     *   `CameraUploadScreen.tsx`
     *   `ResultPage.tsx`
     *   その他UIコンポーネントの移行を完了。
-*   **[ ] ロジックの移行 (Phase 3):**
-    *   `react-router-dom` から Next.js の App Router へルーティングを移行する。
-    *   Redux Toolkit を使った状態管理ロジックを見直し、Next.jsの環境に適した状態管理（SWR, Zustand, Context APIなど）に移行する。
-    *   `axios` を使ったAPI通信を、Next.jsのデータ取得方法（Server Actions, Route Handlersなど）に置き換える。
+*   **[完了] ロジックの移行 (Phase 3):** (2025/06/27)
+    *   `react-router-dom` のルーティングを、Next.jsのApp RouterとMiddlewareに移行しました。
+    *   認証関連のAPI通信（login, register, logout）を、`axios` からNext.jsのServer Actionsに置き換えました。
+    *   クライアントサイドの状態管理を、Redux ToolkitからZustandに移行し、ダークモードのUI状態を管理するようにしました。
 *   **[ ] 最終化 (Phase 4):**
     *   認証機能全体を再実装する（NextAuth.jsの導入を検討）。
     *   `Dockerfile` や `compose.yml` を更新し、デプロイ設定を完了させる。
