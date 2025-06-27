@@ -24,15 +24,13 @@ This document tracks the process of simplifying the backend architecture by merg
 
 ## Current Status & Next Steps
 
-The backend is now a single, stable, and buildable monolithic service. However, the final step of the ML integration remains incomplete.
+The backend is now a single, stable, and buildable monolithic service, with the machine learning functionality fully integrated.
 
 - **Current Status**:
-    - The project has been restored to a stable, buildable state.
-    - Core APIs (Auth, Capture, Commit, Location) are functional.
-    - The ONNX-based detection functionality (`/detect` API) has been **temporarily disabled** due to unresolved build errors related to the `onnx-go` library's API.
+    - The project is in a stable, buildable state.
+    - All core APIs (Auth, Capture, Commit, Location) are functional.
+    - The ONNX-based detection functionality (`/detect` API) has been **successfully re-enabled and fixed**. The build errors related to the `onnx-go` library have been resolved.
 
 - **Next Steps**:
-    - **Re-implement Detection API**: The primary task is to fix and re-enable the `/detect` endpoint. This requires:
-        1.  Thoroughly investigating the `onnx-go` v0.5.0 API to find the correct way to run inference.
-        2.  If the current library version is problematic, consider upgrading `onnx-go` or replacing it with an alternative Go-based ONNX runtime.
-        3.  Once the detection logic is fixed, re-enable the controller and routes in `main.go`.
+    - **All major backend tasks are complete.** The system is ready for further testing and validation of the detection API's performance and accuracy.
+    - Future work may involve monitoring the application and optimizing the detection pipeline if necessary.
