@@ -29,66 +29,32 @@ func createTestImage(t *testing.T) *bytes.Buffer {
 	return buf
 }
 
-func TestDetectionController_Detect(t *testing.T) {
+func TestNewDetectionController_FailsWithInvalidModel(t *testing.T) {
 	// Set Gin to test mode
 	gin.SetMode(gin.TestMode)
 
-	// Setup router
-	router := gin.Default()
-	ctrl := NewDetectionController()
-	router.POST("/detect", ctrl.Detect)
-
-	// Create a dummy image for the request body
-	imageBuf := createTestImage(t)
-
-	// Create a multipart writer
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	part, err := writer.CreateFormFile("image", "test.png")
-	assert.NoError(t, err)
-	_, err = io.Copy(part, imageBuf)
-	assert.NoError(t, err)
-	err = writer.Close()
-	assert.NoError(t, err)
-
-	// Mock the ONNX model file
-	// The test doesn't actually run the model, but it needs to read the file.
-	// Let's create a dummy model file.
+	// Mock the ONNX model file by creating an empty, invalid file.
 	modelDir := "backend/models/onnx"
 	modelPath := filepath.Join(modelDir, "yolomodel.onnx")
-	if _, err := os.Stat(modelDir); os.IsNotExist(err) {
-		os.MkdirAll(modelDir, 0755)
-	}
-	dummyFile, err := os.Create(modelPath)
-	if err != nil {
-		// If we are in the backend directory, the path should be relative
-		modelDir = "../models/onnx"
-		modelPath = filepath.Join(modelDir, "yolomodel.onnx")
-		if _, err := os.Stat(modelDir); os.IsNotExist(err) {
-			os.MkdirAll(modelDir, 0755)
-		}
-		dummyFile, err = os.Create(modelPath)
-		assert.NoError(t, err)
-	}
-	dummyFile.Close()
-	defer os.Remove(modelPath)
-	defer os.RemoveAll("backend") // Clean up created directory structure
-	defer os.RemoveAll("../models")
-
-	// Create the request
-	req, err := http.NewRequest(http.MethodPost, "/detect", body)
+	
+	// Ensure the directory exists.
+	err := os.MkdirAll(modelDir, 0755)
 	assert.NoError(t, err)
-	req.Header.Set("Content-Type", writer.FormDataContentType())
 
-	// Create a response recorder
-	w := httptest.NewRecorder()
+	// Create an empty file.
+	dummyFile, err := os.Create(modelPath)
+	assert.NoError(t, err)
+	dummyFile.Close()
 
-	// Perform the request
-	router.ServeHTTP(w, req)
+	// Defer cleanup of the created dummy file and directory.
+	defer func() {
+		os.Remove(modelPath)
+		os.Remove(modelDir)
+	}()
 
-	// Assert the response
-	// Since the model is a dummy file, the backend will fail, which is expected.
-	assert.Equal(t, http.StatusInternalServerError, w.Code)
+	// Controller creation should fail because the model file is invalid (empty).
+	_, err = NewDetectionController()
+	assert.Error(t, err, "Expected an error when creating a controller with an invalid model file")
 }
 
 func TestPostprocess(t *testing.T) {
@@ -127,12 +93,18 @@ func TestPostprocess(t *testing.T) {
 	results := postprocess(outputTensors, 640, 640)
 
 	// We expect 1 result after NMS
-	assert.Len(t, results, 1)
+	assert.Len(t, results, 1, "Expected 1 result after NMS")
 	if len(results) > 0 {
-		assert.Equal(t, cocoClasses[classIndex], results[0].Class)
-		assert.InDelta(t, 0.9, results[0].Confidence, 0.001)
-		// Bounding box: cx,cy,w,h = 320,320,100,100 -> x1,y1,x2,y2 = 270,270,370,370
+		assert.Equal(t, cocoClasses[classIndex], results[0].Class, "Class name should match")
+		assert.InDelta(t, 0.9, results[0].Confidence, 0.001, "Confidence should be close to 0.9")
+		// Bounding box calculation:
+		// imageWidth=640, imageHeight=640, modelWidth=640, modelHeight=640
+		// cx=320, cy=320, w=100, h=100
+		// x1 = (320 - 100/2) * 640 / 640 = 270
+		// y1 = (320 - 100/2) * 640 / 640 = 270
+		// x2 = (320 + 100/2) * 640 / 640 = 370
+		// y2 = (320 + 100/2) * 640 / 640 = 370
 		expectedBox := []int{270, 270, 370, 370}
-		assert.Equal(t, expectedBox, results[0].BoundingBox)
+		assert.Equal(t, expectedBox, results[0].BoundingBox, "Bounding box coordinates should be correct")
 	}
 }

@@ -24,5 +24,6 @@ The backend is now a single monolithic service, and the detection functionality 
 
 - **Image Preprocessing**: The logic to resize, normalize, and convert the input image to the required NCHW tensor format has been implemented in `backend/controllers/detection_controller.go`.
 - **Output Postprocessing**: The logic to parse the model's output tensor into bounding boxes, class labels, and confidence scores, including Non-Maximum Suppression (NMS), has been implemented.
+- **Performance Refactoring**: The detection controller has been refactored to load the ONNX model only once at application startup, instead of on every API request. This significantly improves the performance and reduces the latency of the `/detect` endpoint.
 
-The `/detect` endpoint is now fully functional.
+The `/detect` endpoint is now fully functional and optimized.

@@ -47,11 +47,35 @@ type DetectionResult struct {
 
 
 // DetectionController handles the detection requests
-type DetectionController struct{}
+type DetectionController struct {
+	model   *onnx.Model
+	backend onnx.Backend
+}
 
-// NewDetectionController creates a new DetectionController
-func NewDetectionController() *DetectionController {
-	return &DetectionController{}
+// NewDetectionController creates a new DetectionController and loads the model
+func NewDetectionController() (*DetectionController, error) {
+	// Create a backend
+	backend := gorgonnx.NewGraph()
+	// Create a model
+	model := onnx.NewModel(backend)
+
+	// read the onnx model
+	b, err := os.ReadFile("backend/models/onnx/yolomodel.onnx")
+	if err != nil {
+		slog.Error("cannot read model", slog.Any("error", err))
+		return nil, err
+	}
+	// Decode the model
+	err = model.UnmarshalBinary(b)
+	if err != nil {
+		slog.Error("cannot decode model", slog.Any("error", err))
+		return nil, err
+	}
+
+	return &DetectionController{
+		model:   model,
+		backend: backend,
+	}, nil
 }
 
 // Detect performs object detection on the given image
@@ -96,28 +120,8 @@ func (ctrl *DetectionController) Detect(c *gin.Context) {
 
 	inputTensor := tensor.New(tensor.WithShape(1, 3, height, width), tensor.WithBacking(inputData))
 
-	// Create a backend
-	backend := gorgonnx.NewGraph()
-	// Create a model
-	model := onnx.NewModel(backend)
-
-	// read the onnx model
-	b, err := os.ReadFile("backend/models/onnx/yolomodel.onnx")
-	if err != nil {
-		slog.Error("cannot read model", slog.Any("error", err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "cannot read model"})
-		return
-	}
-	// Decode the model
-	err = model.UnmarshalBinary(b)
-	if err != nil {
-		slog.Error("cannot decode model", slog.Any("error", err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "cannot decode model"})
-		return
-	}
-
 	// Set the model's input
-	err = model.SetInput(0, inputTensor)
+	err = ctrl.model.SetInput(0, inputTensor)
 	if err != nil {
 		slog.Error("cannot set input", slog.Any("error", err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "cannot set input"})
@@ -125,7 +129,7 @@ func (ctrl *DetectionController) Detect(c *gin.Context) {
 	}
 
 	// Run the model
-	err = backend.Run()
+	err = ctrl.backend.Run()
 	if err != nil {
 		slog.Error("cannot run the model", slog.Any("error", err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "cannot run the model"})
@@ -133,17 +137,15 @@ func (ctrl *DetectionController) Detect(c *gin.Context) {
 	}
 
 	// Get the output
-	output, err := model.GetOutputTensors()
+	output, err := ctrl.model.GetOutputTensors()
 	if err != nil {
 		slog.Error("cannot get output", slog.Any("error", err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "cannot get output"})
 		return
 	}
 
-	// TODO: Postprocess the output tensor to extract meaningful information
-	// (e.g., bounding boxes, class labels, confidence scores).
-	// The structure of the output tensor depends on the model.
-	results := postprocess(output, width, height)
+	// Postprocess the output tensor to extract bounding boxes, class labels, and confidence scores.
+	results := postprocess(output, int(img.Bounds().Dx()), int(img.Bounds().Dy()))
 
 	c.JSON(http.StatusOK, gin.H{"message": "detection successful", "results": results})
 }

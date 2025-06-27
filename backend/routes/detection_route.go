@@ -6,7 +6,6 @@ import (
 )
 
 // RegisterDetectionRoutes registers the detection routes
-func RegisterDetectionRoutes(r *gin.Engine) {
-	detectionController := controllers.NewDetectionController()
+func RegisterDetectionRoutes(r *gin.Engine, detectionController *controllers.DetectionController) {
 	r.POST("/detect", detectionController.Detect)
 }
