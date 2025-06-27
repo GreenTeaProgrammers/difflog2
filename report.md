@@ -77,9 +77,9 @@
 
 *   **[x] UIコンポーネントの移行 (Phase 2):**
     *   `Register.tsx` (2025/06/27)
-    *   **[ ]** `WelcomeScreen.tsx`
-    *   `AddLocationScreen.tsx`
-    *   その他、すべてのUIコンポーネントを `frontend-next` に移行し、`shadcn/ui` と Tailwind CSS で再構築する。
+    *   `WelcomeScreen.tsx` (基本的なUIと画面遷移を移行) (2025/06/27)
+    *   `AddLocationScreen.tsx` (2025/06/27)
+    *   **[ ]** その他、すべてのUIコンポーネントを `frontend-next` に移行し、`shadcn/ui` と Tailwind CSS で再構築する。
 *   **[ ] ロジックの移行 (Phase 3):**
     *   `react-router-dom` から Next.js の App Router へルーティングを移行する。
     *   Redux Toolkit を使った状態管理ロジックを見直し、Next.jsの環境に適した状態管理（SWR, Zustand, Context APIなど）に移行する。
