@@ -35,7 +35,6 @@ export function AddLocationForm() {
         }
 
         // Revalidate locations data after successful creation
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
         mutate(`${apiUrl}/locations`);
         router.push('/welcome');
       } catch (error) {
