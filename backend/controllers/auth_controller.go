@@ -1,18 +1,26 @@
 package controllers
 
 import (
-	"errors"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/GreenTeaProgrammers/difflog2/backend/auth"
 	"github.com/GreenTeaProgrammers/difflog2/backend/models"
+	"github.com/GreenTeaProgrammers/difflog2/backend/repository"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
+type AuthController struct {
+	UserRepo repository.UserRepository
+}
+
+func NewAuthController(userRepo repository.UserRepository) *AuthController {
+	return &AuthController{UserRepo: userRepo}
+}
+
 // User registration handler
-func Register(c *gin.Context) {
+func (ac *AuthController) Register(c *gin.Context) {
 	var input models.RegisterInput
 
 	// Log the incoming request for debugging
@@ -26,7 +34,7 @@ func Register(c *gin.Context) {
 	slog.Info("Registering user", "input", input)
 
 	// Check if the user already exists
-	if _, err := models.GetUserByEmail(input.Email); err == nil {
+	if _, err := ac.UserRepo.FindByEmail(input.Email); err == nil {
 		// 4xx系エラー: 既に登録されているメールアドレス
 		slog.Warn("Email already registered", "email", input.Email)
 		c.JSON(http.StatusConflict, gin.H{"error": "Email already registered"})
@@ -47,14 +55,22 @@ func Register(c *gin.Context) {
 		Password: hashedPassword,
 	}
 
-	if err := models.CreateUser(&user); err != nil {
-		// 4xx系エラー: ユーザー名が既に存在する場合
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			slog.Warn("Username already exists", "username", input.Username)
-			c.JSON(http.StatusConflict, gin.H{"error": "Username already exists"})
-			return
+	if err := ac.UserRepo.Create(&user); err != nil {
+		// MySQLの重複エラー(Error 1062)をチェック
+		if strings.Contains(err.Error(), "Error 1062") {
+			if strings.Contains(err.Error(), "username") {
+				slog.Warn("Username already exists", "username", input.Username)
+				c.JSON(http.StatusConflict, gin.H{"error": "Username already exists"})
+				return
+			}
+			// emailの重複は事前にチェックしているが、念のためここでも処理
+			if strings.Contains(err.Error(), "email") {
+				slog.Warn("Email already registered", "email", input.Email)
+				c.JSON(http.StatusConflict, gin.H{"error": "Email already registered"})
+				return
+			}
 		}
-		// 5xx系サーバーエラー: ユーザー作成に失敗
+		// その他のデータベースエラー
 		slog.Error("Error creating user", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
@@ -65,7 +81,7 @@ func Register(c *gin.Context) {
 }
 
 // User login handler
-func Login(c *gin.Context) {
+func (ac *AuthController) Login(c *gin.Context) {
 	var input models.LoginInput
 
 	// Log the incoming request for debugging
@@ -76,20 +92,28 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	slog.Info("Login attempt", "email", input.Email)
+	slog.Info("Login attempt", "identifier", input.Identifier)
 
-	user, err := models.GetUserByEmail(input.Email)
+	// Find user by email or username
+	var user *models.User
+	var err error
+	if strings.Contains(input.Identifier, "@") {
+		user, err = ac.UserRepo.FindByEmail(input.Identifier)
+	} else {
+		user, err = ac.UserRepo.FindByUsername(input.Identifier)
+	}
+
 	if err != nil {
-		// 4xx系エラー: 無効なメールアドレス
-		slog.Warn("Invalid email", "email", input.Email)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		// 4xx系エラー: 無効なメールアドレスまたはユーザー名
+		slog.Warn("Invalid identifier", "identifier", input.Identifier)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid identifier or password"})
 		return
 	}
 
-	if !auth.ComparePassword(input.Password, user.Password) {
+	if !auth.ComparePassword(user.Password, input.Password) {
 		// 4xx系エラー: 無効なパスワード
-		slog.Warn("Invalid password", "email", input.Email)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		slog.Warn("Invalid password", "identifier", input.Identifier)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid identifier or password"})
 		return
 	}
 
@@ -101,8 +125,8 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	slog.Info("Login successful", "email", input.Email)
-	c.JSON(http.StatusOK, gin.H{"token": token, "username": user.Username, "message": "Login successful"})
+	slog.Info("Login successful", "identifier", input.Identifier)
+	c.JSON(http.StatusOK, gin.H{"token": token, "id": user.ID, "username": user.Username, "email": user.Email, "message": "Login successful"})
 }
 
 // User logout handler

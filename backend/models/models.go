@@ -9,6 +9,7 @@ import (
 // Location model
 type Location struct {
 	gorm.Model
+	UserID         uint
 	Name           string
 	Description    string
 	LastCommitDate time.Time
@@ -27,15 +28,15 @@ type Capture struct {
 // Commit model
 type Commit struct {
 	gorm.Model
-	LocationID string
+	LocationID uint
 	Date       time.Time
 	Diff       *Diff `gorm:"foreignKey:CommitID"`
 }
 
 // Diff model
 type Diff struct {
-	ID         string `gorm:"primaryKey"`
-	LocationID string
+	gorm.Model
+	LocationID uint
 	Date       time.Time
 	CommitID   uint
 	Changes    []DiffItem `gorm:"foreignKey:DiffID"`
@@ -44,7 +45,7 @@ type Diff struct {
 // DiffItem model
 type DiffItem struct {
 	gorm.Model
-	DiffID        string
+	DiffID        uint
 	ItemID        string
 	ItemName      string
 	ChangeType    string

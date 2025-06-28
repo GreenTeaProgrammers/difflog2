@@ -2,14 +2,10 @@ package routes
 
 import (
 	"github.com/GreenTeaProgrammers/difflog2/backend/controllers"
-
-	"github.com/GreenTeaProgrammers/difflog2/backend/models"
 	"github.com/gin-gonic/gin"
 )
 
-func CommitRoutes(router *gin.Engine) {
-	commitController := controllers.CommitController{DB: models.DB}
-
+func CommitRoutes(router *gin.Engine, commitController *controllers.CommitController) {
 	commitGroup := router.Group("/commits")
 	{
 		commitGroup.POST("/", commitController.CreateCommit)

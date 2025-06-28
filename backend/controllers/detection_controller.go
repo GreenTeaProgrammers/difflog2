@@ -60,7 +60,7 @@ func NewDetectionController() (*DetectionController, error) {
 	model := onnx.NewModel(backend)
 
 	// read the onnx model
-	b, err := os.ReadFile("backend/models/onnx/yolomodel.onnx")
+	b, err := os.ReadFile("models/onnx/yolomodel.onnx")
 	if err != nil {
 		slog.Error("cannot read model", slog.Any("error", err))
 		return nil, err

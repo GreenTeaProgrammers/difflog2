@@ -46,6 +46,13 @@ func (ctrl *LocationController) CreateLocation(c *gin.Context) {
 	// last_commit_date に作成時の日時を代入
 	location.LastCommitDate = time.Now()
 
+	userID, exists := c.Get("userID")
+	if !exists {
+		respondWithError(c, http.StatusUnauthorized, "UserID not found in context", nil)
+		return
+	}
+	location.UserID = userID.(uint)
+
 	if err := ctrl.DB.Create(&location).Error; err != nil {
 		respondWithError(c, http.StatusInternalServerError, "Failed to create location", err)
 		return
@@ -112,8 +119,14 @@ func (ctrl *LocationController) DeleteLocation(c *gin.Context) {
 }
 
 func (ctrl *LocationController) GetAllLocations(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		respondWithError(c, http.StatusUnauthorized, "UserID not found in context", nil)
+		return
+	}
+
 	var locations []models.Location
-	if err := ctrl.DB.Find(&locations).Error; err != nil {
+	if err := ctrl.DB.Where("user_id = ?", userID).Find(&locations).Error; err != nil {
 		respondWithError(c, http.StatusInternalServerError, "Failed to retrieve locations", err)
 		return
 	}

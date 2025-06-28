@@ -12,9 +12,12 @@ import (
 
 	"github.com/GreenTeaProgrammers/difflog2/backend/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-type CaptureController struct{}
+type CaptureController struct {
+	DB *gorm.DB
+}
 
 // CaptureRequest は撮影データのリクエスト構造体
 type CaptureRequest struct {
@@ -67,7 +70,7 @@ func (ctrl CaptureController) CreateCapture(c *gin.Context) {
 		Date:       time.Now(),     // 現在の日時を設定
 		Analyzed:   false,          // 初期状態は未解析
 	}
-	if err := models.DB.Create(&capture).Error; err != nil {
+	if err := ctrl.DB.Create(&capture).Error; err != nil {
 		slog.Error("Failed to save capture to database", slog.Any("error", err), slog.Any("capture", capture))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save capture"})
 		return
@@ -103,7 +106,7 @@ func (ctrl CaptureController) GetCapture(c *gin.Context) {
 	}
 
 	var capture models.Capture
-	if err := models.DB.First(&capture, intID).Error; err != nil {
+	if err := ctrl.DB.First(&capture, intID).Error; err != nil {
 		slog.Error("Capture not found in database", slog.String("id", id), slog.Any("error", err))
 		c.JSON(http.StatusNotFound, gin.H{"error": "Capture not found"})
 		return
@@ -130,7 +133,7 @@ func (ctrl CaptureController) UpdateCapture(c *gin.Context) {
 		return
 	}
 
-	if err := models.DB.Model(&capture).Where("id = ?", intID).Updates(capture).Error; err != nil {
+	if err := ctrl.DB.Model(&capture).Where("id = ?", intID).Updates(capture).Error; err != nil {
 		slog.Error("Failed to update capture in database", slog.String("id", id), slog.Any("error", err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update capture"})
 		return
@@ -150,7 +153,7 @@ func (ctrl CaptureController) DeleteCapture(c *gin.Context) {
 		return
 	}
 
-	if err := models.DB.Delete(&models.Capture{}, intID).Error; err != nil {
+	if err := ctrl.DB.Delete(&models.Capture{}, intID).Error; err != nil {
 		slog.Error("Failed to delete capture from database", slog.String("id", id), slog.Any("error", err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete capture"})
 		return

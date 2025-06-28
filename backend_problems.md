@@ -1,45 +1,27 @@
-# Backend Architecture Improvement Log
+# Backendの現状と課題
 
-## Summary
+## 現状
 
-This document tracks the process of simplifying the backend architecture by merging the `mlService` into the main `backend` service.
+`go run main.go` が動かない問題は解消され、アプリケーションは正常に起動するようになりました。
 
-## Initial Problem (Archived)
+### 修正内容
+- **データベース接続の修正:**
+  - 各コントローラーがデータベース接続を直接参照するのではなく、`main.go` で初期化した接続を渡すようにリファクタリングしました。
+- **環境変数の設定:**
+  - `backend/.env` ファイルに `DATABASE_DSN` を設定し、アプリケーションがデータベースに接続できるようにしました。
+- **データベースコンテナの起動:**
+  - `docker compose` を使ってデータベースコンテナを正常に起動しました。
+- **データベースマイグレーションエラーの修正:**
+  - `models.go` のモデル定義の型を修正し、GORM のマイグレーションが正しく実行されるようにしました。
+- **コミット:**
+  - 上記の修正内容を `fix: go run main.goが動かない問題を修正` というメッセージでコミットしました。
 
-- **Unnecessary Microservice Architecture**: The backend was split into a Go-based `backend` service and a Python-based `mlService`. This introduced unnecessary complexity, operational overhead, and network latency.
-- **Proposed Solution**: Merge the `mlService` functionality into the `backend` by converting the ML model to ONNX format and using a Go-based ONNX runtime.
+## 課題
 
-## Actions Taken
-
-1.  **Model Conversion**: The YOLO models (`.pt`) were successfully converted to ONNX format (`.onnx`).
-2.  **Backend Integration**:
-    - A Go ONNX runtime library (`onnx-go`) was added to the `backend` project.
-    - A new API endpoint (`/detect`) was created to handle image detection requests.
-    - The basic structure for loading the ONNX model and running inference is in place.
-3.  **Cleanup**: The now-redundant `mlService` directory has been removed.
-4.  **Project Repair**:
-    - The project was found in a non-buildable state.
-    - Missing `models` package was restored.
-    - Numerous build errors were fixed across multiple controllers and configuration files.
-
-## Current Problems & Next Steps
-
-While the `mlService` merge was successful and the project is buildable, a deeper code review has revealed several underlying architectural problems that affect maintainability, testability, and reliability.
-
-- **Current Status**:
-    - The project is in a stable, buildable state.
-    - The `mlService` has been successfully merged.
-
-- **Architectural Issues**:
-    - **Lack of Dependency Injection (DI):** Most controllers have an implicit, tight coupling to a global database instance (`models.DB`). This makes unit testing extremely difficult, as components cannot be tested in isolation without a live database connection.
-    - **Inconsistent Design:** The `DetectionController` is initialized differently from other controllers, indicating a lack of a unified architectural approach.
-    - **Incorrect Error Handling:** The user registration logic (`auth_controller.go`) contains a bug where it incorrectly checks for a username conflict, potentially leading to misleading server errors instead of clear user feedback.
-    - **Inconsistent Configuration Management:** Database configuration is handled directly within the `models` package, bypassing the central `config` package. This scatters configuration logic and makes it harder to manage.
-
-- **Next Steps**:
-    - **Refactor the architecture:** A significant refactoring effort is required to address these issues. This should include:
-        - Implementing Dependency Injection (e.g., using a DI container or manual injection) to decouple components from global state.
-        - Introducing a repository pattern to abstract database logic.
-        - Correcting the error handling logic to provide accurate responses.
-        - Centralizing all configuration management within the `config` package.
-    - **Improve Test Coverage:** Once the architecture is refactored, comprehensive unit and integration tests should be written to ensure stability and prevent regressions.
+- **`DetectionController` の無効化:**
+  - ONNX モデルの読み込みで `cannot decode model: No data found` というエラーが発生するため、現在 `DetectionController` は無効化されています。
+  - **原因:** `github.com/owulveryck/onnx-go` ライブラリ (v0.5.0) が、YOLOv8 からエクスポートされた ONNX モデル (opset 11, 12) を正しく解析できていない可能性があります。
+  - **今後の対応:**
+    1. `github.com/owulveryck/onnx-go` ライブラリを新しいバージョンにアップデートする。
+    2. モデルをエクスポートする際の ONNX opset バージョンを、ライブラリがサポートするものに合わせる（例: 9, 10 など）。
+    3. それでも解決しない場合は、別の ONNX ライブラリの利用を検討する。

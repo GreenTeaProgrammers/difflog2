@@ -1,19 +1,15 @@
 'use client';
 
-'use client';
-
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
+import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Info, BarChart, Camera, Home, LogOut, Menu, Send, X, ChevronLeft } from 'lucide-react';
 import { useUserSettingsStore } from '@/store/user-settings';
 
-
-// Mock data for now
-const locations = ["books", "kitchen", "desk", "store"];
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -24,11 +20,21 @@ const ColorBlock = ({ year, month, day }: { year: number, month: number, day: nu
   return <div className={`aspect-square w-full rounded-sm ${colors[hash]}`} />;
 };
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export function WelcomeScreen() {
   const router = useRouter();
   const { data: session } = useSession();
   const { isDarkMode, toggleDarkMode } = useUserSettingsStore();
-  const [selectedLocation, setSelectedLocation] = useState('desk');
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
+  const { data: locations, error: locationsError } = useSWR(`${apiUrl}/locations`, fetcher);
+  const [selectedLocation, setSelectedLocation] = useState('');
+
+  useEffect(() => {
+    if (locations && locations.length > 0 && !selectedLocation) {
+      setSelectedLocation(locations[0].name);
+    }
+  }, [locations, selectedLocation]);
   const [currentView, setCurrentView] = useState('year');
   const [currentMonth, setCurrentMonth] = useState(months[0]);
   const [currentDay, setCurrentDay] = useState(1);
@@ -154,59 +160,31 @@ export function WelcomeScreen() {
 
   return (
     <div className={`flex h-screen flex-col ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
-      {/* Header */}
-      <header className="flex items-center justify-between border-b p-4">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left">
-            <SheetHeader>
-              <SheetTitle>Information</SheetTitle>
-            </SheetHeader>
-            <div className="py-4">
-              <p>This is the Difflog app. Refactored with Next.js and shadcn/ui.</p>
-            </div>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => signOut({ callbackUrl: '/login' })}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          </SheetContent>
-        </Sheet>
-        <h1 className="text-lg font-semibold">{session?.user?.name || 'Guest'} | 2024 - {selectedLocation}</h1>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => router.push('/analytics')}>
-            <BarChart />
-          </Button>
-          <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-4">
+        <div className="flex justify-between items-center mb-4">
+            <h1 className="text-lg font-semibold">{session?.user?.name || 'Guest'} | 2024 - {selectedLocation}</h1>
+            <div className="flex items-center gap-2">
+                <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
+            </div>
+        </div>
         {renderContent()}
       </main>
       
       {/* Location Selector */}
       <div className="border-t p-4">
-        <p className="text-center font-semibold">Location Selector (Horizontal Wheel)</p>
+        <p className="text-center font-semibold">Location</p>
         <div className="flex justify-center gap-2 pt-2">
-            {locations.map(loc => (
-                <Button key={loc} variant={selectedLocation === loc ? "default" : "outline"} onClick={() => setSelectedLocation(loc)}>
-                    {loc}
+            {locations && locations.map((loc: any) => (
+                <Button key={loc.id} variant={selectedLocation === loc.name ? "default" : "outline"} onClick={() => setSelectedLocation(loc.name)}>
+                    {loc.name}
                 </Button>
             ))}
         </div>
       </div>
 
       {/* Footer Navigation */}
-      <footer className="grid grid-cols-3 items-center border-t">
+      <footer className="grid grid-cols-2 items-center border-t">
         <Button variant="ghost" className="flex flex-col h-16" onClick={() => router.push('/location')}>
           <Send />
           <span>Location</span>
@@ -214,10 +192,6 @@ export function WelcomeScreen() {
         <Button variant="ghost" className="flex flex-col h-16" onClick={() => router.push('/camera')}>
           <Camera />
           <span>Camera</span>
-        </Button>
-        <Button variant="ghost" className="flex flex-col h-16" onClick={() => router.push('/welcome')}>
-          <Home />
-          <span>Home</span>
         </Button>
       </footer>
     </div>

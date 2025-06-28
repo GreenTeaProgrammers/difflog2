@@ -21,23 +21,20 @@ type RegisterInput struct {
 
 // LoginInput model
 type LoginInput struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Identifier string `json:"identifier" binding:"required"`
+	Password   string `json:"password" binding:"required"`
 }
 
-// DB is a gorm.DB instance
-var DB *gorm.DB
-
 // GetUserByEmail retrieves a user by email
-func GetUserByEmail(email string) (*User, error) {
+func GetUserByEmail(db *gorm.DB, email string) (*User, error) {
 	var user User
-	if err := DB.Where("email = ?", email).First(&user).Error; err != nil {
+	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
 // CreateUser creates a new user
-func CreateUser(user *User) error {
-	return DB.Create(user).Error
+func CreateUser(db *gorm.DB, user *User) error {
+	return db.Create(user).Error
 }
