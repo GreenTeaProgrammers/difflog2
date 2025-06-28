@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { getServerSession } from "next-auth";
+import { useSession, signOut } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -10,10 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import LogoutButton from "../auth/logout-button";
 
-export default async function Header() {
-  const session = await getServerSession();
+export default function Header() {
+  const { data: session } = useSession();
 
   return (
     <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
@@ -34,7 +35,9 @@ export default async function Header() {
             <DropdownMenuItem asChild>
               <Link href="/analytics">Analytics</Link>
             </DropdownMenuItem>
-            <LogoutButton />
+            <DropdownMenuItem onClick={() => signOut()}>
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
