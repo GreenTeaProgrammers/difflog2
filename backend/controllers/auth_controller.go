@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/GreenTeaProgrammers/difflog2/backend/auth"
 	"github.com/GreenTeaProgrammers/difflog2/backend/models"
@@ -48,13 +49,21 @@ func Register(c *gin.Context) {
 	}
 
 	if err := models.CreateUser(&user); err != nil {
-		// 4xx系エラー: ユーザー名が既に存在する場合
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			slog.Warn("Username already exists", "username", input.Username)
-			c.JSON(http.StatusConflict, gin.H{"error": "Username already exists"})
-			return
+		// MySQLの重複エラー(Error 1062)をチェック
+		if strings.Contains(err.Error(), "Error 1062") {
+			if strings.Contains(err.Error(), "username") {
+				slog.Warn("Username already exists", "username", input.Username)
+				c.JSON(http.StatusConflict, gin.H{"error": "Username already exists"})
+				return
+			}
+			// emailの重複は事前にチェックしているが、念のためここでも処理
+			if strings.Contains(err.Error(), "email") {
+				slog.Warn("Email already registered", "email", input.Email)
+				c.JSON(http.StatusConflict, gin.H{"error": "Email already registered"})
+				return
+			}
 		}
-		// 5xx系サーバーエラー: ユーザー作成に失敗
+		// その他のデータベースエラー
 		slog.Error("Error creating user", "error", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
