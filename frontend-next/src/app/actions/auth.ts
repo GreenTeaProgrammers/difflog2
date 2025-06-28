@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081'
 
 // This function is not a Server Action, so it can be called from anywhere.
 export async function verifyCredentials(identifier: unknown, password: unknown) {
