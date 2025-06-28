@@ -27,9 +27,8 @@ func main() {
 	r.Use(middleware.LoggingMiddleware())
 
 	// データベース接続を設定
-	models.ConnectDatabase()
-	models.SetDatabase(models.DB)
-	// Seeding(models.DB)
+	db := models.ConnectDatabase(cfg.DatabaseDSN)
+	// Seeding(db)
 
 	// コントローラーを初期化
 	detectionController, err := controllers.NewDetectionController()
@@ -42,7 +41,7 @@ func main() {
 	}
 
 	// ルートを設定
-	routes.AuthRoutes(r)
+	routes.AuthRoutes(r, db)
 	routes.CaptureRoutes(r)
 	routes.CommitRoutes(r)
 	routes.RegisterLocationRoutes(r)

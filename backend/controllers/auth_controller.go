@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -12,8 +11,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type AuthController struct {
+	DB *gorm.DB
+}
+
+func NewAuthController(db *gorm.DB) *AuthController {
+	return &AuthController{DB: db}
+}
+
 // User registration handler
-func Register(c *gin.Context) {
+func (ac *AuthController) Register(c *gin.Context) {
 	var input models.RegisterInput
 
 	// Log the incoming request for debugging
@@ -27,7 +34,7 @@ func Register(c *gin.Context) {
 	slog.Info("Registering user", "input", input)
 
 	// Check if the user already exists
-	if _, err := models.GetUserByEmail(input.Email); err == nil {
+	if _, err := models.GetUserByEmail(ac.DB, input.Email); err == nil {
 		// 4xx系エラー: 既に登録されているメールアドレス
 		slog.Warn("Email already registered", "email", input.Email)
 		c.JSON(http.StatusConflict, gin.H{"error": "Email already registered"})
@@ -48,7 +55,7 @@ func Register(c *gin.Context) {
 		Password: hashedPassword,
 	}
 
-	if err := models.CreateUser(&user); err != nil {
+	if err := models.CreateUser(ac.DB, &user); err != nil {
 		// MySQLの重複エラー(Error 1062)をチェック
 		if strings.Contains(err.Error(), "Error 1062") {
 			if strings.Contains(err.Error(), "username") {
@@ -74,7 +81,7 @@ func Register(c *gin.Context) {
 }
 
 // User login handler
-func Login(c *gin.Context) {
+func (ac *AuthController) Login(c *gin.Context) {
 	var input models.LoginInput
 
 	// Log the incoming request for debugging
@@ -87,7 +94,7 @@ func Login(c *gin.Context) {
 
 	slog.Info("Login attempt", "email", input.Email)
 
-	user, err := models.GetUserByEmail(input.Email)
+	user, err := models.GetUserByEmail(ac.DB, input.Email)
 	if err != nil {
 		// 4xx系エラー: 無効なメールアドレス
 		slog.Warn("Invalid email", "email", input.Email)

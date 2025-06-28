@@ -8,7 +8,8 @@ import (
 )
 
 type Config struct {
-	Port string
+	Port        string
+	DatabaseDSN string
 }
 
 // LoadConfig は設定を読み込みます。
@@ -20,7 +21,8 @@ func LoadConfig() *Config {
 	}
 
 	config := &Config{
-		Port: getEnv("PORT", "8081"),
+		Port:        getEnv("PORT", "8081"),
+		DatabaseDSN: getEnv("DATABASE_DSN", ""),
 	}
 
 	return config
@@ -34,4 +36,3 @@ func getEnv(key string, defaultValue string) string {
 	}
 	return value
 }
-
