@@ -154,42 +154,14 @@ export function WelcomeScreen() {
 
   return (
     <div className={`flex h-screen flex-col ${isDarkMode ? 'dark' : ''} bg-background text-foreground`}>
-      {/* Header */}
-      <header className="flex items-center justify-between border-b p-4">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left">
-            <SheetHeader>
-              <SheetTitle>Information</SheetTitle>
-            </SheetHeader>
-            <div className="py-4">
-              <p>This is the Difflog app. Refactored with Next.js and shadcn/ui.</p>
-            </div>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => signOut({ callbackUrl: '/login' })}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          </SheetContent>
-        </Sheet>
-        <h1 className="text-lg font-semibold">{session?.user?.name || 'Guest'} | 2024 - {selectedLocation}</h1>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => router.push('/analytics')}>
-            <BarChart />
-          </Button>
-          <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-4">
+        <div className="flex justify-between items-center mb-4">
+            <h1 className="text-lg font-semibold">{session?.user?.name || 'Guest'} | 2024 - {selectedLocation}</h1>
+            <div className="flex items-center gap-2">
+                <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
+            </div>
+        </div>
         {renderContent()}
       </main>
       
