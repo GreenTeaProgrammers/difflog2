@@ -9,6 +9,7 @@ import (
 // Location model
 type Location struct {
 	gorm.Model
+	UserID         uint
 	Name           string
 	Description    string
 	LastCommitDate time.Time

@@ -36,16 +36,16 @@ func Seeding(db *gorm.DB) {
 	}
 
     locations := []models.Location{
-        {Name: "Location1", Description: "Description1", LastCommitDate: specificTime},
-        {Name: "Location2", Description: "Description2", LastCommitDate: specificTime},
-        {Name: "Location3", Description: "Description3", LastCommitDate: specificTime},
-        {Name: "Location4", Description: "Description4", LastCommitDate: specificTime},
-        {Name: "Location5", Description: "Description5", LastCommitDate: specificTime},
-        {Name: "Location6", Description: "Description6", LastCommitDate: specificTime},
-        {Name: "Location7", Description: "Description7", LastCommitDate: specificTime},
-        {Name: "Location8", Description: "Description8", LastCommitDate: specificTime},
-        {Name: "Location9", Description: "Description9", LastCommitDate: specificTime},
-        {Name: "Location10", Description: "Description10", LastCommitDate: specificTime},
+        {UserID: 1, Name: "Location1", Description: "Description1", LastCommitDate: specificTime},
+        {UserID: 2, Name: "Location2", Description: "Description2", LastCommitDate: specificTime},
+        {UserID: 3, Name: "Location3", Description: "Description3", LastCommitDate: specificTime},
+        {UserID: 4, Name: "Location4", Description: "Description4", LastCommitDate: specificTime},
+        {UserID: 5, Name: "Location5", Description: "Description5", LastCommitDate: specificTime},
+        {UserID: 6, Name: "Location6", Description: "Description6", LastCommitDate: specificTime},
+        {UserID: 7, Name: "Location7", Description: "Description7", LastCommitDate: specificTime},
+        {UserID: 8, Name: "Location8", Description: "Description8", LastCommitDate: specificTime},
+        {UserID: 9, Name: "Location9", Description: "Description9", LastCommitDate: specificTime},
+        {UserID: 10, Name: "Location10", Description: "Description10", LastCommitDate: specificTime},
     }
 
     captures := []models.Capture{
