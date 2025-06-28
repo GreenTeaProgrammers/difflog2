@@ -8,6 +8,7 @@ import (
 // UserRepository defines the interface for user data operations.
 type UserRepository interface {
 	FindByEmail(email string) (*models.User, error)
+	FindByUsername(username string) (*models.User, error)
 	Create(user *models.User) error
 }
 
@@ -25,6 +26,15 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 func (r *userRepository) FindByEmail(email string) (*models.User, error) {
 	var user models.User
 	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+// FindByUsername retrieves a user by username from the database.
+func (r *userRepository) FindByUsername(username string) (*models.User, error) {
+	var user models.User
+	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil

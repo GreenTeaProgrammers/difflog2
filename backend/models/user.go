@@ -21,8 +21,8 @@ type RegisterInput struct {
 
 // LoginInput model
 type LoginInput struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Identifier string `json:"identifier" binding:"required"`
+	Password   string `json:"password" binding:"required"`
 }
 
 // GetUserByEmail retrieves a user by email

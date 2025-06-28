@@ -29,7 +29,7 @@ func main() {
 
 	// データベース接続を設定
 	db := models.ConnectDatabase(cfg.DatabaseDSN)
-	// Seeding(db)
+	Seeding(db)
 
 	// リポジトリを初期化
 	userRepo := repository.NewUserRepository(db)

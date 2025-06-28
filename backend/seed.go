@@ -1,29 +1,39 @@
 package main
 
 import (
-    "log/slog"
-    "time"
+	"log/slog"
+	"time"
 
-    "github.com/GreenTeaProgrammers/difflog2/backend/models"
-    "gorm.io/gorm"
+	"github.com/GreenTeaProgrammers/difflog2/backend/auth"
+	"github.com/GreenTeaProgrammers/difflog2/backend/models"
+	"gorm.io/gorm"
 )
 
 func Seeding(db *gorm.DB) {
-    specificTime := time.Date(2024, time.November, 9, 12, 24, 0, 0, time.UTC)
+	specificTime := time.Date(2024, time.November, 9, 12, 24, 0, 0, time.UTC)
 
-    // シードデータの作成
-    users := []models.User{
-        {Username: "user1", Email: "user1@example.com", Password: "password1"},
-        {Username: "user2", Email: "user2@example.com", Password: "password2"},
-        {Username: "user3", Email: "user3@example.com", Password: "password3"},
-        {Username: "user4", Email: "user4@example.com", Password: "password4"},
-        {Username: "user5", Email: "user5@example.com", Password: "password5"},
-        {Username: "user6", Email: "user6@example.com", Password: "password6"},
-        {Username: "user7", Email: "user7@example.com", Password: "password7"},
-        {Username: "user8", Email: "user8@example.com", Password: "password8"},
-        {Username: "user9", Email: "user9@example.com", Password: "password9"},
-        {Username: "user10", Email: "user10@example.com", Password: "password10"},
-    }
+	// シードデータの作成
+	users := []models.User{
+		{Username: "user1", Email: "user1@example.com", Password: "password1"},
+		{Username: "user2", Email: "user2@example.com", Password: "password2"},
+		{Username: "user3", Email: "user3@example.com", Password: "password3"},
+		{Username: "user4", Email: "user4@example.com", Password: "password4"},
+		{Username: "user5", Email: "user5@example.com", Password: "password5"},
+		{Username: "user6", Email: "user6@example.com", Password: "password6"},
+		{Username: "user7", Email: "user7@example.com", Password: "password7"},
+		{Username: "user8", Email: "user8@example.com", Password: "password8"},
+		{Username: "user9", Email: "user9@example.com", Password: "password9"},
+		{Username: "user10", Email: "user10@example.com", Password: "password10"},
+	}
+
+	for i := range users {
+		hashedPassword, err := auth.HashPassword(users[i].Password)
+		if err != nil {
+			slog.Error("Failed to hash password", "error", err)
+			return
+		}
+		users[i].Password = hashedPassword
+	}
 
     locations := []models.Location{
         {Name: "Location1", Description: "Description1", LastCommitDate: specificTime},
@@ -52,42 +62,42 @@ func Seeding(db *gorm.DB) {
     }
 
     commits := []models.Commit{
-        {LocationID: "1", Date: specificTime},
-        {LocationID: "2", Date: specificTime},
-        {LocationID: "3", Date: specificTime},
-        {LocationID: "4", Date: specificTime},
-        {LocationID: "5", Date: specificTime},
-        {LocationID: "6", Date: specificTime},
-        {LocationID: "7", Date: specificTime},
-        {LocationID: "8", Date: specificTime},
-        {LocationID: "9", Date: specificTime},
-        {LocationID: "10", Date: specificTime},
+        {LocationID: 1, Date: specificTime},
+        {LocationID: 2, Date: specificTime},
+        {LocationID: 3, Date: specificTime},
+        {LocationID: 4, Date: specificTime},
+        {LocationID: 5, Date: specificTime},
+        {LocationID: 6, Date: specificTime},
+        {LocationID: 7, Date: specificTime},
+        {LocationID: 8, Date: specificTime},
+        {LocationID: 9, Date: specificTime},
+        {LocationID: 10, Date: specificTime},
     }
 
     diffs := []models.Diff{
-        {ID: "1", LocationID: "1", Date: specificTime, CommitID: 1},
-        {ID: "2", LocationID: "2", Date: specificTime, CommitID: 2},
-        {ID: "3", LocationID: "3", Date: specificTime, CommitID: 3},
-        {ID: "4", LocationID: "4", Date: specificTime, CommitID: 4},
-        {ID: "5", LocationID: "5", Date: specificTime, CommitID: 5},
-        {ID: "6", LocationID: "6", Date: specificTime, CommitID: 6},
-        {ID: "7", LocationID: "7", Date: specificTime, CommitID: 7},
-        {ID: "8", LocationID: "8", Date: specificTime, CommitID: 8},
-        {ID: "9", LocationID: "9", Date: specificTime, CommitID: 9},
-        {ID: "10", LocationID: "10", Date: specificTime, CommitID: 10},
+        {LocationID: 1, Date: specificTime, CommitID: 1},
+        {LocationID: 2, Date: specificTime, CommitID: 2},
+        {LocationID: 3, Date: specificTime, CommitID: 3},
+        {LocationID: 4, Date: specificTime, CommitID: 4},
+        {LocationID: 5, Date: specificTime, CommitID: 5},
+        {LocationID: 6, Date: specificTime, CommitID: 6},
+        {LocationID: 7, Date: specificTime, CommitID: 7},
+        {LocationID: 8, Date: specificTime, CommitID: 8},
+        {LocationID: 9, Date: specificTime, CommitID: 9},
+        {LocationID: 10, Date: specificTime, CommitID: 10},
     }
 
     diffItems := []models.DiffItem{
-        {DiffID: "1", ItemID: "item1", ItemName: "Item 1", ChangeType: "added", PreviousCount: 0, CurrentCount: 1},
-        {DiffID: "2", ItemID: "item2", ItemName: "Item 2", ChangeType: "modified", PreviousCount: 1, CurrentCount: 2},
-        {DiffID: "3", ItemID: "item3", ItemName: "Item 3", ChangeType: "deleted", PreviousCount: 2, CurrentCount: 0},
-        {DiffID: "4", ItemID: "item4", ItemName: "Item 4", ChangeType: "added", PreviousCount: 0, CurrentCount: 1},
-        {DiffID: "5", ItemID: "item5", ItemName: "Item 5", ChangeType: "modified", PreviousCount: 1, CurrentCount: 2},
-        {DiffID: "6", ItemID: "item6", ItemName: "Item 6", ChangeType: "deleted", PreviousCount: 2, CurrentCount: 0},
-        {DiffID: "7", ItemID: "item7", ItemName: "Item 7", ChangeType: "added", PreviousCount: 0, CurrentCount: 1},
-        {DiffID: "8", ItemID: "item8", ItemName: "Item 8", ChangeType: "modified", PreviousCount: 1, CurrentCount: 2},
-        {DiffID: "9", ItemID: "item9", ItemName: "Item 9", ChangeType: "deleted", PreviousCount: 2, CurrentCount: 0},
-        {DiffID: "10", ItemID: "item10", ItemName: "Item 10", ChangeType: "added", PreviousCount: 0, CurrentCount: 1},
+        {DiffID: 1, ItemID: "item1", ItemName: "Item 1", ChangeType: "added", PreviousCount: 0, CurrentCount: 1},
+        {DiffID: 2, ItemID: "item2", ItemName: "Item 2", ChangeType: "modified", PreviousCount: 1, CurrentCount: 2},
+        {DiffID: 3, ItemID: "item3", ItemName: "Item 3", ChangeType: "deleted", PreviousCount: 2, CurrentCount: 0},
+        {DiffID: 4, ItemID: "item4", ItemName: "Item 4", ChangeType: "added", PreviousCount: 0, CurrentCount: 1},
+        {DiffID: 5, ItemID: "item5", ItemName: "Item 5", ChangeType: "modified", PreviousCount: 1, CurrentCount: 2},
+        {DiffID: 6, ItemID: "item6", ItemName: "Item 6", ChangeType: "deleted", PreviousCount: 2, CurrentCount: 0},
+        {DiffID: 7, ItemID: "item7", ItemName: "Item 7", ChangeType: "added", PreviousCount: 0, CurrentCount: 1},
+        {DiffID: 8, ItemID: "item8", ItemName: "Item 8", ChangeType: "modified", PreviousCount: 1, CurrentCount: 2},
+        {DiffID: 9, ItemID: "item9", ItemName: "Item 9", ChangeType: "deleted", PreviousCount: 2, CurrentCount: 0},
+        {DiffID: 10, ItemID: "item10", ItemName: "Item 10", ChangeType: "added", PreviousCount: 0, CurrentCount: 1},
     }
 
     // データベースにシードデータを挿入

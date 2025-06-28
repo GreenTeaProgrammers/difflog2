@@ -92,20 +92,28 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	slog.Info("Login attempt", "email", input.Email)
+	slog.Info("Login attempt", "identifier", input.Identifier)
 
-	user, err := ac.UserRepo.FindByEmail(input.Email)
+	// Find user by email or username
+	var user *models.User
+	var err error
+	if strings.Contains(input.Identifier, "@") {
+		user, err = ac.UserRepo.FindByEmail(input.Identifier)
+	} else {
+		user, err = ac.UserRepo.FindByUsername(input.Identifier)
+	}
+
 	if err != nil {
-		// 4xx系エラー: 無効なメールアドレス
-		slog.Warn("Invalid email", "email", input.Email)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		// 4xx系エラー: 無効なメールアドレスまたはユーザー名
+		slog.Warn("Invalid identifier", "identifier", input.Identifier)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid identifier or password"})
 		return
 	}
 
-	if !auth.ComparePassword(input.Password, user.Password) {
+	if !auth.ComparePassword(user.Password, input.Password) {
 		// 4xx系エラー: 無効なパスワード
-		slog.Warn("Invalid password", "email", input.Email)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		slog.Warn("Invalid password", "identifier", input.Identifier)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid identifier or password"})
 		return
 	}
 
@@ -117,7 +125,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	slog.Info("Login successful", "email", input.Email)
+	slog.Info("Login successful", "identifier", input.Identifier)
 	c.JSON(http.StatusOK, gin.H{"token": token, "id": user.ID, "username": user.Username, "email": user.Email, "message": "Login successful"})
 }
 

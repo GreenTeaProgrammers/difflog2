@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ export function LoginForm() {
 
     const result = await signIn("credentials", {
       redirect: false,
-      email,
+      identifier,
       password,
     });
 
@@ -56,15 +56,15 @@ export function LoginForm() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email">メールアドレス</Label>
+            <Label htmlFor="identifier">ユーザー名またはメールアドレス</Label>
             <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="email@example.com"
+              id="identifier"
+              name="identifier"
+              type="text"
+              placeholder="username or email@example.com"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
             />
           </div>
           <div className="space-y-2">

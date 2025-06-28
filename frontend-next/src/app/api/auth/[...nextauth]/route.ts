@@ -15,7 +15,7 @@ const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        identifier: { label: "Identifier", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -24,7 +24,7 @@ const authOptions: AuthOptions = {
         }
         try {
           // 認証ロジックを呼び出す
-          const user = await verifyCredentials(credentials.email, credentials.password);
+          const user = await verifyCredentials(credentials.identifier, credentials.password);
           if (user) {
             // NextAuthが期待する形式にユーザー情報を変換
             return { id: user.id, name: user.username, email: user.email };

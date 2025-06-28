@@ -6,8 +6,8 @@ import { redirect } from 'next/navigation'
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
 // This function is not a Server Action, so it can be called from anywhere.
-export async function verifyCredentials(email: unknown, password: unknown) {
-  if (typeof email !== 'string' || typeof password !== 'string') {
+export async function verifyCredentials(identifier: unknown, password: unknown) {
+  if (typeof identifier !== 'string' || typeof password !== 'string') {
     throw new Error('Invalid credentials');
   }
 
@@ -16,7 +16,7 @@ export async function verifyCredentials(email: unknown, password: unknown) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ identifier, password }),
   });
 
   const data = await response.json();
