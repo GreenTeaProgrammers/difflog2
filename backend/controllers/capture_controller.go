@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -12,7 +10,7 @@ import (
 
 	"log/slog"
 
-	"github.com/GreenTeaProgrammers/difflog2/models"
+	"github.com/GreenTeaProgrammers/difflog2/backend/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -76,20 +74,20 @@ func (ctrl CaptureController) CreateCapture(c *gin.Context) {
 	}
 
 	// 画像のURLを使用してMLサーバーに送信
-	mlResponse, err := callMLServer(capture.ImageURL)
-	if err != nil {
-		slog.Error("Failed to get diff from ML server", slog.Any("error", err), slog.String("imageURL", capture.ImageURL))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get diff from ML server"})
-		return
-	}
+	// mlResponse, err := callMLServer(capture.ImageURL)
+	// if err != nil {
+	// 	slog.Error("Failed to get diff from ML server", slog.Any("error", err), slog.String("imageURL", capture.ImageURL))
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get diff from ML server"})
+	// 	return
+	// }
 
 	// MLサーバーからのレスポンスをログに記録
-	slog.Info("Diff calculated successfully", slog.Any("diff", mlResponse))
+	// slog.Info("Diff calculated successfully", slog.Any("diff", mlResponse))
 
 	// フロントエンドにCaptureデータとMLサーバーからの結果を返却
 	response := gin.H{
-		"capture":    capture,
-		"mlResponse": mlResponse,
+		"capture": capture,
+		// "mlResponse": mlResponse, // ML連携は一時的に無効化
 	}
 	c.JSON(http.StatusOK, response)
 }
@@ -163,32 +161,9 @@ func (ctrl CaptureController) DeleteCapture(c *gin.Context) {
 }
 
 // callMLServer はMLサーバーに画像データを送信し、差分を取得します
+// 現在はML連携を無効化しているため、この関数は使用されない
 func callMLServer(imageURL string) (*models.DiffResponse, error) {
-	mlServerURL := "http://127.0.0.1:5000/diff" // MLサーバーのエンドポイントURL
-	payload := map[string]string{"image_url": imageURL}
-	jsonPayload, err := json.Marshal(payload)
-	if err != nil {
-		slog.Error("Failed to marshal JSON for ML server request", slog.Any("error", err), slog.String("imageURL", imageURL))
-		return nil, err
-	}
-
-	resp, err := http.Post(mlServerURL, "application/json", bytes.NewBuffer(jsonPayload))
-	if err != nil {
-		slog.Error("Failed to send POST request to ML server", slog.Any("error", err), slog.String("mlServerURL", mlServerURL))
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		slog.Error("ML server returned non-OK status", slog.String("status", resp.Status), slog.String("mlServerURL", mlServerURL))
-		return nil, fmt.Errorf("ML server returned status: %d", resp.StatusCode)
-	}
-
-	var diffResponse models.DiffResponse
-	if err := json.NewDecoder(resp.Body).Decode(&diffResponse); err != nil {
-		slog.Error("Failed to decode JSON response from ML server", slog.Any("error", err))
-		return nil, err
-	}
-
-	return &diffResponse, nil
+	// ダミーのレスポンスを返す
+	slog.Warn("callMLServer is currently disabled. Returning dummy response.")
+	return &models.DiffResponse{}, nil
 }

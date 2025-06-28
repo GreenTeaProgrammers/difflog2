@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { commitService } from "../../services/commitService";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
 
 type useOpacityProps = {
   year: number;

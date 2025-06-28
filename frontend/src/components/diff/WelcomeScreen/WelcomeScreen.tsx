@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton,  Grid, Paper, Drawer, Switch, ThemeProvider } from '@mui/material';
-import { Info,  Close, CameraAlt, AddLocation, BarChart, ArrowBack, NearMe, Home, ManageAccounts } from '@mui/icons-material';
+import { Info,  Close, CameraAlt, BarChart, ArrowBack, NearMe, Home, ManageAccounts } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import HorizontalWheel from '../HorizontalWheel';
 import { lightTheme, darkTheme } from '../../../theme';
@@ -11,9 +11,6 @@ import { toggleDarkMode } from '../../../../store/userSettingSlice';
 
 import CommitDiffDisplay from './CommitDiffData';
 
-interface WelcomeScreenProps {
-  username: string;
-}
 
 export type Commit = {
   ID: number;
@@ -33,7 +30,7 @@ const mockCommits: Commit =
     ]
   };
 
-const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
+const WelcomeScreen: React.FC = () => {
   const locations = ["books", "kitchen", "desk", "store"];
   const months = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -47,6 +44,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
   const [currentDay, setCurrentDay] = useState(0);
   const navigate = useNavigate();
   const isDarkMode = useAppSelector((state) => state.userSetting.isDarkMode);
+  const user = useAppSelector((state) => state.auth.user);
   const handleLocationSelect = (location: string) =>
   {
 
@@ -59,7 +57,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
     setIsInfoOpen(!isInfoOpen);
   };
 
-  const yearXsValue = window.innerWidth > window.innerHeight ? 3 : 4;
 
 
   const navigateToCameraUpload = () =>
@@ -279,7 +276,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ username }) => {
           <IconButton color="inherit" onClick={toggleInfoDrawer}>
             <Info />
           </IconButton>
-          <Typography variant="h6">2024 - {selectedLocation}</Typography>
+          <Typography variant="h6">{user?.username} | 2024 - {selectedLocation}</Typography>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <IconButton color="inherit" onClick={navigateToAnalytics}>
               <BarChart />

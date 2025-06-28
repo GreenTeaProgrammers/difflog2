@@ -46,12 +46,12 @@ const Register: React.FC = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      try {
-        await dispatch(register(formData)).unwrap();
-        navigate("/login");
-      } catch (err) {
-        setErrors({ submit: "登録に失敗しました。もう一度お試しください。" });
-      }
+    try {
+      await dispatch(register(formData)).unwrap();
+      navigate("/welcome");
+    } catch {
+      // console.error("Registration failed:");
+    }
     }
   };
 

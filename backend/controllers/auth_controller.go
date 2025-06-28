@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/GreenTeaProgrammers/difflog2/auth"
-	"github.com/GreenTeaProgrammers/difflog2/models"
+	"github.com/GreenTeaProgrammers/difflog2/backend/auth"
+	"github.com/GreenTeaProgrammers/difflog2/backend/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

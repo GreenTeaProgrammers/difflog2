@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/GreenTeaProgrammers/difflog2/controllers"
-	"github.com/GreenTeaProgrammers/difflog2/models"
+	"github.com/GreenTeaProgrammers/difflog2/backend/controllers"
+	"github.com/GreenTeaProgrammers/difflog2/backend/models"
 	"github.com/gin-gonic/gin"
 )
 

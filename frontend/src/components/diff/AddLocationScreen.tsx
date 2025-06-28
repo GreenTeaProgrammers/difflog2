@@ -8,7 +8,7 @@ import { useAppSelector } from "../../../store";
 import { lightTheme, darkTheme } from "../../theme";
 
 interface AddLocationScreenProps {
-  onAddLocation: (newLocation: any) => void; // 適切な型を指定する必要があります
+  onAddLocation: (location: { name: string }) => void;
 }
 
 const AddLocationScreen: React.FC<AddLocationScreenProps> = ({ onAddLocation }) => {

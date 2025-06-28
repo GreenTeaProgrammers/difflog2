@@ -1,6 +1,4 @@
-import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useAppSelector } from "../../../../store";
 import useOpacity from "../../../hooks/useOpacity";
 
 type ColorBlockProps = {

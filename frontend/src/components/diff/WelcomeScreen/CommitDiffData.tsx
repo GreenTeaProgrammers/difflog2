@@ -1,7 +1,5 @@
-import { Box, Card, Paper, Typography } from "@mui/material";
+import { Box, Card, Typography } from "@mui/material";
 import { Commit } from "./WelcomeScreen";
-import { SettingsRemote, Mouse, AccessTime, Hotel, EventSeat, Backpack, Umbrella, LocalMall, Luggage, DownhillSkiing, Snowboarding, SportsBaseball, SportsCricket, Skateboarding, Surfing, SportsTennis, WineBar, LocalCafe, Flatware, ChairAlt, Weekend, Grass, TableRestaurant, Wc, Tv, Laptop, Keyboard, Phone, MenuBook, FilterVintage, ContentCut, Toys, Pets, DinnerDining, Kitchen } from '@mui/icons-material';
-import {labelToIconMapping} from './IconMapping.ts';
 
 interface CommitDiffDisplayProps {
   commits: Commit[];

@@ -4,7 +4,7 @@ import (
     "log/slog"
     "time"
 
-    "github.com/GreenTeaProgrammers/difflog2/models"
+    "github.com/GreenTeaProgrammers/difflog2/backend/models"
     "gorm.io/gorm"
 )
 
@@ -13,16 +13,16 @@ func Seeding(db *gorm.DB) {
 
     // シードデータの作成
     users := []models.User{
-        {Username: "user1", Email: "user1@example.com", Password: "password1", CreatedAt: specificTime},
-        {Username: "user2", Email: "user2@example.com", Password: "password2", CreatedAt: specificTime},
-        {Username: "user3", Email: "user3@example.com", Password: "password3", CreatedAt: specificTime},
-        {Username: "user4", Email: "user4@example.com", Password: "password4", CreatedAt: specificTime},
-        {Username: "user5", Email: "user5@example.com", Password: "password5", CreatedAt: specificTime},
-        {Username: "user6", Email: "user6@example.com", Password: "password6", CreatedAt: specificTime},
-        {Username: "user7", Email: "user7@example.com", Password: "password7", CreatedAt: specificTime},
-        {Username: "user8", Email: "user8@example.com", Password: "password8", CreatedAt: specificTime},
-        {Username: "user9", Email: "user9@example.com", Password: "password9", CreatedAt: specificTime},
-        {Username: "user10", Email: "user10@example.com", Password: "password10", CreatedAt: specificTime},
+        {Username: "user1", Email: "user1@example.com", Password: "password1"},
+        {Username: "user2", Email: "user2@example.com", Password: "password2"},
+        {Username: "user3", Email: "user3@example.com", Password: "password3"},
+        {Username: "user4", Email: "user4@example.com", Password: "password4"},
+        {Username: "user5", Email: "user5@example.com", Password: "password5"},
+        {Username: "user6", Email: "user6@example.com", Password: "password6"},
+        {Username: "user7", Email: "user7@example.com", Password: "password7"},
+        {Username: "user8", Email: "user8@example.com", Password: "password8"},
+        {Username: "user9", Email: "user9@example.com", Password: "password9"},
+        {Username: "user10", Email: "user10@example.com", Password: "password10"},
     }
 
     locations := []models.Location{
@@ -52,16 +52,16 @@ func Seeding(db *gorm.DB) {
     }
 
     commits := []models.Commit{
-        {LocationID: "1", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
-        {LocationID: "2", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
-        {LocationID: "3", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
-        {LocationID: "4", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
-        {LocationID: "5", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
-        {LocationID: "6", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
-        {LocationID: "7", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
-        {LocationID: "8", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
-        {LocationID: "9", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
-        {LocationID: "10", Date: specificTime, CreatedAt: specificTime, UpdatedAt: specificTime},
+        {LocationID: "1", Date: specificTime},
+        {LocationID: "2", Date: specificTime},
+        {LocationID: "3", Date: specificTime},
+        {LocationID: "4", Date: specificTime},
+        {LocationID: "5", Date: specificTime},
+        {LocationID: "6", Date: specificTime},
+        {LocationID: "7", Date: specificTime},
+        {LocationID: "8", Date: specificTime},
+        {LocationID: "9", Date: specificTime},
+        {LocationID: "10", Date: specificTime},
     }
 
     diffs := []models.Diff{
