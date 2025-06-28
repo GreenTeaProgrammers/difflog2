@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSWRConfig } from 'swr';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,15 +12,36 @@ export function AddLocationForm() {
   const router = useRouter();
   const [newLocation, setNewLocation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { mutate } = useSWRConfig();
 
   const handleAddLocation = async () => {
     if (newLocation.trim()) {
       setIsLoading(true);
-      // TODO: API call to create location
-      console.log('Creating location:', newLocation.trim());
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      setIsLoading(false);
-      router.push('/welcome');
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/locations`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: newLocation.trim() }),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to create location');
+        }
+
+        // Revalidate locations data after successful creation
+        mutate(`${process.env.NEXT_PUBLIC_API_URL}/locations`);
+        router.push('/welcome');
+      } catch (error) {
+        console.error(error);
+        // TODO: Show error message to user
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
