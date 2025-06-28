@@ -8,4 +8,4 @@ load_dotenv()
 
 # Export the model
 model = YOLO(os.getenv("TRAINED_MODEL"))
-model.export(format="coreml")
+model.export(format="onnx", opset=11)

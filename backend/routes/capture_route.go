@@ -5,9 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CaptureRoutes(router *gin.Engine) {
-	captureController := controllers.CaptureController{}
-
+func CaptureRoutes(router *gin.Engine, captureController *controllers.CaptureController) {
 	// ルートの定義
 	captureRoutes := router.Group("/captures")
 	{
