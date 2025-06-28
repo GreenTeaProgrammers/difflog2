@@ -7,16 +7,16 @@ import (
 
 	"github.com/GreenTeaProgrammers/difflog2/backend/auth"
 	"github.com/GreenTeaProgrammers/difflog2/backend/models"
+	"github.com/GreenTeaProgrammers/difflog2/backend/repository"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type AuthController struct {
-	DB *gorm.DB
+	UserRepo repository.UserRepository
 }
 
-func NewAuthController(db *gorm.DB) *AuthController {
-	return &AuthController{DB: db}
+func NewAuthController(userRepo repository.UserRepository) *AuthController {
+	return &AuthController{UserRepo: userRepo}
 }
 
 // User registration handler
@@ -34,7 +34,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 	slog.Info("Registering user", "input", input)
 
 	// Check if the user already exists
-	if _, err := models.GetUserByEmail(ac.DB, input.Email); err == nil {
+	if _, err := ac.UserRepo.FindByEmail(input.Email); err == nil {
 		// 4xx系エラー: 既に登録されているメールアドレス
 		slog.Warn("Email already registered", "email", input.Email)
 		c.JSON(http.StatusConflict, gin.H{"error": "Email already registered"})
@@ -55,7 +55,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 		Password: hashedPassword,
 	}
 
-	if err := models.CreateUser(ac.DB, &user); err != nil {
+	if err := ac.UserRepo.Create(&user); err != nil {
 		// MySQLの重複エラー(Error 1062)をチェック
 		if strings.Contains(err.Error(), "Error 1062") {
 			if strings.Contains(err.Error(), "username") {
@@ -94,7 +94,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 
 	slog.Info("Login attempt", "email", input.Email)
 
-	user, err := models.GetUserByEmail(ac.DB, input.Email)
+	user, err := ac.UserRepo.FindByEmail(input.Email)
 	if err != nil {
 		// 4xx系エラー: 無効なメールアドレス
 		slog.Warn("Invalid email", "email", input.Email)

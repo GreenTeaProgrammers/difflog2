@@ -2,12 +2,12 @@ package routes
 
 import (
 	"github.com/GreenTeaProgrammers/difflog2/backend/controllers"
+	"github.com/GreenTeaProgrammers/difflog2/backend/repository"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func AuthRoutes(r *gin.Engine, db *gorm.DB) {
-	authController := controllers.NewAuthController(db)
+func AuthRoutes(r *gin.Engine, userRepo repository.UserRepository) {
+	authController := controllers.NewAuthController(userRepo)
 
 	r.POST("/register", authController.Register)
 	r.POST("/login", authController.Login)

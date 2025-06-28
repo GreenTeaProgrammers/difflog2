@@ -5,9 +5,11 @@ import (
 	"os"
 
 	"github.com/GreenTeaProgrammers/difflog2/backend/config"
+	"github.com/GreenTeaProgrammers/difflog2/backend/config"
 	"github.com/GreenTeaProgrammers/difflog2/backend/controllers"
 	"github.com/GreenTeaProgrammers/difflog2/backend/middleware"
 	"github.com/GreenTeaProgrammers/difflog2/backend/models"
+	"github.com/GreenTeaProgrammers/difflog2/backend/repository"
 	"github.com/GreenTeaProgrammers/difflog2/backend/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -30,6 +32,9 @@ func main() {
 	db := models.ConnectDatabase(cfg.DatabaseDSN)
 	// Seeding(db)
 
+	// リポジトリを初期化
+	userRepo := repository.NewUserRepository(db)
+
 	// コントローラーを初期化
 	detectionController, err := controllers.NewDetectionController()
 	if err != nil {
@@ -41,7 +46,7 @@ func main() {
 	}
 
 	// ルートを設定
-	routes.AuthRoutes(r, db)
+	routes.AuthRoutes(r, userRepo)
 	routes.CaptureRoutes(r)
 	routes.CommitRoutes(r)
 	routes.RegisterLocationRoutes(r)
