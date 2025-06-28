@@ -81,18 +81,18 @@
 上記の改善案を、具体的なタスクとして以下にまとめます。詳細は `refactoring_plan.md` を参照してください。
 
 ### Phase 1: バックエンドのアーキテクチャ改善
-- **[ ] TODO:** ログインAPIのレスポンス修正 (`id`, `email` を追加)
-- **[ ] TODO:** ユーザー登録時のエラーハンドリング修正
-- **[ ] TODO:** 依存性注入 (DI) の導入
-- **[ ] TODO:** リポジトリパターンの導入
-- **[ ] TODO:** 設定管理の統一
+- **[x] DONE:** ログインAPIのレスポンス修正 (`id`, `email` を追加)
+- **[x] DONE:** ユーザー登録時のエラーハンドリング修正
+- **[x] DONE:** 依存性注入 (DI) の導入
+- **[x] DONE:** リポジトリパターンの導入
+- **[x] DONE:** 設定管理の統一
 
 ### Phase 2: フロントエンドの認証フロー統一
-- **[ ] TODO:** Server Actions の削除または置換
-- **[ ] TODO:** フォームの処理をNextAuth.jsに移行
-- **[ ] TODO:** 不要なCookie操作の削除
+- **[x] DONE:** Server Actions の削除または置換
+- **[x] DONE:** フォームの処理をNextAuth.jsに移行
+- **[x] DONE:** 不要なCookie操作の削除
 
 ### Phase 3: ドキュメントの更新とクリーンアップ
-- **[ ] TODO:** `report.md` の進捗反映
+- **[x] DONE:** `report.md` の進捗反映
 - **[ ] TODO:** 旧 `frontend` ディレクトリの削除
 - **[ ] TODO:** `compose.yml` の更新

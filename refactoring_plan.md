@@ -10,16 +10,16 @@
 
 **目標:** 密結合な設計を解消し、テスト可能で保守性の高いコードベースを実現する。
 
-*   **[ ] TODO:** ログインAPIのレスポンス修正
-    *   **詳細:** `/login` エンドポイントのレスポンスに、`id` と `email` を含めるように `auth_controller.go` を修正する。これはフロントエンドの認証フローを正常化するために急務。
-*   **[ ] TODO:** ユーザー登録時のエラーハンドリング修正
-    *   **詳細:** `auth_controller.go` のユーザー名重複チェックのロジックを、データベースの制約違反エラーを正しく捕捉するように修正する。
-*   **[ ] TODO:** 依存性注入 (DI) の導入
-    *   **詳細:** `main.go` でデータベース接続 (`*gorm.DB`) を生成し、それを必要とするリポジトリやコントローラーに明示的に注入する。まずは `auth_controller` から着手する。
-*   **[ ] TODO:** リポジトリパターンの導入
-    *   **詳細:** `user` モデルに対するデータベース操作をカプセル化する `user_repository.go` を作成する。`auth_controller` は GORM を直接触らず、このリポジトリを経由してデータを操作するように変更する。
-*   **[ ] TODO:** 設定管理の統一
-    *   **詳細:** `models/db.go` 内の `os.Getenv("DATABASE_DSN")` 呼び出しを削除し、`config` パッケージからデータベース接続情報を取得するように修正する。
+*   **[x] DONE:** ログインAPIのレスポンス修正
+    *   **詳細:** `/login` エンドポイントのレスポンスに、`id` と `email` を含めるように `auth_controller.go` を修正した。
+*   **[x] DONE:** ユーザー登録時のエラーハンドリング修正
+    *   **詳細:** `auth_controller.go` のユーザー名重複チェックのロジックを、データベースの制約違反エラーを正しく捕捉するように修正した。
+*   **[x] DONE:** 依存性注入 (DI) の導入
+    *   **詳細:** `main.go` でデータベース接続 (`*gorm.DB`) を生成し、それをリポジトリとコントローラーに注入する形に変更した。
+*   **[x] DONE:** リポジトリパターンの導入
+    *   **詳細:** `user` モデルに対するデータベース操作をカプセル化する `user_repository.go` を作成し、`auth_controller` がリポジトリ経由でデータを操作するように変更した。
+*   **[x] DONE:** 設定管理の統一
+    *   **詳細:** `models/db.go` から `os.Getenv` 呼び出しを削除し、`config` パッケージ経由でDSNを取得するように修正した。
 
 ---
 
@@ -27,15 +27,14 @@
 
 **目標:** 混乱した認証実装をNextAuth.jsに一本化し、信頼性と保守性を確保する。
 
-*   **[ ] TODO:** Server Actions の削除または置換
-    *   **詳細:** `app/actions/auth.ts` 内の `login`, `register`, `logout` Server Actions を削除する。
-*   **[ ] TODO:** フォームの処理をNextAuth.jsに移行
+*   **[x] DONE:** Server Actions の削除または置換
+    *   **詳細:** `app/actions/auth.ts` 内の `login`, `register`, `logout` Server Actions を削除した。
+*   **[x] DONE:** フォームの処理をNextAuth.jsに移行
     *   **詳細:**
-        *   ログインフォーム (`login-form.tsx`) の `onSubmit` 処理を、NextAuth.jsの `signIn` 関数を呼び出すように変更する。
-        *   ログアウト処理を、NextAuth.jsの `signOut` 関数を呼び出すように変更する。
-        *   登録フォーム (`register-form.tsx`) は、バックエンドの `/register` APIを直接呼び出すヘルパー関数を作成し、それを使用するように変更する。
-*   **[ ] TODO:** 不要なCookie操作の削除
-    *   **詳細:** Server Actions で行っていた手動のCookie設定 (`cookies().set(...)`) をすべて削除する。セッション管理はNextAuth.jsに完全に委任する。
+        *   ログインフォームとログアウト処理は、既にNextAuth.jsの `signIn`/`signOut` を使用していた。
+        *   登録フォーム (`register-form.tsx`) は、Server Actionの使用をやめ、バックエンドAPIを直接呼び出すように修正した。
+*   **[x] DONE:** 不要なCookie操作の削除
+    *   **詳細:** Server Actionsを削除したことにより、手動のCookie設定 (`cookies().set(...)`) はプロジェクトから除去された。
 
 ---
 
@@ -43,8 +42,8 @@
 
 **目標:** プロジェクトの現状を正確に反映したドキュメントを整備し、不要なコードを削除する。
 
-*   **[ ] TODO:** `report.md` の更新
-    *   **詳細:** このTODOリストの進捗を `report.md` にも反映させる。
+*   **[x] DONE:** `report.md` の更新
+    *   **詳細:** `report.md` に今回のリファクタリングの進捗を反映させた。
 *   **[ ] TODO:** 旧フロントエンドの削除
     *   **詳細:** `frontend-next` への移行が完全に完了し、動作確認が取れた後、旧 `frontend` ディレクトリをプロジェクトから削除する。
 *   **[ ] TODO:** `compose.yml` の更新
