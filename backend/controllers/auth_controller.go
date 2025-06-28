@@ -102,7 +102,7 @@ func Login(c *gin.Context) {
 	}
 
 	slog.Info("Login successful", "email", input.Email)
-	c.JSON(http.StatusOK, gin.H{"token": token, "username": user.Username, "message": "Login successful"})
+	c.JSON(http.StatusOK, gin.H{"token": token, "id": user.ID, "username": user.Username, "email": user.Email, "message": "Login successful"})
 }
 
 // User logout handler
