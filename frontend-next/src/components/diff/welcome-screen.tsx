@@ -1,7 +1,5 @@
 'use client';
 
-'use client';
-
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
@@ -28,7 +26,8 @@ export function WelcomeScreen() {
   const router = useRouter();
   const { data: session } = useSession();
   const { isDarkMode, toggleDarkMode } = useUserSettingsStore();
-  const { data: locations, error: locationsError } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/locations`, fetcher);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
+  const { data: locations, error: locationsError } = useSWR(`${apiUrl}/locations`, fetcher);
   const [selectedLocation, setSelectedLocation] = useState('');
 
   useEffect(() => {

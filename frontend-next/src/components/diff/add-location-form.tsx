@@ -18,8 +18,9 @@ export function AddLocationForm() {
     if (newLocation.trim()) {
       setIsLoading(true);
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/locations`,
+          `${apiUrl}/locations`,
           {
             method: 'POST',
             headers: {
@@ -34,7 +35,8 @@ export function AddLocationForm() {
         }
 
         // Revalidate locations data after successful creation
-        mutate(`${process.env.NEXT_PUBLIC_API_URL}/locations`);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
+        mutate(`${apiUrl}/locations`);
         router.push('/welcome');
       } catch (error) {
         console.error(error);
