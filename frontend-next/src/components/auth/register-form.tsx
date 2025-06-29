@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Lock } from 'lucide-react';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { apiClient, ApiError } from '@/lib/api';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -39,25 +38,21 @@ export function RegisterForm() {
     setError('');
 
     try {
-      const response = await fetch(`${API_URL}/register`, {
+      await apiClient('/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, email, password }),
+        body: { username, email, password },
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || '登録に失敗しました。');
-      }
 
       // 登録成功後、ログインページにリダイレクト
       router.push('/login');
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '予期せぬエラーが発生しました。';
-      setError(errorMessage);
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('予期せぬエラーが発生しました。');
+      }
     } finally {
       setIsLoading(false);
     }

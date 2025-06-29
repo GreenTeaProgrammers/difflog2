@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Plus } from 'lucide-react';
+import { apiClient, ApiError } from '@/lib/api';
+import { toast } from 'sonner';
 
 export function AddLocationForm() {
   const router = useRouter();
@@ -18,28 +20,21 @@ export function AddLocationForm() {
     if (newLocation.trim()) {
       setIsLoading(true);
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
-        const response = await fetch(
-          `${apiUrl}/locations`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: newLocation.trim() }),
-          },
-        );
-
-        if (!response.ok) {
-          throw new Error('Failed to create location');
-        }
+        await apiClient('/locations', {
+          method: 'POST',
+          body: { name: newLocation.trim() },
+        });
 
         // Revalidate locations data after successful creation
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
         mutate(`${apiUrl}/locations`);
+        toast.success('Location added successfully!');
         router.push('/welcome');
       } catch (error) {
         console.error(error);
-        // TODO: Show error message to user
+        const errorMessage =
+          error instanceof ApiError ? error.message : 'Failed to add location. Please try again.';
+        toast.error(errorMessage);
       } finally {
         setIsLoading(false);
       }

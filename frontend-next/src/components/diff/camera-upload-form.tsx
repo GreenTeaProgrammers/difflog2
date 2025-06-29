@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, UploadCloud, CheckCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { apiClient, ApiError } from '@/lib/api';
 
 export function CameraUploadForm() {
   const router = useRouter();
@@ -61,21 +62,19 @@ export function CameraUploadForm() {
     formData.append('image', uploadedFile);
 
     try {
-      const response = await fetch('http://localhost:8081/detect', {
+      const data = await apiClient<{ results: any[] }>('/detect', {
         method: 'POST',
         body: formData,
       });
-
-      if (!response.ok) {
-        throw new Error('Server error');
-      }
-
-      const data = await response.json();
       setDetectionResults(data.results);
       router.push('/result');
     } catch (error) {
       console.error('Error uploading capture:', error);
-      setError('画像のアップロードに失敗しました。もう一度お試しください。');
+      if (error instanceof ApiError) {
+        setError(error.message);
+      } else {
+        setError('画像のアップロードに失敗しました。もう一度お試しください。');
+      }
     } finally {
       setIsAnalyzing(false);
     }

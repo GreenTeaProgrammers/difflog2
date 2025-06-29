@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Switch } from "@/components/ui/switch";
 import { Info, BarChart, Camera, Home, LogOut, Menu, Send, X, ChevronLeft } from 'lucide-react';
 import { useUserSettingsStore } from '@/store/user-settings';
+import { apiClient } from '@/lib/api';
 
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -20,14 +21,19 @@ const ColorBlock = ({ year, month, day }: { year: number, month: number, day: nu
   return <div className={`aspect-square w-full rounded-sm ${colors[hash]}`} />;
 };
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => apiClient(url.replace(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081', ''));
+
+type Location = {
+  id: number;
+  name: string;
+};
 
 export function WelcomeScreen() {
   const router = useRouter();
   const { data: session } = useSession();
   const { isDarkMode, toggleDarkMode } = useUserSettingsStore();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
-  const { data: locations, error: locationsError } = useSWR(`${apiUrl}/locations`, fetcher);
+  const { data: locations, error: locationsError } = useSWR<Location[]>(`${apiUrl}/locations`, fetcher);
   const [selectedLocation, setSelectedLocation] = useState('');
 
   useEffect(() => {
