@@ -21,7 +21,7 @@ const ColorBlock = ({ year, month, day }: { year: number, month: number, day: nu
   return <div className={`aspect-square w-full rounded-sm ${colors[hash]}`} />;
 };
 
-const fetcher = (url: string) => apiClient(url.replace(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081', ''));
+const fetcher = (url: string): Promise<Location[]> => apiClient(url.replace(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081', ''));
 
 type Location = {
   id: number;

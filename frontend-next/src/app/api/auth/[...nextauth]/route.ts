@@ -37,6 +37,20 @@ const authOptions: AuthOptions = {
         }
       },
     }),
+    CredentialsProvider({
+      id: "demo",
+      name: "ローカル認証",
+      credentials: {
+        username: { label: "ユーザー名", type: "text", placeholder: "demo" },
+        password: { label: "パスワード", type: "password" }
+      },
+      async authorize(credentials) {
+        if (credentials?.username === "demo" && credentials?.password === "demo") {
+          return { id: "1", name: "Demo User", email: "demo@example.com" };
+        }
+        return null;
+      }
+    })
   ],
   session: {
     strategy: "jwt",
