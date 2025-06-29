@@ -2,6 +2,7 @@
 
 import { useState, DragEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDetectionStore } from '@/store/detection-store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, UploadCloud, CheckCircle, Loader2 } from 'lucide-react';
@@ -9,6 +10,7 @@ import { cn } from '@/lib/utils';
 
 export function CameraUploadForm() {
   const router = useRouter();
+  const { setDetectionResults, setUploadedImageUrl } = useDetectionStore();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -52,13 +54,25 @@ export function CameraUploadForm() {
     setIsAnalyzing(true);
     setError(null);
 
+    const imageUrl = URL.createObjectURL(uploadedFile);
+    setUploadedImageUrl(imageUrl);
+
+    const formData = new FormData();
+    formData.append('image', uploadedFile);
+
     try {
-      // TODO: API call to upload and analyze image
-      console.log('Analyzing file:', uploadedFile.name);
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-      // In a real app, you would get a response and navigate to the result page
-      // dispatch(setDiffResponse(response.mlResponse));
-      router.push('/result'); // Assuming a result page exists
+      const response = await fetch('http://localhost:8080/detect', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Server error');
+      }
+
+      const data = await response.json();
+      setDetectionResults(data.results);
+      router.push('/result');
     } catch (error) {
       console.error('Error uploading capture:', error);
       setError('画像のアップロードに失敗しました。もう一度お試しください。');
