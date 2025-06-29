@@ -61,7 +61,7 @@ export function CameraUploadForm() {
     formData.append('image', uploadedFile);
 
     try {
-      const response = await fetch('http://localhost:8080/detect', {
+      const response = await fetch('http://localhost:8081/detect', {
         method: 'POST',
         body: formData,
       });
