@@ -18,24 +18,20 @@ export function AddLocationForm() {
     if (newLocation.trim()) {
       setIsLoading(true);
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
-        const response = await fetch(
-          `${apiUrl}/locations`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: newLocation.trim() }),
+        const response = await fetch('/api/locations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        );
+          body: JSON.stringify({ name: newLocation.trim() }),
+        });
 
         if (!response.ok) {
           throw new Error('Failed to create location');
         }
 
         // Revalidate locations data after successful creation
-        mutate(`${apiUrl}/locations`);
+        mutate('/api/locations');
         router.push('/welcome');
       } catch (error) {
         console.error(error);

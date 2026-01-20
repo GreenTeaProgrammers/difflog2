@@ -26,8 +26,7 @@ export function WelcomeScreen() {
   const router = useRouter();
   const { data: session } = useSession();
   const { isDarkMode, toggleDarkMode } = useUserSettingsStore();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
-  const { data: locations, error: locationsError } = useSWR(`${apiUrl}/locations`, fetcher);
+  const { data: locations, error: locationsError } = useSWR('/api/locations', fetcher);
   const [selectedLocation, setSelectedLocation] = useState('');
 
   useEffect(() => {
