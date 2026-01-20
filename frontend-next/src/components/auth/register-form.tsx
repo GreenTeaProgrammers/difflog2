@@ -7,8 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Lock } from 'lucide-react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-
 export function RegisterForm() {
   const router = useRouter();
   const [username, setUsername] = useState('');
@@ -39,7 +37,7 @@ export function RegisterForm() {
     setError('');
 
     try {
-      const response = await fetch(`${API_URL}/register`, {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,30 +1,35 @@
-'use server'
+'use server';
 
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { compare } from 'bcryptjs';
+import { prisma } from '@/lib/prisma';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081'
-
-// This function is not a Server Action, so it can be called from anywhere.
 export async function verifyCredentials(identifier: unknown, password: unknown) {
   if (typeof identifier !== 'string' || typeof password !== 'string') {
     throw new Error('Invalid credentials');
   }
 
-  const response = await fetch(`${API_URL}/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ identifier, password }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Login failed');
+  const trimmedIdentifier = identifier.trim();
+  if (!trimmedIdentifier) {
+    throw new Error('Invalid credentials');
   }
 
-  // Assuming the API returns user data along with the token
-  return { id: data.id, username: data.username, email: data.email, token: data.token };
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: trimmedIdentifier.toLowerCase() },
+        { username: trimmedIdentifier },
+      ],
+    },
+  });
+
+  if (!user) {
+    throw new Error('Invalid identifier or password');
+  }
+
+  const isValid = await compare(password, user.passwordHash);
+  if (!isValid) {
+    throw new Error('Invalid identifier or password');
+  }
+
+  return { id: String(user.id), username: user.username, email: user.email };
 }
