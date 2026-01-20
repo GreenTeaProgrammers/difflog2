@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  username     String     @unique
+  passwordHash String
+  locations    Location[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Location {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  captures Capture[]
+  commits  Commit[]
+
+  @@index([userId])
+}
+
+model Capture {
+  id         Int      @id @default(autoincrement())
+  locationId Int
+  imageKey   String
+  imageUrl   String
+  capturedAt DateTime @default(now())
+  analyzed   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  commit   Commit?
+
+  @@index([locationId])
+}
+
+model Commit {
+  id         Int         @id @default(autoincrement())
+  locationId Int
+  captureId  Int?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  location Location    @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  capture  Capture?    @relation(fields: [captureId], references: [id], onDelete: SetNull)
+  items    CommitItem[]
+
+  @@index([locationId])
+  @@index([createdAt])
+}
+
+model CommitItem {
+  id            Int    @id @default(autoincrement())
+  commitId      Int
+  itemName      String
+  changeType    String
+  previousCount Int
+  currentCount  Int
+
+  commit Commit @relation(fields: [commitId], references: [id], onDelete: Cascade)
+
+  @@index([commitId])
+}
