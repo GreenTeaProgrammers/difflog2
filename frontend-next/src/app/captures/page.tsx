@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
@@ -36,12 +36,6 @@ export default function CapturesPage() {
   const [selectedLocationId, setSelectedLocationId] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (locations && locations.length > 0 && selectedLocationId === "all") {
-      setSelectedLocationId(String(locations[0].id));
-    }
-  }, [locations, selectedLocationId]);
 
   const capturesUrl = useMemo(() => {
     const params = new URLSearchParams();
