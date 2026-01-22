@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
+import { fetcher } from '@/lib/fetcher';
 import { ArrowLeft } from 'lucide-react';
 import {
   AreaChart,
@@ -23,8 +24,6 @@ type Location = {
 type MonthlyResponse = {
   months: Array<{ month: string; count: number }>;
 };
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 function buildMonthKey(year: number, monthIndex: number) {
   const month = `${monthIndex + 1}`.padStart(2, '0');

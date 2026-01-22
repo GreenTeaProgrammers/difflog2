@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
+import { fetcher } from '@/lib/fetcher';
 import { Switch } from '@/components/ui/switch';
 import { Camera, ChevronLeft, Send } from 'lucide-react';
 import { useUserSettingsStore } from '@/store/user-settings';
@@ -50,8 +51,6 @@ type DaySummary = {
     changeTypes: Record<string, number>;
   }>;
 };
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 function formatDateKey(year: number, month: number, day: number) {
   const monthText = `${month}`.padStart(2, '0');

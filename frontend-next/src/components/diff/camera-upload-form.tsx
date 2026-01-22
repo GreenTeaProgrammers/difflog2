@@ -8,13 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, UploadCloud, CheckCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { fetcher } from '@/lib/fetcher';
 
 type Location = {
   id: number;
   name: string;
 };
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function CameraUploadForm() {
   const router = useRouter();
