@@ -57,6 +57,7 @@ export async function GET(request: Request) {
   const commits = await prisma.commit.findMany({
     where: {
       locationId,
+      status: "CONFIRMED",
       createdAt: {
         gte: start,
         lt: end,

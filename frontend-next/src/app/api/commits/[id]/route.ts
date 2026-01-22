@@ -150,8 +150,9 @@ export async function PUT(
     await tx.capture.update({
       where: { id: commit.captureId },
       data: {
-        analysisStatus: "ANALYZED",
-        analyzedAt: commit.capture.analyzedAt ?? new Date(),
+        analysisStatus: status === "CONFIRMED" ? "ANALYZED" : "PENDING",
+        analyzedAt:
+          status === "CONFIRMED" ? commit.capture.analyzedAt ?? new Date() : null,
       },
     });
 

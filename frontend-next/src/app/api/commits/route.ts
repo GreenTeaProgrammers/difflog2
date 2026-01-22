@@ -80,6 +80,7 @@ export async function GET(request: Request) {
         gte: dateParam.start,
         lt: dateParam.end,
       },
+      status: "CONFIRMED",
     },
     include: {
       items: true,
@@ -93,8 +94,7 @@ export async function GET(request: Request) {
     string,
     {
       itemName: string;
-      previousCount: number;
-      currentCount: number;
+      deltaCount: number;
       changeTypes: Record<string, number>;
     }
   >();
@@ -103,16 +103,14 @@ export async function GET(request: Request) {
     for (const item of commit.items) {
       const existing = itemMap.get(item.itemName) ?? {
         itemName: item.itemName,
-        previousCount: 0,
-        currentCount: 0,
+        deltaCount: 0,
         changeTypes: {
           ADDED: 0,
           MODIFIED: 0,
           DELETED: 0,
         },
       };
-      existing.previousCount += item.previousCount;
-      existing.currentCount += item.currentCount;
+      existing.deltaCount += item.currentCount - item.previousCount;
       existing.changeTypes[item.changeType] =
         (existing.changeTypes[item.changeType] ?? 0) + 1;
       itemMap.set(item.itemName, existing);
@@ -208,8 +206,8 @@ export async function POST(request: Request) {
     await tx.capture.update({
       where: { id: captureId },
       data: {
-        analysisStatus: "ANALYZED",
-        analyzedAt: new Date(),
+        analysisStatus: status === "CONFIRMED" ? "ANALYZED" : "PENDING",
+        analyzedAt: status === "CONFIRMED" ? new Date() : null,
       },
     });
 
