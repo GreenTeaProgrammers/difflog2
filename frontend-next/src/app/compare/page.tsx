@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import { fetcher } from "@/lib/fetcher";
+import { formatJstDate, formatJstDateTime } from "@/lib/datetime";
 
 type Location = {
   id: number;
@@ -126,7 +127,7 @@ export default function ComparePage() {
               <option value="">Select commit</option>
               {commitList?.commits.map((commit) => (
                 <option key={commit.id} value={commit.id}>
-                  #{commit.id} · {new Date(commit.createdAt).toLocaleDateString()}
+                  #{commit.id} · {formatJstDate(new Date(commit.createdAt))}
                 </option>
               ))}
             </select>
@@ -143,7 +144,7 @@ export default function ComparePage() {
               <option value="">Select commit</option>
               {commitList?.commits.map((commit) => (
                 <option key={commit.id} value={commit.id}>
-                  #{commit.id} · {new Date(commit.createdAt).toLocaleDateString()}
+                  #{commit.id} · {formatJstDate(new Date(commit.createdAt))}
                 </option>
               ))}
             </select>
@@ -173,7 +174,7 @@ export default function ComparePage() {
                     className="h-40 w-full rounded-md object-cover"
                   />
                   <p className="text-sm text-muted-foreground">
-                    {new Date(commit.capture.capturedAt).toLocaleString()}
+                    {formatJstDateTime(new Date(commit.capture.capturedAt))}
                   </p>
                   <Button variant="outline" onClick={() => router.push(`/commits/${commit.id}`)}>
                     Open Commit

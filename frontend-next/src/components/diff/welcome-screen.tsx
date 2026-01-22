@@ -9,21 +9,16 @@ import { fetcher } from '@/lib/fetcher';
 import { Switch } from '@/components/ui/switch';
 import { Camera, ChevronLeft, Send } from 'lucide-react';
 import { useUserSettingsStore } from '@/store/user-settings';
+import {
+  formatJstDate,
+  formatJstMonth,
+  formatJstMonthYear,
+  formatUtcDateKey,
+} from '@/lib/datetime';
 
-const months = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
+const months = Array.from({ length: 12 }, (_, index) =>
+  formatJstMonth(new Date(Date.UTC(2024, index, 1)))
+);
 
 const colorScale = [
   'bg-gray-200 dark:bg-gray-700',
@@ -46,17 +41,10 @@ type DaySummary = {
   commitCount: number;
   items: Array<{
     itemName: string;
-    currentCount: number;
-    previousCount: number;
+    deltaCount: number;
     changeTypes: Record<string, number>;
   }>;
 };
-
-function formatDateKey(year: number, month: number, day: number) {
-  const monthText = `${month}`.padStart(2, '0');
-  const dayText = `${day}`.padStart(2, '0');
-  return `${year}-${monthText}-${dayText}`;
-}
 
 function getColorClass(count: number, maxCount: number) {
   if (!count || maxCount <= 0) {
@@ -78,7 +66,7 @@ export function WelcomeScreen() {
   const [currentView, setCurrentView] = useState('year');
   const [currentMonth, setCurrentMonth] = useState(months[0]);
   const [currentDay, setCurrentDay] = useState(1);
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getUTCFullYear();
 
   useEffect(() => {
     if (locations && locations.length > 0 && selectedLocationId === null) {
@@ -113,7 +101,7 @@ export function WelcomeScreen() {
   }, [heatmapCounts]);
 
   const currentMonthIndex = months.indexOf(currentMonth);
-  const dayKey = formatDateKey(currentYear, currentMonthIndex + 1, currentDay);
+  const dayKey = formatUtcDateKey(currentYear, currentMonthIndex + 1, currentDay);
   const daySummaryUrl = selectedLocationId
     ? `/api/commits?locationId=${selectedLocationId}&date=${dayKey}`
     : null;
@@ -124,8 +112,8 @@ export function WelcomeScreen() {
 
   const renderMonthGridPreview = (month: string) => {
     const monthIndex = months.indexOf(month);
-    const daysInMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
-    const firstDayOfWeek = new Date(currentYear, monthIndex, 1).getDay();
+    const daysInMonth = new Date(Date.UTC(currentYear, monthIndex + 1, 0)).getUTCDate();
+    const firstDayOfWeek = new Date(Date.UTC(currentYear, monthIndex, 1)).getUTCDay();
 
     return (
       <>
@@ -134,7 +122,7 @@ export function WelcomeScreen() {
         ))}
         {Array.from({ length: daysInMonth }).map((_, day) => {
           const count = heatmapCounts[
-            formatDateKey(currentYear, monthIndex + 1, day + 1)
+            formatUtcDateKey(currentYear, monthIndex + 1, day + 1)
           ];
           return (
             <div
@@ -172,8 +160,11 @@ export function WelcomeScreen() {
 
   const renderMonthView = (month: string) => {
     const monthIndex = months.indexOf(month);
-    const daysInMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
-    const firstDayOfWeek = new Date(currentYear, monthIndex, 1).getDay();
+    const daysInMonth = new Date(Date.UTC(currentYear, monthIndex + 1, 0)).getUTCDate();
+    const firstDayOfWeek = new Date(Date.UTC(currentYear, monthIndex, 1)).getUTCDay();
+    const monthLabel = formatJstMonthYear(
+      new Date(Date.UTC(currentYear, monthIndex, 1))
+    );
 
     return (
       <div>
@@ -181,9 +172,7 @@ export function WelcomeScreen() {
           <Button variant="ghost" size="icon" onClick={() => setCurrentView('year')}>
             <ChevronLeft className="h-6 w-6" />
           </Button>
-          <h2 className="text-2xl font-bold">
-            {month} {currentYear}
-          </h2>
+          <h2 className="text-2xl font-bold">{monthLabel}</h2>
         </div>
         <div className="grid grid-cols-7 gap-2">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
@@ -195,7 +184,7 @@ export function WelcomeScreen() {
             <div key={`empty-${index}`} />
           ))}
           {Array.from({ length: daysInMonth }).map((_, day) => {
-            const dateKey = formatDateKey(currentYear, monthIndex + 1, day + 1);
+            const dateKey = formatUtcDateKey(currentYear, monthIndex + 1, day + 1);
             const count = heatmapCounts[dateKey] ?? 0;
             return (
               <div
@@ -230,7 +219,7 @@ export function WelcomeScreen() {
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <h2 className="text-2xl font-bold">
-          {currentMonth} {currentDay}, {currentYear}
+          {formatJstDate(new Date(Date.UTC(currentYear, currentMonthIndex, currentDay)))}
         </h2>
       </div>
       <div className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
@@ -250,17 +239,19 @@ export function WelcomeScreen() {
               <p className="text-sm text-muted-foreground">この日の記録はありません。</p>
             ) : (
               <div className="space-y-2">
-                {daySummary.items.map((item) => (
-                  <div
-                    key={item.itemName}
-                    className="flex items-center justify-between rounded-md border px-3 py-2 text-sm"
-                  >
-                    <span>{item.itemName}</span>
-                    <span>
-                      {item.previousCount} → {item.currentCount}
-                    </span>
-                  </div>
-                ))}
+                {daySummary.items.map((item) => {
+                  const deltaLabel =
+                    item.deltaCount > 0 ? `+${item.deltaCount}` : `${item.deltaCount}`;
+                  return (
+                    <div
+                      key={item.itemName}
+                      className="flex items-center justify-between rounded-md border px-3 py-2 text-sm"
+                    >
+                      <span>{item.itemName}</span>
+                      <span>{deltaLabel}</span>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

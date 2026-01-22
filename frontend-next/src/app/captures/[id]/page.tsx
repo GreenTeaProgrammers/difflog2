@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import { fetcher } from "@/lib/fetcher";
+import { formatJstDateTime } from "@/lib/datetime";
 
 type CaptureDetail = {
   id: number;
@@ -79,7 +80,7 @@ export default function CaptureDetailPage({
         <div>
           <h1 className="text-2xl font-bold">Capture #{capture.id}</h1>
           <p className="text-sm text-muted-foreground">
-            {capture.location.name} ・ {new Date(capture.capturedAt).toLocaleString()}
+            {capture.location.name} ・ {formatJstDateTime(new Date(capture.capturedAt))}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { fetcher } from "@/lib/fetcher";
+import { formatJstDateTime } from "@/lib/datetime";
+import { isValidCommitItemCounts } from "@/lib/commit-items";
 
 type ChangeType = "ADDED" | "MODIFIED" | "DELETED";
 
@@ -165,6 +167,18 @@ export default function CommitDetailPage({
       return;
     }
 
+    const hasInvalidCounts = sanitizedItems.some((item) =>
+      !isValidCommitItemCounts({
+        changeType: item.changeType,
+        previousCount: item.previousCount,
+        currentCount: item.currentCount,
+      })
+    );
+    if (hasInvalidCounts) {
+      setErrorMessage("追加は前=0/今>0、削除は前>0/今=0、変更は前≠今で入力してください。");
+      return;
+    }
+
     setIsSaving(true);
     setErrorMessage(null);
     try {
@@ -237,7 +251,7 @@ export default function CommitDetailPage({
         <div>
           <h1 className="text-2xl font-bold">Commit #{commit.id}</h1>
           <p className="text-sm text-muted-foreground">
-            {commit.location.name} ・ {new Date(commit.capture.capturedAt).toLocaleString()}
+            {commit.location.name} ・ {formatJstDateTime(new Date(commit.capture.capturedAt))}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -408,7 +422,7 @@ export default function CommitDetailPage({
               <div key={edit.id} className="rounded-md border p-4 text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-semibold">
-                    {new Date(edit.createdAt).toLocaleString()}
+                    {formatJstDateTime(new Date(edit.createdAt))}
                   </p>
                   <p className="text-muted-foreground">
                     {beforeItems.length} → {afterItems.length} items

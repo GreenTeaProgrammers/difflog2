@@ -6,6 +6,7 @@ import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import { Button } from "@/components/ui/button";
 import { fetcher } from "@/lib/fetcher";
+import { formatJstDateTime } from "@/lib/datetime";
 
 type Location = {
   id: number;
@@ -348,7 +349,7 @@ export default function TimelinePage() {
               />
             </div>
             <div className="text-sm text-muted-foreground">
-              {item.location.name} ・ {new Date(item.capturedAt).toLocaleString()}
+              {item.location.name} ・ {formatJstDateTime(new Date(item.capturedAt))}
             </div>
             <div className="flex flex-wrap gap-2">
               <Button

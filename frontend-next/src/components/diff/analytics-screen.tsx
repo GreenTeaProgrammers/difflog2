@@ -33,7 +33,7 @@ function buildMonthKey(year: number, monthIndex: number) {
 export function AnalyticsScreen() {
   const router = useRouter();
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getUTCFullYear();
 
   const { data: locations, error: locationsError } = useSWR<Location[]>(
     '/api/locations',

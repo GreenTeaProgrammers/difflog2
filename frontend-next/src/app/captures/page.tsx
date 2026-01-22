@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import { fetcher } from "@/lib/fetcher";
+import { formatJstDateTime } from "@/lib/datetime";
 
 type Location = {
   id: number;
@@ -154,7 +155,7 @@ export default function CapturesPage() {
               />
             </div>
             <div className="text-sm text-muted-foreground">
-              {new Date(capture.capturedAt).toLocaleString()}
+              {formatJstDateTime(new Date(capture.capturedAt))}
             </div>
             <div className="flex flex-wrap gap-2">
               <Button
