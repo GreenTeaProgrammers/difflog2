@@ -35,6 +35,12 @@ export default function Header() {
             <DropdownMenuItem asChild>
               <Link href="/analytics">Analytics</Link>
             </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/captures">Captures</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/camera">New Capture</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => signOut()}>
               Logout
             </DropdownMenuItem>
