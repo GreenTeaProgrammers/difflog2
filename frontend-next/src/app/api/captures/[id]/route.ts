@@ -31,6 +31,7 @@ export async function GET(
       },
     },
     include: {
+      location: true,
       commit: {
         include: {
           items: true,
@@ -44,4 +45,38 @@ export async function GET(
   }
 
   return NextResponse.json(capture);
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: { id: string } }
+) {
+  const userId = await getSessionUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const captureId = parseCaptureId(params.id);
+  if (!captureId) {
+    return NextResponse.json({ error: "Invalid capture id" }, { status: 400 });
+  }
+
+  const capture = await prisma.capture.findFirst({
+    where: {
+      id: captureId,
+      location: {
+        userId,
+      },
+    },
+  });
+
+  if (!capture) {
+    return NextResponse.json({ error: "Capture not found" }, { status: 404 });
+  }
+
+  await prisma.capture.delete({
+    where: { id: capture.id },
+  });
+
+  return NextResponse.json({ ok: true });
 }
