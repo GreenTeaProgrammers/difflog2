@@ -88,8 +88,8 @@ async function main() {
       {
         itemName: "book",
         changeType: "ADDED",
-        previousCount: 2 + index,
-        currentCount: 3 + index,
+        previousCount: 0,
+        currentCount: 1 + index,
         confidence: 0.76,
       },
       {

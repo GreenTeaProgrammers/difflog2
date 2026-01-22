@@ -18,6 +18,30 @@ export type CommitItemPayload = {
 
 const changeTypes = new Set<ChangeType>(["ADDED", "MODIFIED", "DELETED"]);
 
+export function isValidCommitItemCounts(params: {
+  changeType: ChangeType;
+  previousCount: number;
+  currentCount: number;
+}) {
+  const { changeType, previousCount, currentCount } = params;
+  if (!Number.isFinite(previousCount) || !Number.isFinite(currentCount)) {
+    return false;
+  }
+  if (previousCount < 0 || currentCount < 0) {
+    return false;
+  }
+  switch (changeType) {
+    case "ADDED":
+      return previousCount === 0 && currentCount > 0;
+    case "DELETED":
+      return previousCount > 0 && currentCount === 0;
+    case "MODIFIED":
+      return previousCount > 0 && currentCount > 0 && previousCount !== currentCount;
+    default:
+      return false;
+  }
+}
+
 function parseItem(input: CommitItemInput): CommitItemPayload | null {
   const itemName = typeof input.itemName === "string" ? input.itemName.trim() : "";
   const changeType = typeof input.changeType === "string" ? input.changeType : "";
@@ -38,13 +62,19 @@ function parseItem(input: CommitItemInput): CommitItemPayload | null {
     return null;
   }
 
-  return {
+  const normalized = {
     itemName,
     changeType: changeType as ChangeType,
     previousCount: Math.max(0, Math.floor(previousCount)),
     currentCount: Math.max(0, Math.floor(currentCount)),
     confidence,
   };
+
+  if (!isValidCommitItemCounts(normalized)) {
+    return null;
+  }
+
+  return normalized;
 }
 
 export function parseCommitItems(value: unknown) {
