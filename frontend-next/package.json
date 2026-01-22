@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:biome": "biome check .",
+    "db:seed": "node prisma/seed.js",
     "prepare": "lefthook install"
   },
   "dependencies": {

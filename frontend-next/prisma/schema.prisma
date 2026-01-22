@@ -7,6 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum CaptureStatus {
+  PENDING
+  ANALYZED
+  FAILED
+}
+
+enum CommitStatus {
+  DRAFT
+  CONFIRMED
+}
+
+enum ChangeType {
+  ADDED
+  MODIFIED
+  DELETED
+}
+
 model User {
   id           Int        @id @default(autoincrement())
   email        String     @unique
@@ -33,45 +50,70 @@ model Location {
 }
 
 model Capture {
-  id         Int      @id @default(autoincrement())
-  locationId Int
-  imageKey   String
-  imageUrl   String
-  capturedAt DateTime @default(now())
-  analyzed   Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id             Int           @id @default(autoincrement())
+  locationId     Int
+  imageKey       String
+  imageUrl       String
+  contentType    String?
+  fileSize       Int?
+  capturedAt     DateTime      @default(now())
+  analysisStatus CaptureStatus @default(PENDING)
+  analyzedAt     DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
   commit   Commit?
 
   @@index([locationId])
+  @@index([capturedAt])
 }
 
 model Commit {
-  id         Int         @id @default(autoincrement())
-  locationId Int
-  captureId  Int?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id           Int          @id @default(autoincrement())
+  locationId   Int
+  captureId    Int          @unique
+  status       CommitStatus @default(DRAFT)
+  source       String       @default("manual")
+  rawInference Json?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   location Location    @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  capture  Capture?    @relation(fields: [captureId], references: [id], onDelete: SetNull)
+  capture  Capture     @relation(fields: [captureId], references: [id], onDelete: Cascade)
   items    CommitItem[]
+  edits    CommitEdit[]
 
   @@index([locationId])
   @@index([createdAt])
 }
 
 model CommitItem {
-  id            Int    @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
   commitId      Int
   itemName      String
-  changeType    String
+  changeType    ChangeType
   previousCount Int
   currentCount  Int
+  confidence    Float?
 
   commit Commit @relation(fields: [commitId], references: [id], onDelete: Cascade)
 
   @@index([commitId])
+}
+
+model CommitEdit {
+  id          Int      @id @default(autoincrement())
+  commitId    Int
+  editorId    Int?
+  beforeItems Json
+  afterItems  Json
+  note        String?
+  createdAt   DateTime @default(now())
+
+  commit Commit @relation(fields: [commitId], references: [id], onDelete: Cascade)
+  editor User?  @relation(fields: [editorId], references: [id], onDelete: SetNull)
+
+  @@index([commitId])
+  @@index([editorId])
 }
