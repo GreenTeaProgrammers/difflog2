@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, DragEvent, ChangeEvent } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,7 @@ type Location = {
 
 export function CameraUploadForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -28,14 +29,44 @@ export function CameraUploadForm() {
   );
 
   useEffect(() => {
-    if (locations && locations.length > 0 && selectedLocationId === null) {
+    if (!locations || locations.length === 0) {
+      return;
+    }
+
+    const value = searchParams.get('locationId');
+    const id = value ? Number(value) : Number.NaN;
+    if (Number.isInteger(id) && locations.some((location) => location.id === id)) {
+      setSelectedLocationId(id);
+      return;
+    }
+
+    if (selectedLocationId === null) {
       setSelectedLocationId(locations[0].id);
     }
-  }, [locations, selectedLocationId]);
+  }, [locations, searchParams, selectedLocationId]);
+
+  const maxFileSizeBytes = 10 * 1024 * 1024;
+  const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
+
+  const validateFile = (file: File) => {
+    if (!allowedTypes.has(file.type)) {
+      return '対応していない画像形式です。';
+    }
+    if (file.size > maxFileSizeBytes) {
+      return '画像サイズが大きすぎます。10MB以下にしてください。';
+    }
+    return null;
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      const validationError = validateFile(file);
+      if (validationError) {
+        setError(validationError);
+        setUploadedFile(null);
+        return;
+      }
       setUploadedFile(file);
       setError(null);
     }
@@ -60,6 +91,12 @@ export function CameraUploadForm() {
     setIsDragging(false);
     const file = event.dataTransfer.files[0];
     if (file) {
+      const validationError = validateFile(file);
+      if (validationError) {
+        setError(validationError);
+        setUploadedFile(null);
+        return;
+      }
       setUploadedFile(file);
       setError(null);
     }
