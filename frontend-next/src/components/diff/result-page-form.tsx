@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { fetcher } from '@/lib/fetcher';
+import { isValidCommitItemCounts } from '@/lib/commit-items';
 import { FilePenLine, Loader2, Plus, Trash2 } from 'lucide-react';
 
 type ChangeType = 'ADDED' | 'MODIFIED' | 'DELETED';
@@ -141,6 +142,18 @@ export function ResultPageForm() {
 
     if (sanitizedItems.length === 0) {
       setError('項目を追加してください。');
+      return;
+    }
+
+    const hasInvalidCounts = sanitizedItems.some((item) =>
+      !isValidCommitItemCounts({
+        changeType: item.changeType,
+        previousCount: item.previousCount,
+        currentCount: item.currentCount,
+      })
+    );
+    if (hasInvalidCounts) {
+      setError('追加は前=0/今>0、削除は前>0/今=0、変更は前≠今で入力してください。');
       return;
     }
 
