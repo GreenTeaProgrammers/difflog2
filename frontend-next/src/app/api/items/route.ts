@@ -40,7 +40,6 @@ export async function GET(request: Request) {
         ? {
             itemName: {
               contains: query,
-              mode: "insensitive",
             },
           }
         : {}),
