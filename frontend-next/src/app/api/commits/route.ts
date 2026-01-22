@@ -1,18 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUserId } from "@/lib/session";
+import { parseCommitItems } from "@/lib/commit-items";
 
 export const runtime = "nodejs";
-
-const changeTypes = new Set(["ADDED", "MODIFIED", "DELETED"]);
-
-type ItemPayload = {
-  itemName?: unknown;
-  changeType?: unknown;
-  previousCount?: unknown;
-  currentCount?: unknown;
-  confidence?: unknown;
-};
 
 type CommitPayload = {
   captureId?: unknown;
@@ -24,45 +15,6 @@ type CommitPayload = {
   source?: unknown;
   rawInference?: unknown;
 };
-
-function parseItem(input: ItemPayload) {
-  const itemName = typeof input.itemName === "string" ? input.itemName.trim() : "";
-  const changeType = typeof input.changeType === "string" ? input.changeType : "";
-  const previousCount = Number(input.previousCount);
-  const currentCount = Number(input.currentCount);
-  const confidence =
-    typeof input.confidence === "number" ? input.confidence : null;
-
-  if (!itemName) {
-    return null;
-  }
-
-  if (!changeTypes.has(changeType)) {
-    return null;
-  }
-
-  if (!Number.isFinite(previousCount) || !Number.isFinite(currentCount)) {
-    return null;
-  }
-
-  return {
-    itemName,
-    changeType,
-    previousCount: Math.max(0, Math.floor(previousCount)),
-    currentCount: Math.max(0, Math.floor(currentCount)),
-    confidence,
-  };
-}
-
-function parseItems(value: unknown) {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const parsed = value
-    .map((item) => parseItem(item as ItemPayload))
-    .filter(Boolean);
-  return parsed.length === value.length ? parsed : null;
-}
 
 function parseLocationId(value: string | null) {
   if (!value) {
@@ -200,7 +152,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid capture id" }, { status: 400 });
   }
 
-  const items = parseItems(payload.items);
+  const items = parseCommitItems(payload.items);
   if (!items || items.length === 0) {
     return NextResponse.json({ error: "Items are required" }, { status: 400 });
   }
@@ -225,8 +177,8 @@ export async function POST(request: Request) {
   const source = typeof payload.source === "string" ? payload.source : "manual";
   const note = typeof payload.note === "string" ? payload.note : null;
 
-  const beforeItems = parseItems(payload.beforeItems) ?? [];
-  const afterItems = parseItems(payload.afterItems) ?? items;
+  const beforeItems = parseCommitItems(payload.beforeItems) ?? [];
+  const afterItems = parseCommitItems(payload.afterItems) ?? items;
 
   const commit = await prisma.$transaction(async (tx) => {
     const created = await tx.commit.create({

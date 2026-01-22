@@ -5,6 +5,13 @@ import { uploadCaptureObject } from "@/lib/minio";
 
 export const runtime = "nodejs";
 
+const allowedContentTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+]);
+const maxFileSizeBytes = 10 * 1024 * 1024;
+
 const statusValues = new Set(["PENDING", "ANALYZED", "FAILED"]);
 
 function parseLocationId(value: string | null) {
@@ -116,6 +123,14 @@ export async function POST(request: Request) {
 
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "Image is required" }, { status: 400 });
+  }
+
+  if (!allowedContentTypes.has(file.type)) {
+    return NextResponse.json({ error: "Unsupported image type" }, { status: 400 });
+  }
+
+  if (file.size > maxFileSizeBytes) {
+    return NextResponse.json({ error: "Image is too large" }, { status: 400 });
   }
 
   const location = await prisma.location.findFirst({
