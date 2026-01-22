@@ -16,3 +16,8 @@
 ## 開発
 - `docker compose up --build`
 - 環境変数は `frontend-next/.env.example` を参照
+
+## 初期データ
+- `cd frontend-next`
+- `npx prisma migrate dev --name init`
+- `npm run db:seed`

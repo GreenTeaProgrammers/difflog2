@@ -1,17 +1,6 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-
-async function getUserId() {
-  const session = await getServerSession(authOptions);
-  const rawId = session?.user?.id;
-  const userId = rawId ? Number(rawId) : NaN;
-  if (!Number.isInteger(userId)) {
-    return null;
-  }
-  return userId;
-}
+import { getSessionUserId } from "@/lib/session";
 
 function parseLocationId(value: string) {
   const id = Number(value);
@@ -22,7 +11,7 @@ export async function GET(
   _request: Request,
   { params }: { params: { id: string } }
 ) {
-  const userId = await getUserId();
+  const userId = await getSessionUserId();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -47,7 +36,7 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const userId = await getUserId();
+  const userId = await getSessionUserId();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -95,7 +84,7 @@ export async function DELETE(
   _request: Request,
   { params }: { params: { id: string } }
 ) {
-  const userId = await getUserId();
+  const userId = await getSessionUserId();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

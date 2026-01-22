@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,8 +21,15 @@ const mockDiffResponse = {
 
 export function ResultPageForm() {
   const router = useRouter();
-  const [diffData, setDiffData] = useState(mockDiffResponse);
+  const searchParams = useSearchParams();
+  const captureIdParam = searchParams.get('captureId');
+  const captureId = captureIdParam ? Number(captureIdParam) : NaN;
+  const initialDiffData = useMemo(() => mockDiffResponse, []);
+  const [diffData, setDiffData] = useState(() =>
+    JSON.parse(JSON.stringify(mockDiffResponse))
+  );
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCountChange = (field: keyof typeof diffData, delta: number) => {
     setDiffData(prev => ({
@@ -32,15 +39,66 @@ export function ResultPageForm() {
   };
 
   const handleSave = async () => {
+    if (!Number.isInteger(captureId)) {
+      setError('キャプチャIDが見つかりませんでした。');
+      return;
+    }
+
     setIsSaving(true);
-    // TODO: API call to save the commit
-    console.log('Saving commit:', diffData);
-    await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
-    setIsSaving(false);
-    router.push('/welcome');
+    setError(null);
+
+    const changeTypeMap: Record<string, string> = {
+      added: 'ADDED',
+      modified: 'MODIFIED',
+      deleted: 'DELETED',
+    };
+
+    const buildItems = (items: typeof diffData.changes) =>
+      items.map((change) => ({
+        itemName: change.itemName,
+        changeType: changeTypeMap[change.changeType] || 'MODIFIED',
+        previousCount: change.previousCount,
+        currentCount: change.currentCount,
+      }));
+
+    const payload = {
+      captureId,
+      status: 'CONFIRMED',
+      source: 'manual',
+      rawInference: {
+        status: 'disabled',
+        note: 'ML inference is currently deferred',
+      },
+      items: buildItems(diffData.changes),
+      beforeItems: buildItems(initialDiffData.changes),
+      afterItems: buildItems(diffData.changes),
+      note: 'Manual commit save',
+    };
+
+    try {
+      const response = await fetch('/api/commits', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || '保存に失敗しました。');
+      }
+
+      router.push('/welcome');
+    } catch (error) {
+      console.error('Error saving commit:', error);
+      setError('保存に失敗しました。もう一度お試しください。');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  if (!diffData) {
+  if (!diffData || !Number.isInteger(captureId)) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-background text-foreground">
         <p>解析結果がありません。再度お試しください。</p>
@@ -55,6 +113,11 @@ export function ResultPageForm() {
     <div className="container mx-auto max-w-lg py-8">
       <div className="rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
         <h1 className="mb-6 text-center text-3xl font-bold">解析結果</h1>
+        {error && (
+          <div className="mb-4 rounded-md bg-red-100 p-3 text-center text-red-500">
+            {error}
+          </div>
+        )}
         
         <div className="space-y-6">
           <div className="space-y-2">

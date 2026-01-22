@@ -1,11 +1,20 @@
 'use client';
 
-import { useState, DragEvent, ChangeEvent } from 'react';
+import { useEffect, useState, DragEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { ArrowLeft, UploadCloud, CheckCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+type Location = {
+  id: number;
+  name: string;
+};
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function CameraUploadForm() {
   const router = useRouter();
@@ -13,6 +22,17 @@ export function CameraUploadForm() {
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
+  const { data: locations, error: locationsError } = useSWR<Location[]>(
+    '/api/locations',
+    fetcher
+  );
+
+  useEffect(() => {
+    if (locations && locations.length > 0 && selectedLocationId === null) {
+      setSelectedLocationId(locations[0].id);
+    }
+  }, [locations, selectedLocationId]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -47,18 +67,30 @@ export function CameraUploadForm() {
   };
 
   const handleAnalyze = async () => {
-    if (!uploadedFile) return;
+    if (!uploadedFile || !selectedLocationId) {
+      setError('ロケーションと画像を選択してください。');
+      return;
+    }
 
     setIsAnalyzing(true);
     setError(null);
 
     try {
-      // TODO: API call to upload and analyze image
-      console.log('Analyzing file:', uploadedFile.name);
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-      // In a real app, you would get a response and navigate to the result page
-      // dispatch(setDiffResponse(response.mlResponse));
-      router.push('/result'); // Assuming a result page exists
+      const formData = new FormData();
+      formData.append('image', uploadedFile);
+      formData.append('locationId', String(selectedLocationId));
+
+      const response = await fetch('/api/captures', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to upload capture.');
+      }
+
+      router.push(`/result?captureId=${data.id}`);
     } catch (error) {
       console.error('Error uploading capture:', error);
       setError('画像のアップロードに失敗しました。もう一度お試しください。');
@@ -75,7 +107,42 @@ export function CameraUploadForm() {
         </Button>
         <h1 className="ml-4 text-xl font-semibold">画像アップロード</h1>
       </header>
-      <main className="flex flex-1 flex-col items-center justify-center p-4">
+      <main className="flex flex-1 flex-col items-center justify-center gap-6 p-4">
+        <div className="w-full max-w-lg space-y-2">
+          <Label htmlFor="location-select">ロケーション</Label>
+          {locationsError && (
+            <p className="text-sm text-red-500">
+              ロケーションの取得に失敗しました。
+            </p>
+          )}
+          {!locationsError && locations && locations.length === 0 && (
+            <div className="rounded-md border p-3 text-sm text-muted-foreground">
+              ロケーションがまだありません。
+              <Button
+                variant="link"
+                className="px-1"
+                onClick={() => router.push('/location')}
+              >
+                追加する
+              </Button>
+            </div>
+          )}
+          <select
+            id="location-select"
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            value={selectedLocationId ?? ''}
+            onChange={(event) =>
+              setSelectedLocationId(Number(event.target.value))
+            }
+            disabled={!locations || locations.length === 0}
+          >
+            {locations?.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <Input
           accept="image/*"
           type="file"
@@ -110,7 +177,7 @@ export function CameraUploadForm() {
         {error && <p className="mt-4 text-red-500">{error}</p>}
         <Button
           onClick={handleAnalyze}
-          disabled={!uploadedFile || isAnalyzing}
+          disabled={!uploadedFile || !selectedLocationId || isAnalyzing}
           className="mt-6 px-8 py-6 text-lg"
         >
           {isAnalyzing ? (
