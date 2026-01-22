@@ -11,6 +11,7 @@ import { ArrowLeft, Plus } from 'lucide-react';
 export function AddLocationForm() {
   const router = useRouter();
   const [newLocation, setNewLocation] = useState('');
+  const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { mutate } = useSWRConfig();
@@ -20,12 +21,16 @@ export function AddLocationForm() {
       setIsLoading(true);
       setError(null);
       try {
+        const payload = {
+          name: newLocation.trim(),
+          description: description.trim() ? description.trim() : null,
+        };
         const response = await fetch('/api/locations', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name: newLocation.trim() }),
+          body: JSON.stringify(payload),
         });
 
         const data = await response.json().catch(() => null);
@@ -70,6 +75,15 @@ export function AddLocationForm() {
               onChange={(e) => setNewLocation(e.target.value)}
             />
           </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="location-description">Description</Label>
+          <Input
+            id="location-description"
+            placeholder="Optional description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </div>
         <Button
           onClick={handleAddLocation}
