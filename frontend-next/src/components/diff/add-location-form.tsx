@@ -12,11 +12,13 @@ export function AddLocationForm() {
   const router = useRouter();
   const [newLocation, setNewLocation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { mutate } = useSWRConfig();
 
   const handleAddLocation = async () => {
     if (newLocation.trim()) {
       setIsLoading(true);
+      setError(null);
       try {
         const response = await fetch('/api/locations', {
           method: 'POST',
@@ -26,8 +28,9 @@ export function AddLocationForm() {
           body: JSON.stringify({ name: newLocation.trim() }),
         });
 
+        const data = await response.json().catch(() => null);
         if (!response.ok) {
-          throw new Error('Failed to create location');
+          throw new Error(data?.error || 'Failed to create location');
         }
 
         // Revalidate locations data after successful creation
@@ -35,7 +38,7 @@ export function AddLocationForm() {
         router.push('/welcome');
       } catch (error) {
         console.error(error);
-        // TODO: Show error message to user
+        setError('ロケーションの作成に失敗しました。');
       } finally {
         setIsLoading(false);
       }
@@ -51,6 +54,11 @@ export function AddLocationForm() {
         <h1 className="ml-4 text-2xl font-bold">Add New Location</h1>
       </header>
       <div className="space-y-4 rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
+        {error && (
+          <div className="rounded-md bg-red-100 p-3 text-center text-sm text-red-500">
+            {error}
+          </div>
+        )}
         <div className="space-y-2">
           <Label htmlFor="location-name">Location Name</Label>
           <div className="flex items-center space-x-2">
