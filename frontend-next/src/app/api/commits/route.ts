@@ -64,6 +64,121 @@ function parseItems(value: unknown) {
   return parsed.length === value.length ? parsed : null;
 }
 
+function parseLocationId(value: string | null) {
+  if (!value) {
+    return null;
+  }
+  const id = Number(value);
+  return Number.isInteger(id) ? id : null;
+}
+
+function parseDateParam(value: string | null) {
+  if (!value) {
+    return null;
+  }
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return null;
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (!year || !month || !day) {
+    return null;
+  }
+  const start = new Date(Date.UTC(year, month - 1, day));
+  const end = new Date(Date.UTC(year, month - 1, day + 1));
+  return {
+    key: value,
+    start,
+    end,
+  };
+}
+
+export async function GET(request: Request) {
+  const userId = await getSessionUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const locationId = parseLocationId(searchParams.get("locationId"));
+  const dateParam = parseDateParam(searchParams.get("date"));
+
+  if (!locationId) {
+    return NextResponse.json({ error: "Invalid location id" }, { status: 400 });
+  }
+
+  if (!dateParam) {
+    return NextResponse.json({ error: "Invalid date format" }, { status: 400 });
+  }
+
+  const location = await prisma.location.findFirst({
+    where: { id: locationId, userId },
+  });
+
+  if (!location) {
+    return NextResponse.json({ error: "Location not found" }, { status: 404 });
+  }
+
+  const commits = await prisma.commit.findMany({
+    where: {
+      locationId,
+      createdAt: {
+        gte: dateParam.start,
+        lt: dateParam.end,
+      },
+    },
+    include: {
+      items: true,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+
+  const itemMap = new Map<
+    string,
+    {
+      itemName: string;
+      previousCount: number;
+      currentCount: number;
+      changeTypes: Record<string, number>;
+    }
+  >();
+
+  for (const commit of commits) {
+    for (const item of commit.items) {
+      const existing = itemMap.get(item.itemName) ?? {
+        itemName: item.itemName,
+        previousCount: 0,
+        currentCount: 0,
+        changeTypes: {
+          ADDED: 0,
+          MODIFIED: 0,
+          DELETED: 0,
+        },
+      };
+      existing.previousCount += item.previousCount;
+      existing.currentCount += item.currentCount;
+      existing.changeTypes[item.changeType] =
+        (existing.changeTypes[item.changeType] ?? 0) + 1;
+      itemMap.set(item.itemName, existing);
+    }
+  }
+
+  const items = Array.from(itemMap.values()).sort((a, b) =>
+    a.itemName.localeCompare(b.itemName)
+  );
+
+  return NextResponse.json({
+    date: dateParam.key,
+    locationId,
+    commitCount: commits.length,
+    items,
+  });
+}
+
 export async function POST(request: Request) {
   const userId = await getSessionUserId();
   if (!userId) {
