@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { fetcher } from '@/lib/fetcher';
 import { FilePenLine, Loader2, Plus, Trash2 } from 'lucide-react';
 
 type ChangeType = 'ADDED' | 'MODIFIED' | 'DELETED';
@@ -31,8 +32,6 @@ type CaptureResponse = {
     }>;
   } | null;
 };
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const changeTypeOptions: Array<{ value: ChangeType; label: string }> = [
   { value: 'ADDED', label: '追加' },
