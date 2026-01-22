@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
@@ -54,6 +54,7 @@ export function ResultPageForm() {
   const searchParams = useSearchParams();
   const captureIdParam = searchParams.get('captureId');
   const captureId = captureIdParam ? Number(captureIdParam) : NaN;
+  const listId = useId();
   const [items, setItems] = useState<EditableItem[]>([createEmptyItem()]);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +65,10 @@ export function ResultPageForm() {
     : null;
   const { data: capture, error: captureError } = useSWR<CaptureResponse>(
     captureUrl,
+    fetcher
+  );
+  const { data: itemSuggestions } = useSWR<{ items: string[] }>(
+    '/api/items?limit=200',
     fetcher
   );
 
@@ -248,12 +253,18 @@ export function ResultPageForm() {
           <div className="mt-6">
             <h2 className="mb-4 text-xl font-semibold">詳細な変更リスト</h2>
             <div className="space-y-4">
+              <datalist id={listId}>
+                {itemSuggestions?.items.map((item) => (
+                  <option key={item} value={item} />
+                ))}
+              </datalist>
               {items.map((item) => (
                 <div key={item.id} className="rounded-md border p-4">
                   <div className="flex flex-col gap-3 md:flex-row md:items-center">
                     <div className="flex-1 space-y-2">
                       <Label>項目名</Label>
                       <Input
+                        list={listId}
                         value={item.itemName}
                         onChange={(event) =>
                           handleItemChange(item.id, 'itemName', event.target.value)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
@@ -88,8 +88,13 @@ export default function CommitDetailPage({
   params: { id: string };
 }) {
   const router = useRouter();
+  const listId = useId();
   const { data: commit, error, mutate } = useSWR<CommitDetail>(
     `/api/commits/${params.id}`,
+    fetcher
+  );
+  const { data: itemSuggestions } = useSWR<{ items: string[] }>(
+    "/api/items?limit=200",
     fetcher
   );
   const [items, setItems] = useState<EditableItem[]>([createEditableItem()]);
@@ -303,12 +308,18 @@ export default function CommitDetailPage({
         </div>
 
         <div className="space-y-4">
+          <datalist id={listId}>
+            {itemSuggestions?.items.map((item) => (
+              <option key={item} value={item} />
+            ))}
+          </datalist>
           {items.map((item) => (
             <div key={item.id} className="rounded-md border p-4">
               <div className="flex flex-col gap-3 md:flex-row md:items-center">
                 <div className="flex-1 space-y-2">
                   <Label>項目名</Label>
                   <Input
+                    list={listId}
                     value={item.itemName}
                     onChange={(event) =>
                       handleItemChange(item.id, "itemName", event.target.value)
