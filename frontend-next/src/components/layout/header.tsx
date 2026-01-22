@@ -36,7 +36,13 @@ export default function Header() {
               <Link href="/analytics">Analytics</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
+              <Link href="/timeline">Timeline</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link href="/captures">Captures</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/compare">Compare</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/camera">New Capture</Link>
