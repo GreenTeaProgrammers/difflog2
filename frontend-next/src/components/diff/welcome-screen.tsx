@@ -242,23 +242,37 @@ export function WelcomeScreen() {
 
             <section className="rounded-xl border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] p-4 shadow-sm animate-in fade-in slide-in-from-left-4 duration-500 delay-100">
               <h2 className="text-sm font-semibold">Quick Actions</h2>
-              <div className="mt-3 grid gap-2">
-                <Button
-                  className="w-full justify-between border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] text-foreground hover:border-[color:var(--shell-accent)] hover:bg-[color:var(--shell-panel-muted)] hover:text-[color:var(--shell-accent)]"
-                  variant="outline"
+              <div className="mt-3 grid gap-3">
+                <button
+                  type="button"
                   onClick={() => router.push('/camera')}
+                  className="group flex w-full items-center justify-between rounded-lg border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] p-3 text-left transition hover:border-[color:var(--shell-accent)] hover:bg-[color:var(--shell-panel)]"
                 >
-                  New Capture
-                  <Camera className="h-4 w-4" />
-                </Button>
-                <Button
-                  className="w-full justify-between border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] text-foreground hover:border-[color:var(--shell-accent)] hover:bg-[color:var(--shell-panel-muted)] hover:text-[color:var(--shell-accent)]"
-                  variant="outline"
+                  <div>
+                    <p className="text-sm font-semibold">New Capture</p>
+                    <p className="text-xs text-muted-foreground">
+                      Upload a photo and analyze changes.
+                    </p>
+                  </div>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] text-[color:var(--shell-accent)] transition group-hover:border-[color:var(--shell-accent)]">
+                    <Camera className="h-4 w-4" />
+                  </span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => router.push('/location')}
+                  className="group flex w-full items-center justify-between rounded-lg border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] p-3 text-left transition hover:border-[color:var(--shell-accent)] hover:bg-[color:var(--shell-panel)]"
                 >
-                  Manage Locations
-                  <MapPin className="h-4 w-4" />
-                </Button>
+                  <div>
+                    <p className="text-sm font-semibold">Manage Locations</p>
+                    <p className="text-xs text-muted-foreground">
+                      Add or organize your workspaces.
+                    </p>
+                  </div>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] text-[color:var(--shell-accent)] transition group-hover:border-[color:var(--shell-accent)]">
+                    <MapPin className="h-4 w-4" />
+                  </span>
+                </button>
               </div>
             </section>
           </aside>
