@@ -136,7 +136,7 @@ export function CameraUploadForm() {
   };
 
   return (
-    <div className="flex h-screen flex-col bg-background text-foreground">
+    <div className="flex h-[calc(100vh-var(--app-header-height))] flex-col bg-[color:var(--shell-bg)] text-foreground">
       <header className="flex items-center border-b p-4">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft />

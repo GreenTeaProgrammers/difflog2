@@ -58,7 +58,7 @@ export default function CaptureDetailPage({
 
   if (error) {
     return (
-      <div className="flex h-screen items-center justify-center text-red-500">
+      <div className="flex min-h-[calc(100vh-var(--app-header-height))] items-center justify-center text-red-500">
         キャプチャの取得に失敗しました。
       </div>
     );
@@ -66,7 +66,7 @@ export default function CaptureDetailPage({
 
   if (!capture) {
     return (
-      <div className="flex h-screen items-center justify-center text-muted-foreground">
+      <div className="flex min-h-[calc(100vh-var(--app-header-height))] items-center justify-center text-muted-foreground">
         読み込み中...
       </div>
     );

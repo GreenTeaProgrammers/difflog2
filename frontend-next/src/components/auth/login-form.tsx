@@ -37,7 +37,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex min-h-[calc(100vh-var(--app-header-height))] flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <div className="flex flex-col items-center space-y-2">
           <div className="p-3 bg-primary rounded-full">

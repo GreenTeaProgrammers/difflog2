@@ -209,7 +209,7 @@ export function ResultPageForm() {
 
   if (!Number.isInteger(captureId)) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center bg-background text-foreground">
+      <div className="flex min-h-[calc(100vh-var(--app-header-height))] flex-col items-center justify-center bg-[color:var(--shell-bg)] text-foreground">
         <p>解析結果がありません。再度お試しください。</p>
         <Button onClick={() => router.push('/camera')} className="mt-4">
           アップロード画面に戻る
