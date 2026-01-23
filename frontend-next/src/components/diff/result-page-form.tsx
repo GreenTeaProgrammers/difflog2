@@ -219,7 +219,7 @@ export function ResultPageForm() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl py-8">
+    <div className="container mx-auto max-w-3xl px-4 py-8 sm:px-6">
       <div className="rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
         <h1 className="mb-6 text-center text-3xl font-bold">解析結果</h1>
         {captureError && (

@@ -77,7 +77,7 @@ export default function CapturesPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-5xl space-y-6 py-8">
+    <div className="container mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Captures</h1>
@@ -85,17 +85,22 @@ export default function CapturesPage() {
             画像の履歴と解析ステータスを確認できます。
           </p>
         </div>
-        <Button onClick={() => router.push("/camera")}>New Capture</Button>
+        <Button
+          onClick={() => router.push("/camera")}
+          className="w-full sm:w-auto"
+        >
+          New Capture
+        </Button>
       </header>
 
-      <div className="flex flex-wrap gap-4 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+      <div className="grid gap-4 rounded-lg border bg-card p-4 text-card-foreground shadow-sm sm:grid-cols-2">
         <div className="space-y-2">
           <p className="text-sm font-semibold">Location</p>
           {locationsError && (
             <p className="text-sm text-red-500">ロケーションの取得に失敗しました。</p>
           )}
           <select
-            className="rounded-md border bg-background px-3 py-2 text-sm"
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
             value={selectedLocationId}
             onChange={(event) => setSelectedLocationId(event.target.value)}
             disabled={!locations || locations.length === 0}
@@ -111,7 +116,7 @@ export default function CapturesPage() {
         <div className="space-y-2">
           <p className="text-sm font-semibold">Status</p>
           <select
-            className="rounded-md border bg-background px-3 py-2 text-sm"
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
             value={selectedStatus}
             onChange={(event) => setSelectedStatus(event.target.value)}
           >

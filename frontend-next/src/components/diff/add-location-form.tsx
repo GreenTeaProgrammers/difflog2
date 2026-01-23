@@ -51,7 +51,7 @@ export function AddLocationForm() {
   };
 
   return (
-    <div className="container mx-auto max-w-md py-8">
+    <div className="container mx-auto max-w-md px-4 py-8 sm:px-6">
       <header className="mb-6 flex items-center">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft />

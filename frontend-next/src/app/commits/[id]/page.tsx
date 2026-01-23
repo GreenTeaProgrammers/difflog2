@@ -246,7 +246,7 @@ export default function CommitDetailPage({
   }
 
   return (
-    <div className="container mx-auto max-w-4xl space-y-6 py-8">
+    <div className="container mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Commit #{commit.id}</h1>
@@ -254,14 +254,19 @@ export default function CommitDetailPage({
             {commit.location.name} ・ {formatJstDateTime(new Date(commit.capture.capturedAt))}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <Button
             variant="outline"
             onClick={() => router.push(`/captures/${commit.captureId}`)}
+            className="w-full sm:w-auto"
           >
             Back to Capture
           </Button>
-          <Button variant="ghost" onClick={handleDelete}>
+          <Button
+            variant="ghost"
+            onClick={handleDelete}
+            className="w-full sm:w-auto"
+          >
             Delete Commit
           </Button>
         </div>
@@ -297,11 +302,11 @@ export default function CommitDetailPage({
       </div>
 
       <div className="space-y-4 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="space-y-2">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="space-y-2 sm:w-48">
             <Label>Status</Label>
             <select
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
               value={status}
               onChange={(event) =>
                 setStatus(event.target.value as CommitDetail["status"])

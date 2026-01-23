@@ -218,7 +218,7 @@ export default function TimelinePage() {
   };
 
   return (
-    <div className="container mx-auto max-w-6xl space-y-6 py-8">
+    <div className="container mx-auto max-w-6xl space-y-6 px-4 py-8 sm:px-6">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Timeline</h1>
@@ -226,17 +226,22 @@ export default function TimelinePage() {
             キャプチャとコミットの履歴を一覧できます。
           </p>
         </div>
-        <Button onClick={() => router.push("/camera")}>New Capture</Button>
+        <Button
+          onClick={() => router.push("/camera")}
+          className="w-full sm:w-auto"
+        >
+          New Capture
+        </Button>
       </header>
 
-      <div className="flex flex-wrap gap-4 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+      <div className="grid gap-4 rounded-lg border bg-card p-4 text-card-foreground shadow-sm sm:grid-cols-2 lg:grid-cols-3">
         <div className="space-y-2">
           <p className="text-sm font-semibold">Location</p>
           {locationsError && (
             <p className="text-sm text-red-500">ロケーションの取得に失敗しました。</p>
           )}
           <select
-            className="rounded-md border bg-background px-3 py-2 text-sm"
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
             value={selectedLocationId}
             onChange={(event) => setSelectedLocationId(event.target.value)}
             disabled={!locations || locations.length === 0}
@@ -252,7 +257,7 @@ export default function TimelinePage() {
         <div className="space-y-2">
           <p className="text-sm font-semibold">Status</p>
           <select
-            className="rounded-md border bg-background px-3 py-2 text-sm"
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
             value={selectedStatus}
             onChange={(event) => setSelectedStatus(event.target.value)}
           >
@@ -266,7 +271,7 @@ export default function TimelinePage() {
         <div className="space-y-2">
           <p className="text-sm font-semibold">Commit</p>
           <select
-            className="rounded-md border bg-background px-3 py-2 text-sm"
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
             value={selectedCommitFilter}
             onChange={(event) => setSelectedCommitFilter(event.target.value)}
           >
@@ -280,13 +285,13 @@ export default function TimelinePage() {
       </div>
 
       <div className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted-foreground">
             Selected: {selectedIds.length}
           </p>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
             <select
-              className="rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-md border bg-background px-3 py-2 text-sm sm:w-auto"
               value={targetLocationId}
               onChange={(event) => setTargetLocationId(event.target.value)}
             >
@@ -297,16 +302,32 @@ export default function TimelinePage() {
                 </option>
               ))}
             </select>
-            <Button variant="outline" onClick={handleMoveCaptures}>
+            <Button
+              variant="outline"
+              onClick={handleMoveCaptures}
+              className="w-full sm:w-auto"
+            >
               Move Captures
             </Button>
-            <Button variant="outline" onClick={handleDeleteCommits}>
+            <Button
+              variant="outline"
+              onClick={handleDeleteCommits}
+              className="w-full sm:w-auto"
+            >
               Delete Commits
             </Button>
-            <Button variant="ghost" onClick={handleDeleteCaptures}>
+            <Button
+              variant="ghost"
+              onClick={handleDeleteCaptures}
+              className="w-full sm:w-auto"
+            >
               Delete Captures
             </Button>
-            <Button variant="ghost" onClick={clearSelection}>
+            <Button
+              variant="ghost"
+              onClick={clearSelection}
+              className="w-full sm:w-auto"
+            >
               Clear
             </Button>
           </div>

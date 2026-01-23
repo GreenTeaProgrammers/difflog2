@@ -211,7 +211,7 @@ export function AnalyticsScreen() {
     <div className="relative min-h-[calc(100vh-var(--app-header-height))] bg-[color:var(--shell-bg)] text-foreground">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--shell-bg),_var(--shell-bg-muted)_55%,_var(--shell-bg)_100%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-70 [background-image:linear-gradient(140deg,rgba(31,136,61,0.08),transparent_40%),radial-gradient(circle_at_top_right,rgba(14,116,144,0.16),transparent_45%)]" />
-      <div className="relative mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6">
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[color:var(--shell-accent)]">
@@ -232,9 +232,9 @@ export function AnalyticsScreen() {
               </p>
             )}
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
             <select
-              className="rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] px-3 py-2 text-sm"
+              className="w-full rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] px-3 py-2 text-sm sm:w-auto"
               value={selectedLocationId ?? ''}
               onChange={(event) =>
                 setSelectedLocationId(Number(event.target.value))
@@ -251,7 +251,7 @@ export function AnalyticsScreen() {
               ))}
             </select>
             <select
-              className="rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] px-3 py-2 text-sm"
+              className="w-full rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] px-3 py-2 text-sm sm:w-auto"
               value={selectedYear}
               onChange={(event) => setSelectedYear(Number(event.target.value))}
             >

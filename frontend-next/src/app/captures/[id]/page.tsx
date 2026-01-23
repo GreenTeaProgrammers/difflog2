@@ -75,7 +75,7 @@ export default function CaptureDetailPage({
   const commitExists = Boolean(capture.commit?.id);
 
   return (
-    <div className="container mx-auto max-w-4xl space-y-6 py-8">
+    <div className="container mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Capture #{capture.id}</h1>
@@ -83,14 +83,19 @@ export default function CaptureDetailPage({
             {capture.location.name} ・ {formatJstDateTime(new Date(capture.capturedAt))}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <Button
             variant="outline"
             onClick={() => router.push(`/camera?locationId=${capture.location.id}`)}
+            className="w-full sm:w-auto"
           >
             Re-capture
           </Button>
-          <Button variant="ghost" onClick={handleDelete}>
+          <Button
+            variant="ghost"
+            onClick={handleDelete}
+            className="w-full sm:w-auto"
+          >
             Delete
           </Button>
         </div>

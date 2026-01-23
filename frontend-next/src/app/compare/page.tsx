@@ -81,7 +81,7 @@ export default function ComparePage() {
   }, [commitA, commitB]);
 
   return (
-    <div className="container mx-auto max-w-5xl space-y-6 py-8">
+    <div className="container mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
       <header>
         <h1 className="text-2xl font-bold">Compare Commits</h1>
         <p className="text-sm text-muted-foreground">
@@ -192,12 +192,16 @@ export default function ComparePage() {
 
       {comparisonRows.length > 0 && (
         <div className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-lg font-semibold">Diff Summary</h2>
-            <Button variant="outline" onClick={() => {
-              setCommitAId("");
-              setCommitBId("");
-            }}>
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto"
+              onClick={() => {
+                setCommitAId("");
+                setCommitBId("");
+              }}
+            >
               Reset Selection
             </Button>
           </div>
@@ -205,12 +209,33 @@ export default function ComparePage() {
             {comparisonRows.map((row) => (
               <div
                 key={row.name}
-                className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 rounded-md border px-3 py-2"
+                className="grid grid-cols-2 items-center gap-2 rounded-md border px-3 py-2 sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4"
               >
-                <span>{row.name}</span>
-                <span className="text-muted-foreground">{row.countA}</span>
-                <span className="text-muted-foreground">{row.countB}</span>
-                <span className={row.delta === 0 ? "text-muted-foreground" : row.delta > 0 ? "text-green-600" : "text-red-500"}>
+                <span className="col-span-2 sm:col-span-1">{row.name}</span>
+                <span className="text-muted-foreground">
+                  <span className="mr-1 text-[10px] uppercase text-muted-foreground sm:hidden">
+                    A
+                  </span>
+                  {row.countA}
+                </span>
+                <span className="text-muted-foreground">
+                  <span className="mr-1 text-[10px] uppercase text-muted-foreground sm:hidden">
+                    B
+                  </span>
+                  {row.countB}
+                </span>
+                <span
+                  className={
+                    row.delta === 0
+                      ? "text-muted-foreground"
+                      : row.delta > 0
+                        ? "text-green-600"
+                        : "text-red-500"
+                  }
+                >
+                  <span className="mr-1 text-[10px] uppercase text-muted-foreground sm:hidden">
+                    Δ
+                  </span>
                   {row.delta > 0 ? `+${row.delta}` : row.delta}
                 </span>
               </div>

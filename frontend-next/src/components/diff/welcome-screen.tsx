@@ -162,7 +162,7 @@ export function WelcomeScreen() {
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--shell-bg),_var(--shell-bg-muted)_55%,_var(--shell-bg)_100%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:linear-gradient(120deg,rgba(31,136,61,0.08),transparent_40%),radial-gradient(circle_at_top_right,rgba(56,189,248,0.1),transparent_35%)]" />
-      <div className="relative mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6">
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[color:var(--shell-accent)]">
