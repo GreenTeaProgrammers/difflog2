@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
@@ -153,6 +153,11 @@ export function WelcomeScreen() {
   );
 
   const selectedCount = heatmapCounts[selectedDayKey] ?? 0;
+
+  const gridStyle: CSSProperties = {
+    '--cell-size': 'clamp(6px, 1.6vw, 12px)',
+    '--cell-gap': 'clamp(1px, 0.35vw, 4px)',
+  };
 
   return (
     <div
@@ -314,22 +319,22 @@ export function WelcomeScreen() {
                     </div>
                   ))}
                 </div>
-                <div className="overflow-x-auto pb-2">
-                  <div className="grid grid-flow-col auto-cols-[12px] gap-1 text-[10px] text-muted-foreground">
+                <div className="overflow-x-auto pb-2" style={gridStyle}>
+                  <div className="hidden grid-flow-col auto-cols-[var(--cell-size)] gap-[var(--cell-gap)] text-[10px] text-muted-foreground sm:grid">
                     {monthLabels.map((label, index) => (
                       <div key={`month-${index}`} className="h-4">
                         {label}
                       </div>
                     ))}
                   </div>
-                  <div className="mt-1 grid grid-flow-col auto-cols-[12px] grid-rows-7 gap-1">
+                  <div className="mt-1 grid grid-flow-col auto-cols-[var(--cell-size)] grid-rows-7 gap-[var(--cell-gap)]">
                     {weeks.map((week, weekIndex) =>
                       week.map((date, dayIndex) => {
                         if (!date) {
                           return (
                             <div
                               key={`empty-${weekIndex}-${dayIndex}`}
-                              className="h-3 w-3"
+                              className="h-[var(--cell-size)] w-[var(--cell-size)]"
                             />
                           );
                         }
@@ -345,12 +350,12 @@ export function WelcomeScreen() {
                             key={dayKey}
                             type="button"
                             onClick={() => setSelectedDate(new Date(date))}
-                            className={`h-3 w-3 rounded-sm ${getColorClass(
+                            className={`h-[var(--cell-size)] w-[var(--cell-size)] rounded-sm ${getColorClass(
                               count,
                               maxCount
                             )} ${
                               isSelected
-                                ? 'ring-2 ring-[color:var(--shell-accent)] ring-offset-1 ring-offset-[color:var(--shell-panel)]'
+                                ? 'ring-1 ring-[color:var(--shell-accent)] ring-offset-1 ring-offset-[color:var(--shell-panel)] sm:ring-2'
                                 : ''
                             }`}
                             title={`${formatJstDate(date)} • ${count} commits`}
