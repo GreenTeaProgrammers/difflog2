@@ -197,78 +197,78 @@ export function WelcomeScreen() {
           </div>
         </header>
 
+        <section className="rounded-xl border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] p-4 shadow-sm backdrop-blur animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold">Locations</h2>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs"
+              onClick={() => router.push('/location')}
+            >
+              Manage
+            </Button>
+          </div>
+          {locationsError && (
+            <p className="mt-2 text-sm text-red-500">
+              ロケーションの取得に失敗しました。
+            </p>
+          )}
+          {locations && locations.length === 0 && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              ロケーションがまだありません。
+            </p>
+          )}
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {locations?.map((loc) => {
+              const isActive = selectedLocationId === loc.id;
+              return (
+                <button
+                  key={loc.id}
+                  type="button"
+                  onClick={() => setSelectedLocationId(loc.id)}
+                  className={`group overflow-hidden rounded-lg border text-left shadow-sm transition ${
+                    isActive
+                      ? 'border-[color:var(--shell-accent)] ring-1 ring-[color:var(--shell-accent)]'
+                      : 'border-[color:var(--shell-border)] hover:border-[color:var(--shell-accent)]'
+                  }`}
+                >
+                  <div className="relative h-20 w-full overflow-hidden bg-[color:var(--shell-panel-muted)] sm:h-24">
+                    <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,var(--shell-panel-muted),var(--shell-bg-muted))] text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                      {loc.name.slice(0, 1)}
+                    </div>
+                    {loc.coverImageUrl && (
+                      <img
+                        src={loc.coverImageUrl}
+                        alt={`${loc.name} cover`}
+                        className="absolute inset-0 h-full w-full object-cover"
+                        loading="lazy"
+                        onError={(event) => {
+                          event.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 transition group-hover:opacity-100" />
+                    {isActive && (
+                      <div className="absolute left-2 top-2 rounded-full bg-[color:var(--shell-accent)] px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
+                        Active
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-1 bg-[color:var(--shell-panel)] p-3">
+                    <p className="text-sm font-semibold">{loc.name}</p>
+                    <p className="max-h-8 overflow-hidden text-xs leading-4 text-muted-foreground">
+                      {loc.description || 'No description'}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
         <div className="grid gap-6 lg:grid-cols-[240px,1fr,280px]">
           <aside className="space-y-6">
-            <section className="rounded-xl border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] p-4 shadow-sm backdrop-blur animate-in fade-in slide-in-from-left-4 duration-500">
-              <div className="flex items-center justify-between">
-                <h2 className="text-sm font-semibold">Locations</h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs"
-                  onClick={() => router.push('/location')}
-                >
-                  Manage
-                </Button>
-              </div>
-              {locationsError && (
-                <p className="mt-2 text-sm text-red-500">
-                  ロケーションの取得に失敗しました。
-                </p>
-              )}
-              {locations && locations.length === 0 && (
-                <p className="mt-2 text-sm text-muted-foreground">
-                  ロケーションがまだありません。
-                </p>
-              )}
-              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                {locations?.map((loc) => {
-                  const isActive = selectedLocationId === loc.id;
-                  return (
-                    <button
-                      key={loc.id}
-                      type="button"
-                      onClick={() => setSelectedLocationId(loc.id)}
-                      className={`group overflow-hidden rounded-lg border text-left shadow-sm transition ${
-                        isActive
-                          ? 'border-[color:var(--shell-accent)] ring-1 ring-[color:var(--shell-accent)]'
-                          : 'border-[color:var(--shell-border)] hover:border-[color:var(--shell-accent)]'
-                      }`}
-                    >
-                      <div className="relative h-20 w-full overflow-hidden bg-[color:var(--shell-panel-muted)] sm:h-24">
-                        <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,var(--shell-panel-muted),var(--shell-bg-muted))] text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                          {loc.name.slice(0, 1)}
-                        </div>
-                        {loc.coverImageUrl && (
-                          <img
-                            src={loc.coverImageUrl}
-                            alt={`${loc.name} cover`}
-                            className="absolute inset-0 h-full w-full object-cover"
-                            loading="lazy"
-                            onError={(event) => {
-                              event.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 transition group-hover:opacity-100" />
-                        {isActive && (
-                          <div className="absolute left-2 top-2 rounded-full bg-[color:var(--shell-accent)] px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
-                            Active
-                          </div>
-                        )}
-                      </div>
-                      <div className="space-y-1 bg-[color:var(--shell-panel)] p-3">
-                        <p className="text-sm font-semibold">{loc.name}</p>
-                        <p className="max-h-8 overflow-hidden text-xs leading-4 text-muted-foreground">
-                          {loc.description || 'No description'}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-
             <section className="rounded-xl border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] p-4 shadow-sm animate-in fade-in slide-in-from-left-4 duration-500 delay-100">
               <h2 className="text-sm font-semibold">Quick Actions</h2>
               <div className="mt-3 grid grid-cols-2 gap-3">
