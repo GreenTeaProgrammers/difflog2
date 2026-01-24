@@ -271,7 +271,7 @@ export function WelcomeScreen() {
           </div>
         </section>
 
-        <div className="grid gap-6 lg:grid-cols-[240px,1fr,280px]">
+        <div className="grid gap-6 lg:grid-cols-[240px,1fr]">
           <aside className="space-y-6">
             <section className="rounded-xl border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] p-4 shadow-sm animate-in fade-in slide-in-from-left-4 duration-500 delay-100">
               <h2 className="text-sm font-semibold">Quick Actions</h2>
@@ -430,64 +430,63 @@ export function WelcomeScreen() {
                   </p>
                 </div>
               </div>
+
+              <div className="mt-4 rounded-lg border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 className="text-sm font-semibold">Day Summary</h3>
+                    <p className="text-xs text-muted-foreground">
+                      {formatJstDate(selectedDate)}
+                    </p>
+                  </div>
+                  <span className="rounded-full border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] px-2 py-1 text-xs text-muted-foreground">
+                    {selectedCount} commits
+                  </span>
+                </div>
+
+                {daySummaryError && (
+                  <p className="mt-3 text-sm text-red-500">
+                    データの取得に失敗しました。
+                  </p>
+                )}
+                {!daySummary && !daySummaryError && (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    読み込み中...
+                  </p>
+                )}
+                {daySummary && (
+                  <div className="mt-4 space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      Commit count: {daySummary.commitCount}
+                    </p>
+                    {daySummary.items.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">
+                        この日の記録はありません。
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        {daySummary.items.map((item) => {
+                          const deltaLabel =
+                            item.deltaCount > 0
+                              ? `+${item.deltaCount}`
+                              : `${item.deltaCount}`;
+                          return (
+                            <div
+                              key={item.itemName}
+                              className="flex items-center justify-between rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] px-3 py-2 text-sm"
+                            >
+                              <span>{item.itemName}</span>
+                              <span>{deltaLabel}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </section>
           </section>
-
-          <aside className="space-y-6">
-            <section className="rounded-xl border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] p-4 shadow-sm animate-in fade-in slide-in-from-right-4 duration-500">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-sm font-semibold">Day Summary</h2>
-                  <p className="text-xs text-muted-foreground">
-                    {formatJstDate(selectedDate)}
-                  </p>
-                </div>
-                <span className="rounded-full border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] px-2 py-1 text-xs text-muted-foreground">
-                  {selectedCount} commits
-                </span>
-              </div>
-
-              {daySummaryError && (
-                <p className="mt-3 text-sm text-red-500">
-                  データの取得に失敗しました。
-                </p>
-              )}
-              {!daySummary && !daySummaryError && (
-                <p className="mt-3 text-sm text-muted-foreground">読み込み中...</p>
-              )}
-              {daySummary && (
-                <div className="mt-4 space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Commit count: {daySummary.commitCount}
-                  </p>
-                  {daySummary.items.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                      この日の記録はありません。
-                    </p>
-                  ) : (
-                    <div className="space-y-2">
-                      {daySummary.items.map((item) => {
-                        const deltaLabel =
-                          item.deltaCount > 0
-                            ? `+${item.deltaCount}`
-                            : `${item.deltaCount}`;
-                        return (
-                          <div
-                            key={item.itemName}
-                            className="flex items-center justify-between rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] px-3 py-2 text-sm"
-                          >
-                            <span>{item.itemName}</span>
-                            <span>{deltaLabel}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-            </section>
-
-          </aside>
         </div>
       </div>
     </div>
