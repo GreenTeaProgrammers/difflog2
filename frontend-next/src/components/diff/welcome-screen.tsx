@@ -24,6 +24,8 @@ const colorScale = [
 type Location = {
   id: number;
   name: string;
+  description: string | null;
+  coverImageUrl: string | null;
 };
 
 type HeatmapResponse = {
@@ -219,7 +221,7 @@ export function WelcomeScreen() {
                   ロケーションがまだありません。
                 </p>
               )}
-              <div className="mt-3 space-y-2">
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                 {locations?.map((loc) => {
                   const isActive = selectedLocationId === loc.id;
                   return (
@@ -227,18 +229,37 @@ export function WelcomeScreen() {
                       key={loc.id}
                       type="button"
                       onClick={() => setSelectedLocationId(loc.id)}
-                      className={`flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm transition ${
+                      className={`group overflow-hidden rounded-lg border text-left shadow-sm transition ${
                         isActive
-                          ? 'border-[color:var(--shell-accent)] bg-[color:var(--shell-accent-soft)] text-[color:var(--shell-accent)]'
-                          : 'border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] text-foreground hover:border-[color:var(--shell-accent)]'
+                          ? 'border-[color:var(--shell-accent)] ring-1 ring-[color:var(--shell-accent)]'
+                          : 'border-[color:var(--shell-border)] hover:border-[color:var(--shell-accent)]'
                       }`}
                     >
-                      <span>{loc.name}</span>
-                      {isActive && (
-                        <span className="text-[10px] font-semibold uppercase tracking-wide">
-                          Active
-                        </span>
-                      )}
+                      <div className="relative h-24 w-full overflow-hidden bg-[color:var(--shell-panel-muted)]">
+                        {loc.coverImageUrl ? (
+                          <img
+                            src={loc.coverImageUrl}
+                            alt={`${loc.name} cover`}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,var(--shell-panel-muted),var(--shell-bg-muted))] text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                            {loc.name.slice(0, 1)}
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 transition group-hover:opacity-100" />
+                        {isActive && (
+                          <div className="absolute left-2 top-2 rounded-full bg-[color:var(--shell-accent)] px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
+                            Active
+                          </div>
+                        )}
+                      </div>
+                      <div className="space-y-1 bg-[color:var(--shell-panel)] p-3">
+                        <p className="text-sm font-semibold">{loc.name}</p>
+                        <p className="max-h-8 overflow-hidden text-xs leading-4 text-muted-foreground">
+                          {loc.description || 'No description'}
+                        </p>
+                      </div>
                     </button>
                   );
                 })}

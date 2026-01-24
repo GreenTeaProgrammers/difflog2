@@ -13,7 +13,33 @@ export async function GET() {
     orderBy: { createdAt: "asc" },
   });
 
-  return NextResponse.json(locations);
+  if (locations.length === 0) {
+    return NextResponse.json([]);
+  }
+
+  const locationIds = locations.map((location) => location.id);
+  const captures = await prisma.capture.findMany({
+    where: { locationId: { in: locationIds } },
+    orderBy: { capturedAt: "desc" },
+    select: { locationId: true, imageUrl: true, capturedAt: true },
+  });
+
+  const coverMap = new Map<number, { imageUrl: string; capturedAt: Date }>();
+  for (const capture of captures) {
+    if (!coverMap.has(capture.locationId)) {
+      coverMap.set(capture.locationId, {
+        imageUrl: capture.imageUrl,
+        capturedAt: capture.capturedAt,
+      });
+    }
+  }
+
+  return NextResponse.json(
+    locations.map((location) => ({
+      ...location,
+      coverImageUrl: coverMap.get(location.id)?.imageUrl ?? null,
+    }))
+  );
 }
 
 export async function POST(request: Request) {
