@@ -48,6 +48,7 @@ model Location {
   commits  Commit[]
 
   @@index([userId])
+  @@unique([userId, name])
 }
 
 model Capture {
@@ -68,6 +69,7 @@ model Capture {
 
   @@index([locationId])
   @@index([capturedAt])
+  @@index([locationId, capturedAt, analysisStatus])
 }
 
 model Commit {
@@ -87,6 +89,7 @@ model Commit {
 
   @@index([locationId])
   @@index([createdAt])
+  @@index([locationId, createdAt, status])
 }
 
 model CommitItem {
