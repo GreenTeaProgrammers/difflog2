@@ -95,7 +95,11 @@ export function WelcomeScreen() {
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
     );
   });
-  const currentYear = new Date().getUTCFullYear();
+  const now = new Date();
+  const currentYear = now.getUTCFullYear();
+  const daysInYear =
+    Date.UTC(currentYear + 1, 0, 1) - Date.UTC(currentYear, 0, 1);
+  const totalDays = Math.round(daysInYear / (24 * 60 * 60 * 1000));
 
   useEffect(() => {
     if (locations && locations.length > 0 && selectedLocationId === null) {
@@ -392,11 +396,39 @@ export function WelcomeScreen() {
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-                <span>
-                  {totalCount} total commits • {activeDays} active days
-                </span>
-                <span>Max {maxCount} in a day</span>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] p-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    Total
+                  </p>
+                  <p className="text-lg font-semibold">{totalCount}</p>
+                  <p className="text-xs text-muted-foreground">{currentYear}</p>
+                </div>
+                <div className="rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] p-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    Active Days
+                  </p>
+                  <p className="text-lg font-semibold">{activeDays}</p>
+                  <p className="text-xs text-muted-foreground">
+                    out of {totalDays}
+                  </p>
+                </div>
+                <div className="rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] p-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    Max Day
+                  </p>
+                  <p className="text-lg font-semibold">{maxCount}</p>
+                  <p className="text-xs text-muted-foreground">in a day</p>
+                </div>
+                <div className="rounded-md border border-[color:var(--shell-border)] bg-[color:var(--shell-panel-muted)] p-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    Selected
+                  </p>
+                  <p className="text-lg font-semibold">{selectedCount}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatJstDate(selectedDate)}
+                  </p>
+                </div>
               </div>
             </section>
           </section>
@@ -455,23 +487,6 @@ export function WelcomeScreen() {
               )}
             </section>
 
-            <section className="rounded-xl border border-[color:var(--shell-border)] bg-[color:var(--shell-panel)] p-4 shadow-sm animate-in fade-in slide-in-from-right-4 duration-500 delay-100">
-              <h2 className="text-sm font-semibold">Year Pulse</h2>
-              <div className="mt-3 space-y-3 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Total commits</span>
-                  <span className="font-semibold">{totalCount}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Active days</span>
-                  <span className="font-semibold">{activeDays}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Max in a day</span>
-                  <span className="font-semibold">{maxCount}</span>
-                </div>
-              </div>
-            </section>
           </aside>
         </div>
       </div>
