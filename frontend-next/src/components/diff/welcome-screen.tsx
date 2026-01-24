@@ -221,7 +221,7 @@ export function WelcomeScreen() {
                   ロケーションがまだありません。
                 </p>
               )}
-              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-1">
                 {locations?.map((loc) => {
                   const isActive = selectedLocationId === loc.id;
                   return (
@@ -235,17 +235,20 @@ export function WelcomeScreen() {
                           : 'border-[color:var(--shell-border)] hover:border-[color:var(--shell-accent)]'
                       }`}
                     >
-                      <div className="relative h-24 w-full overflow-hidden bg-[color:var(--shell-panel-muted)]">
-                        {loc.coverImageUrl ? (
+                      <div className="relative h-20 w-full overflow-hidden bg-[color:var(--shell-panel-muted)] sm:h-24">
+                        <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,var(--shell-panel-muted),var(--shell-bg-muted))] text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                          {loc.name.slice(0, 1)}
+                        </div>
+                        {loc.coverImageUrl && (
                           <img
                             src={loc.coverImageUrl}
                             alt={`${loc.name} cover`}
-                            className="h-full w-full object-cover"
+                            className="absolute inset-0 h-full w-full object-cover"
+                            loading="lazy"
+                            onError={(event) => {
+                              event.currentTarget.style.display = 'none';
+                            }}
                           />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,var(--shell-panel-muted),var(--shell-bg-muted))] text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                            {loc.name.slice(0, 1)}
-                          </div>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 transition group-hover:opacity-100" />
                         {isActive && (
